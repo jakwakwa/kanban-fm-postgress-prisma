@@ -56,8 +56,7 @@ pnpm dev
 
 Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=vercel-examples) ([Documentation](https://nextjs.org/docs/deployment)).
 
-
-# Frontend Mentor - Kanban task management web app
+## Frontend Mentor - Kanban task management web app
 
 ![Design preview for the Kanban task management web app coding challenge](./preview.jpg)
 
