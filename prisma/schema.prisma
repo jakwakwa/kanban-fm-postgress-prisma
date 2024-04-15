@@ -8,8 +8,8 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
-model users {
-  id        Int      @id @default(autoincrement())
+model User {
+  id        String   @id @default(uuid())
   name      String
   email     String   @unique
   image     String
@@ -17,33 +17,33 @@ model users {
 }
 
 model Board {
-  id      Int      @id @default(autoincrement())
+  id      String   @id @default(uuid())
   name    String
   columns Column[]
 }
 
 model Column {
-  id      Int    @id @default(autoincrement())
+  id      String @id @default(uuid())
   name    String
   board   Board  @relation(fields: [boardId], references: [id])
-  boardId Int
+  boardId String
   tasks   Task[]
 }
 
 model Task {
-  id          Int       @id @default(autoincrement())
+  id          String    @id @default(uuid())
   title       String
   description String?
   status      String
   column      Column    @relation(fields: [columnId], references: [id])
-  columnId    Int
+  columnId    String
   subtasks    Subtask[]
 }
 
 model Subtask {
-  id          Int     @id @default(autoincrement())
+  id          String  @id @default(uuid())
   title       String
   isCompleted Boolean
   task        Task    @relation(fields: [taskId], references: [id])
-  taskId      Int
+  taskId      String
 }
