@@ -137,6 +137,20 @@ Caution: This will probably wipe the current data
 npx prisma db push
 ```
 
+then use prisma migrate if the seed has been updated:
+
+```zsh
+npx prisma migrate dev
+```
+
+## User Management
+
+In this project I'm using clerk for user management. Clerk is a complete suite of embeddable UIs, flexible APIs, and admin dashboards to authenticate and manage your users.
+
+- Website [clerk](https://clerk.com/)
+
+
+
 ### Continued development
 
 ### Useful resources
