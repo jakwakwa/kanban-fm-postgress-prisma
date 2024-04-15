@@ -129,6 +129,14 @@ Make sure your Prisma schema is in sync with your database schema.
 npx prisma db pull
 ```
 
+After Updating the schema
+
+Caution: This will probably wipe the current data
+
+```zsh
+npx prisma db push
+```
+
 ### Continued development
 
 ### Useful resources
