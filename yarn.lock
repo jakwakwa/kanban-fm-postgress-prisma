@@ -80,6 +80,14 @@
     js-cookie "3.0.1"
     swr "2.2.0"
 
+"@clerk/themes@^1.7.12":
+  version "1.7.12"
+  resolved "https://registry.yarnpkg.com/@clerk/themes/-/themes-1.7.12.tgz#b08c6649421bf85b9b8fb2ccaa660be299b8259f"
+  integrity sha512-puO5i91Da7IeTEw1qowce3K+6mOHnFSZ1UhSQsF9pYFUhp+j3WciwahxC4QnF6FL14jaS4XLZI/RUs66TuY+Hw==
+  dependencies:
+    "@clerk/types" "3.63.1"
+    tslib "2.4.1"
+
 "@clerk/types@3.63.1":
   version "3.63.1"
   resolved "https://registry.yarnpkg.com/@clerk/types/-/types-3.63.1.tgz#33e00f27a9187d01f7ac925c5903ac7fa9e92499"
@@ -125,6 +133,11 @@
   version "8.51.0"
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.51.0.tgz#6d419c240cfb2b66da37df230f7e7eef801c32fa"
   integrity sha512-HxjQ8Qn+4SI3/AFv6sOrDB+g6PpUTDwSJiQqOrnneEk8L71161srI9gjzzZvYVbzHiVg/BvcH95+cK/zfIt4pg==
+
+"@heroicons/react@^2.1.3":
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/@heroicons/react/-/react-2.1.3.tgz#78a2a7f504a7370283d07eabcddc7fec04f503db"
+  integrity sha512-fEcPfo4oN345SoqdlCDdSa4ivjaKbk0jTd+oubcgNxnNgAfzysfwWfQUr+51wigiWHQQRiZNd1Ao0M5Y3M2EGg==
 
 "@humanwhocodes/config-array@^0.11.11":
   version "0.11.14"

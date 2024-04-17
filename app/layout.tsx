@@ -1,6 +1,7 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import { Inter } from "next/font/google";
+import { dark, neobrutalism, shadesOfPurple } from "@clerk/themes";
 
 export const metadata = {
   metadataBase: new URL("https://postgres-prisma.vercel.app"),

@@ -149,11 +149,17 @@ In this project I'm using clerk for user management. Clerk is a complete suite o
 
 - Website [clerk](https://clerk.com/)
 
-
+I created a project on Clerk
+chose Google and Email authentication
+installed clerk with yarn
+created middleware file
+and added the clerk provider to the layout file
 
 ### Continued development
 
-### Useful resources
+### Resources
+
+- Hero Icons - [Hero Icons](https://heroicons.com/)
 
 ## Author
 
