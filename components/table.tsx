@@ -26,13 +26,14 @@ export default async function Table() {
             className="flex items-center justify-between py-3"
           >
             <div className="flex items-center space-x-4">
-              <Image
-                src={user.image}
-                alt={user.name}
-                width={48}
-                height={48}
-                className="rounded-full ring-1 ring-gray-900/5"
-              />
+              {user.image && (
+                <Image
+                  src={user.image}
+                  alt={user.name}
+                  width={48}
+                  height={48}
+                />
+              )}
               <div className="space-y-1">
                 <p className="font-medium leading-none">{user.name}</p>
                 <p className="text-sm text-gray-500">{user.email}</p>
