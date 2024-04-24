@@ -23,6 +23,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
+        <link rel="icon" href="/assets/favicon-32x32.png" />
         <body className={jakarta.variable}>{children}</body>
       </html>
     </ClerkProvider>

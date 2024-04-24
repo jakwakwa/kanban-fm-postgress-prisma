@@ -1,3 +1,4 @@
+import useBearStore from "@/context/store";
 import Button from "../ui/button";
 import KanbanGrid from "./kanban-grid";
 

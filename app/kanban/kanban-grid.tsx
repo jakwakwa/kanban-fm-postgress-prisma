@@ -1,14 +1,24 @@
-import React from "react";
+"use client";
 import KanbanCard from "./kanban-card";
 import ColumnText from "./column-text";
+import useStore from "@/context/store";
 
 const KanbanGrid = () => {
   const tempArray = ["1", "2"];
   const tempAmount = "2";
+  // @ts-ignore
+  const { boards } = useStore(); // Access the store's state
+  console.log(boards);
   return (
     <div className="w-[2600px] h-full mt-[100px] px-20 grid grid-cols-7 gap-8 text-white">
       <div className="grid gap-4  h-[100px]">
         <ColumnText color="blue">Todo ({tempAmount})</ColumnText>
+
+        {/*
+        // TODO: Boards need to be added to sidenav instead
+        // @ts-ignore*/}
+        <div className="text-black">{boards?.map((board) => board.name)}</div>
+        <div className="text-black">Number of bears:</div>
         {tempArray.map((i) => (
           <KanbanCard key={i} />
         ))}
