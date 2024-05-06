@@ -1,6 +1,6 @@
 "use client";
-import KanbanCard from "./kanban-card";
-import ColumnText from "./column-text";
+import KanbanCard from "@/components/ui/kanban/kanban-card";
+import ColumnText from "@/components/ui/kanban/column-text";
 import useStore from "@/context/store";
 
 const KanbanGrid = () => {

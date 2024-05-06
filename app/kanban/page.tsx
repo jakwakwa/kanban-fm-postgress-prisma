@@ -1,6 +1,6 @@
 import useBearStore from "@/context/store";
-import Button from "../ui/button";
-import KanbanGrid from "./kanban-grid";
+import Button from "../../components/ui/button";
+import KanbanGrid from "../../components/ui/kanban/kanban-grid";
 
 const KanbanPage = () => {
   const isEmpty = false;

@@ -1,5 +1,5 @@
-import KanbanHeader from "../ui/kanban/header";
-import SideNav from "../ui/kanban/sidenav";
+import KanbanHeader from "../../components/ui/header";
+import SideNav from "../../components/ui/kanban/sidenav";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
