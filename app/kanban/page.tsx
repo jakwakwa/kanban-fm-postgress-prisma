@@ -1,24 +1,25 @@
-import useBearStore from "@/context/store";
-import Button from "../../components/ui/button";
-import KanbanGrid from "../../components/ui/kanban/kanban-grid";
+"use client";
+import { useEffect } from "react";
+import useStore from "@/context/store";
+import { useRouter } from "next/navigation";
+import { BoardsData } from "@/types/data-types";
 
 const KanbanPage = () => {
-  const isEmpty = false;
+  const isEmpty = true;
+  const { boards } = useStore() as BoardsData;
+  const router = useRouter();
+  useEffect(() => {
+    if (boards.length > 0)
+      router.push(`/kanban/board?query=${boards[0].name}`, { scroll: false });
+  }, [boards, router]);
+
   return (
     <>
       {isEmpty && (
         <div className="h-full flex flex-col items-center justify-center align-middle">
-          <div className="mb-4">
-            This board is empty. Create a new column to get started.
-          </div>
-
-          <Button href={"#"} isDisabled={false}>
-            + Add New Column
-          </Button>
+          <div className="mb-4">Pick a board to get started.</div>
         </div>
       )}
-
-      {!isEmpty && <KanbanGrid />}
     </>
   );
 };

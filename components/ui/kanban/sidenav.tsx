@@ -1,20 +1,13 @@
 "use client";
-import Link from "next/link";
-import NavLinks from "@/components/ui/kanban/nav-links";
-
-import {
-  LinkIcon,
-  PowerIcon,
-  ViewColumnsIcon,
-} from "@heroicons/react/24/outline";
-import Logo from "../logo";
-import { SignOutButton } from "@clerk/nextjs";
 import useStore from "@/context/store";
+import { BoardsData } from "@/types/data-types";
+import { SignOutButton } from "@clerk/nextjs";
+import { PowerIcon, ViewColumnsIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
+import Logo from "../logo";
 
 export default function SideNav() {
-  // @ts-ignore
-  const { boards } = useStore(); // Access the store's state
-  console.log("boards", boards);
+  const { boards } = useStore() as BoardsData;
   return (
     <div className="fixed w-[300px] z-1 flex h-full flex-col px-3 py-0 md:px-0 bg-white border-r">
       <Link
@@ -31,14 +24,17 @@ export default function SideNav() {
           <div className="flex flex-col w-full">
             {boards?.map((board: { name: any }, i: number) => (
               <div className="text-black" key={i}>
-                <a
+                <Link
+                  href={{
+                    pathname: `/kanban/board/`,
+                    query: { query: board.name },
+                  }}
                   key={board.name}
-                  href={"#"}
                   className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-white p-3 text-sm font-medium hover:bg-violet-100 hover:text-violet-600 md:flex-none md:justify-start md:p-2 md:px-3"
                 >
                   <ViewColumnsIcon className="w-6" />
                   <p className="hidden md:block"> {board?.name}</p>
-                </a>
+                </Link>
               </div>
             ))}
           </div>
