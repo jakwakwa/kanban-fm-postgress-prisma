@@ -9,7 +9,7 @@ import { COLORS } from "@/constants/theme";
 const KanbanGrid = () => {
   const { boards } = useStore() as BoardsData;
   const slug = useSearchParams();
-  const boardName = slug.get("query");
+  const boardName = slug.get("board");
   const list = boards?.find((l) => l.name === boardName);
 
   return (
@@ -20,7 +20,7 @@ const KanbanGrid = () => {
           <div className="text-black my-4">
             <ColumnText color={COLORS[index]}>{col.name}</ColumnText>
           </div>
-          <KanbanCard columnData={col} />
+          <KanbanCard columnData={col} boardName={boardName ? boardName : ""} />
         </div>
       ))}
     </div>

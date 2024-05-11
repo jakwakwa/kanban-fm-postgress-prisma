@@ -1,8 +1,10 @@
 import { Column } from "@/types/data-types";
+import Link from "next/link";
 interface KanbanGridProps {
   columnData: Column;
+  boardName: string;
 }
-const KanbanCard = ({ columnData }: KanbanGridProps) => {
+const KanbanCard = ({ columnData, boardName }: KanbanGridProps) => {
   const columnList = columnData.tasks?.map((col) => col);
 
   return (
@@ -11,13 +13,22 @@ const KanbanCard = ({ columnData }: KanbanGridProps) => {
 
       // @ts-ignore */}
       {columnData.tasks?.map((task, index) => (
-        <div
+        <Link
           key={index}
-          className="bg-white h-[auto] rounded-md shadow-md p-[16px]"
+          href={{
+            pathname: `/kanban/task/${boardName}/`,
+            query: {
+              title: task.title,
+              board: boardName,
+              column: columnData.name,
+            },
+          }}
         >
-          <h2 className="text-kblack-main">{task.title}</h2>
-          <h4 className="text-gray-400 mt-[4px]">0 of 3 substasks</h4>
-        </div>
+          <div className="bg-white h-[auto] rounded-md shadow-md p-[16px]">
+            <h2 className="text-kblack-main">{task.title}</h2>
+            <h4 className="text-gray-400 mt-[4px]">0 of 3 substasks</h4>
+          </div>
+        </Link>
       ))}
     </div>
   );

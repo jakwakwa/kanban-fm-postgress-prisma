@@ -4,7 +4,7 @@ import Button from "./button";
 
 const KanbanHeader = () => {
   const pathname = useSearchParams();
-  const headerTitle = pathname.get("query");
+  const headerTitle = pathname.get("board");
   return (
     <div
       className={`fixed w-full h-[80px] bg-white text-kblack-main px-4 border-b`}
