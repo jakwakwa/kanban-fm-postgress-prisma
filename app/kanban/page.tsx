@@ -10,7 +10,7 @@ const KanbanPage = () => {
   const router = useRouter();
   useEffect(() => {
     if (boards.length > 0)
-      router.push(`/kanban/board?query=${boards[0].name}`, { scroll: false });
+      router.push(`/kanban/board?board=${boards[0].name}`, { scroll: false });
   }, [boards, router]);
 
   return (
