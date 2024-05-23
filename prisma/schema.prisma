@@ -1,20 +1,65 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  provider     = "postgresql"
+  url          = env("POSTGRES_PRISMA_URL")
+  directUrl    = env("POSTGRES_URL_NON_POOLING")
+  relationMode = "prisma"
 }
 
-model users {
-  id        Int      @id @default(autoincrement())
+model User {
+  id        String   @id @default(uuid())
   name      String
   email     String   @unique
-  image     String
+  image     String?
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  clerkId   String   @unique
+  Board     Board[]
+}
+
+model Board {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  name      String
+  columns   Column[]
+
+  @@index([userId]) // Add this line to create an index on the userId field
+}
+
+model Column {
+  id      String @id @default(uuid())
+  name    String
+  boardId String
+  board   Board  @relation(fields: [boardId], references: [id])
+  tasks   Task[]
+
+  @@index([boardId]) // Add this line to create an index on the boardId field
+}
+
+model Task {
+  id          String    @id @default(uuid())
+  title       String
+  description String?
+  status      String
+  column      Column    @relation(fields: [columnId], references: [id])
+  columnId    String
+  subtasks    Subtask[]
+
+  @@index([columnId]) // Add this line to create an index on the boardId field
+}
+
+model Subtask {
+  id          String  @id @default(uuid())
+  title       String
+  isCompleted Boolean
+  task        Task    @relation(fields: [taskId], references: [id])
+  taskId      String
+
+  @@index([taskId]) // Add this line to create an index on the boardId field
 }
