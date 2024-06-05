@@ -27,7 +27,7 @@ const KanbanCard = ({
   }
 
   return (
-    <div className="flex flex-col gap-6  h-[100px]">
+    <div className="flex flex-col gap-6 h-[100px]">
       {/*
 
       // @ts-ignore */}
@@ -36,7 +36,7 @@ const KanbanCard = ({
           key={index}
           // @ts-ignore
           onClick={() => handleViewTask(task.title)}
-          className="bg-white h-[auto] rounded-md shadow-md p-[16px]"
+          className="bg-white hover:bg-violet3 h-[auto] rounded-md shadow-md p-[16px] cursor-pointer"
         >
           <h2 className="text-kblack-main">{task.title}</h2>
           <h4 className="text-gray-400 mt-[4px]">0 of 3 substasks</h4>
