@@ -1,6 +1,6 @@
 "use client";
 
-import StatusDropdown from "./status-dropdown";
+import StatusDropdown from "../dropdown-components/status-dropdown";
 import Subtask from "./subtask";
 
 interface ViewTaskProps {
@@ -10,6 +10,7 @@ interface ViewTaskProps {
   setOpenModul: any;
   colName: any;
 }
+
 function ViewTask({
   boardName,
   taskName,
@@ -30,19 +31,19 @@ function ViewTask({
         <button onClick={() => setOpenModul(false)}>close</button>
       </div>
       <div className=" text-gray-950 text-lg font-bold">{taskName}</div>
-      <div className="my-[24px] w-96 text-slate-400 text-xs font-medium font-['Plus Jakarta Sans'] leading-snug">
+      <div className="my-[24px] w-96 text-kgray-text text-xs font-medium  leading-snug">
         {task.description}
       </div>
-      <div className="text-slate-400 text-xs font-bold font-['Plus Jakarta Sans'] mb-[16px]">
+      <div className="text-kgray-text text-xs font-bold  mb-[16px]">
         Subtasks ({task.subtasks.length} of {task.subtasks.length})
       </div>
       <div className="flex flex-col gap-2">
         <Subtask task={task} />
-        <div className="w-96 h-16 relative mt-[16px]">
-          <div className="left-0 top-0 absolute text-slate-400 text-xs font-bold font-['Plus Jakarta Sans']">
+        <div className="w-full h-16 relative mt-[16px]">
+          <div className="left-0 top-0 text-kgray-text text-xs font-bold">
             Current Status
           </div>
-          <StatusDropdown task={task} />
+          <StatusDropdown />
         </div>
       </div>
     </div>
