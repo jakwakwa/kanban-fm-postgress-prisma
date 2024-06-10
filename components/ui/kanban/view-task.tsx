@@ -9,6 +9,9 @@ interface ViewTaskProps {
   boards: any;
   setOpenModul: any;
   colName: any;
+  tasks: any;
+  cols: any;
+  subTasks: any;
 }
 
 function ViewTask({
@@ -17,10 +20,20 @@ function ViewTask({
   boards,
   setOpenModul,
   colName,
+  tasks,
+  cols,
+  subTasks,
 }: ViewTaskProps) {
-  const list = boards?.find((l: { name: any }) => l.name === boardName);
-  const column = list?.columns.find((n: { name: any }) => n.name === colName);
-  const task = column?.tasks.find((t: { title: any }) => t.title === taskName);
+  const list_ = boards?.find((l: { name: any }) => l.name === boardName);
+  const column_ = cols.find((n: { name: any }) => n.name === colName);
+  const task = tasks.find((t: { title: any }) => t.title === taskName);
+
+  console.log("View Task:", {
+    list: [],
+    cols,
+    colName,
+    task,
+  });
 
   return (
     <div className="w-[480px] mx-auto mt-[10%] bg-white rounded-md p-[32px] pb-[48px] h-auto shadow-lg">
@@ -35,10 +48,10 @@ function ViewTask({
         {task.description}
       </div>
       <div className="text-kgray-text text-xs font-bold  mb-[16px]">
-        Subtasks ({task.subtasks.length} of {task.subtasks.length})
+        Subtasks ({subTasks.length} of {subTasks.length})
       </div>
       <div className="flex flex-col gap-2">
-        <Subtask task={task} />
+        <Subtask task={subTasks} />
         <div className="w-full h-16 relative mt-[16px]">
           <div className="left-0 top-0 text-kgray-text text-xs font-bold">
             Current Status

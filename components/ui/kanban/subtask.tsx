@@ -3,7 +3,7 @@ import CheckboxDemo from "../checkbox";
 
 function Subtask({ task }: { task: any[] }) {
   // @ts-ignore
-  return task?.subtasks.map(
+  return task?.map(
     (
       subtask: {
         title: string;

@@ -1,17 +1,14 @@
-"use client";
-import { useEffect } from "react";
 import useStore from "@/context/store";
 import { useRouter } from "next/navigation";
 import { BoardsData } from "@/types/data-types";
 
-const KanbanPage = () => {
+const KanbanPage = async () => {
   const isEmpty = true;
-  const { boards } = useStore() as BoardsData;
-  const router = useRouter();
-  useEffect(() => {
-    if (boards.length > 0)
-      router.push(`/kanban/board?board=${boards[0].name}`, { scroll: false });
-  }, [boards, router]);
+  // const { boards } = useStore() as BoardsData;
+  // const router = useRouter();
+
+  // if (boards.length > 0)
+  //   router.push(`/kanban/board?board=${boards[0].name}`, { scroll: false });
 
   return (
     <>

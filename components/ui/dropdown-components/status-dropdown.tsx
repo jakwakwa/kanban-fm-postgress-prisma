@@ -1,3 +1,4 @@
+"use-client";
 import { useState } from "react";
 import * as Radix from "@radix-ui/react-select";
 
