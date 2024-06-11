@@ -59,7 +59,6 @@ const KanbanGrid = ({
 
   getTasks();
 
-  console.log("loader", loader);
   if (loader) {
     return (
       <div className="absolute w-full left-0 m-0 p-0 h-[100%] bg-slate-700 bg-opacity-50">
@@ -92,7 +91,6 @@ const KanbanGrid = ({
                   </div>
                   {st?.map((task, i) => {
                     if (task.status === col.name && col.id === task.columnId) {
-                      // console.log("dwfwefw", col.id === task.columnId);
                       return (
                         <div key={i}>
                           <KanbanCard

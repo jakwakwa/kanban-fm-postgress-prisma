@@ -2,12 +2,11 @@
 import { SetStateAction, useState } from "react";
 import * as Radix from "@radix-ui/react-select";
 
-// TODO: use data
 const itemsInitial = ["Todo", "Doing", "Done"];
 
 const StatusDropdown = ({ status }: { status: string }) => {
   const [toggled, setToggled] = useState("closed");
-  console.log("status", status);
+
   return (
     <form style={{ width: "100%", maxWidth: 420 }}>
       <div>

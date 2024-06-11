@@ -10,7 +10,7 @@ interface ViewTaskProps {
 
 function ViewTask({ taskName, setOpenModul, tasks }: ViewTaskProps) {
   const task = tasks.find((t: { title: any }) => t.title === taskName);
-  // console.log(task);
+
   return (
     <div className="w-[480px] mx-auto mt-[10%] bg-white rounded-md p-[32px] pb-[48px] h-auto shadow-lg">
       <div
