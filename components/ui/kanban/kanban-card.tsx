@@ -6,6 +6,8 @@ interface KanbanGridProps {
   openModul: any;
   setOpenModul: any;
   setTaskName: any;
+  subTaskAmount: number;
+  setTaskId: any;
   colName: any;
   setColumnName: any;
 }
@@ -15,6 +17,8 @@ const KanbanCard = ({
   openModul,
   setOpenModul,
   setTaskName,
+  subTaskAmount = 0,
+  setTaskId,
   colName,
   setColumnName,
 }: KanbanGridProps) => {
@@ -23,10 +27,9 @@ const KanbanCard = ({
   function handleViewTask(name: any) {
     setOpenModul(true);
     setTaskName(name);
+    setTaskId(columnData.id);
     setColumnName(colName);
   }
-
-  // console.log("columnData:", columnData);
 
   return (
     <div className="flex flex-col gap-6 h-[100px]">
@@ -40,7 +43,11 @@ const KanbanCard = ({
         className="bg-white hover:bg-violet3 h-[auto] rounded-md shadow-md p-[16px] cursor-pointer"
       >
         <h2 className="text-kblack-main">{columnData?.title}</h2>
-        <h4 className="text-gray-400 mt-[4px]">0 of 3 substasks</h4>
+        <h4 className="text-gray-400 mt-[4px]">
+          {/*
+                      //  @ts-ignore */}
+          {subTaskAmount} of {subTaskAmount} subtasks
+        </h4>
       </div>
     </div>
   );

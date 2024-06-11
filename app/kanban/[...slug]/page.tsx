@@ -15,49 +15,34 @@ const getBoards = async () => {
   return entries;
 };
 
-const getCols = async () => {
-  const cols = await prisma.column.findMany({
-    where: {
-      boardId: "3058343c-d404-4518-932f-c6e90abca933",
-    },
-  });
+const getAllCols = async () => {
+  const cols = await prisma.column.findMany({});
   return cols;
 };
 
-const getTasks = async () => {
-  const tasks = await prisma.task.findMany({
-    where: {
-      columnId: "2bebe55f-2625-4909-b2f8-e881443c7a10",
-    },
-  });
+const getAllTasks = async () => {
+  const tasks = await prisma.task.findMany({});
   return tasks;
 };
 
-const getSubTasks = async () => {
-  const tasks = await prisma.subtask.findMany({
-    where: {
-      taskId: "578cd444-700f-40ee-9138-6eb097c83c33",
-    },
-  });
+const getAllSubTasks = async () => {
+  const tasks = await prisma.subtask.findMany({});
   return tasks;
 };
 
 const Page = async () => {
-  const entries = await getBoards();
-  const cols = await getCols();
-  const tasks = await getTasks();
-  const subtasks = await getSubTasks();
-  console.log("entries", entries);
-  console.log("cols", cols);
-  console.log("tasks", tasks);
-  console.log("subtasks", subtasks);
+  const boardsDb = await getBoards();
+  const cols = await getAllCols();
+  const tasks = await getAllTasks();
+  const subtasks = await getAllSubTasks();
+
   const isEmpty = false;
 
   return (
     <>
       {!isEmpty && (
         <KanbanGrid
-          boardsFromDb={entries}
+          boardsFromDb={boardsDb}
           cols={cols}
           tasks={tasks}
           subTasks={subtasks}

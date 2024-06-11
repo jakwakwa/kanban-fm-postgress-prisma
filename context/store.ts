@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
 const jsonData = {
-  boards: [
+  boardsStore: [
     {
       name: "Platform Launch",
       columns: [
@@ -447,7 +447,7 @@ const jsonData = {
 // Function to parse JSON data into Zustand store structure
 const useStore = create(
   devtools((set) => ({
-    boards: jsonData.boards.map((board) => ({
+    boardsStore: jsonData.boardsStore.map((board) => ({
       name: board.name,
       columns: board.columns.map((column) => ({
         name: column.name,
@@ -459,6 +459,50 @@ const useStore = create(
         })),
       })),
     })),
+    boardsSb: [{}],
+    columnsDb: [{}],
+    tasks: [{}],
+    subTasks: [{}],
+    boardId: "",
+    loading: false,
+    addBoard: (boardsSb: any) => {
+      set((state: { boardsSb: any }) => ({
+        boardsSb: [{ ...boardsSb }],
+      }));
+    },
+    addColumns: (columnsDb: any) => {
+      set((state: { columnsDb: any }) => ({
+        columnsDb: [{ ...columnsDb }],
+      }));
+    },
+    addTasks: (tasks: any) => {
+      set((state: { tasks: any }) => ({
+        tasks: [{ ...tasks }],
+      }));
+    },
+    addSubTasks: (subTasks: any) => {
+      set((state: { subTasks: any }) => ({
+        subTasks: [{ ...subTasks }],
+      }));
+    },
+    addBoardId: (boardId: any) => {
+      set((state: { boardId: any }) => ({
+        boardId: boardId,
+        loading: true,
+      }));
+    },
+    setLoader: (loading: boolean) => {
+      set((state: { loading: boolean }) => ({
+        loading: loading,
+      }));
+    },
+    reset: () => {
+      set({
+        boardsStore: [],
+        boardsSb: [],
+        boardId: [],
+      });
+    },
   }))
 );
 

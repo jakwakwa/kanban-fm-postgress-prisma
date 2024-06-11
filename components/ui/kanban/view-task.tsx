@@ -1,40 +1,16 @@
 "use client";
-
 import StatusDropdown from "../dropdown-components/status-dropdown";
 import Subtask from "./subtask";
 
 interface ViewTaskProps {
-  boardName: any;
   taskName: any;
-  boards: any;
   setOpenModul: any;
-  colName: any;
   tasks: any;
-  cols: any;
-  subTasks: any;
 }
 
-function ViewTask({
-  boardName,
-  taskName,
-  boards,
-  setOpenModul,
-  colName,
-  tasks,
-  cols,
-  subTasks,
-}: ViewTaskProps) {
-  const list_ = boards?.find((l: { name: any }) => l.name === boardName);
-  const column_ = cols.find((n: { name: any }) => n.name === colName);
+function ViewTask({ taskName, setOpenModul, tasks }: ViewTaskProps) {
   const task = tasks.find((t: { title: any }) => t.title === taskName);
-
-  console.log("View Task:", {
-    list: [],
-    cols,
-    colName,
-    task,
-  });
-
+  // console.log(task);
   return (
     <div className="w-[480px] mx-auto mt-[10%] bg-white rounded-md p-[32px] pb-[48px] h-auto shadow-lg">
       <div
@@ -48,15 +24,15 @@ function ViewTask({
         {task.description}
       </div>
       <div className="text-kgray-text text-xs font-bold  mb-[16px]">
-        Subtasks ({subTasks.length} of {subTasks.length})
+        Subtasks ({task.subtask.length} of {task.subtask.length})
       </div>
       <div className="flex flex-col gap-2">
-        <Subtask task={subTasks} />
+        {task?.subtask !== undefined && <Subtask task={task.subtask} />}
         <div className="w-full h-16 relative mt-[16px]">
           <div className="left-0 top-0 text-kgray-text text-xs font-bold">
             Current Status
           </div>
-          <StatusDropdown />
+          <StatusDropdown status={task.status} />
         </div>
       </div>
     </div>

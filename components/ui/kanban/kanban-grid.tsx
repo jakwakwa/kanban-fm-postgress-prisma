@@ -2,11 +2,12 @@
 import KanbanCard from "@/components/ui/kanban/kanban-card";
 import ColumnText from "@/components/ui/kanban/column-text";
 import useStore from "@/context/store";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { BoardsData } from "@/types/data-types";
 import { COLORS } from "@/constants/theme";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ViewTask from "./view-task";
+import Subtask from "./subtask";
 
 const KanbanGrid = ({
   boardsFromDb,
@@ -19,75 +20,107 @@ const KanbanGrid = ({
   tasks: any[];
   subTasks: any[];
 }) => {
-  const { boards } = useStore() as BoardsData;
+  // const { boardsStore } = useStore() as BoardsData;
+  // @ts-ignore
+  const addColumns = useStore((state) => state.addColumns);
+  // @ts-ignore
+  const addTasks = useStore((state) => state.addTasks);
+  // @ts-ignore
+  const addSubTasks = useStore((state) => state.addSubTasks);
   const [openModul, setOpenModul] = useState(false);
   const [taskName, setTaskName] = useState("");
+  const [taskId, setTaskId] = useState("");
   const [columnName, setColumnName] = useState("");
   const slug = useSearchParams();
-  // const boardName = slug.get("board");
-  const boardName = "Test Task DB";
-  const list = boards?.find((l) => l.name === boardName);
+  const boardName = slug.get("board");
+  const bId = slug.get("id");
+  // @ts-ignore
+  const loader = useStore((state) => state.loading);
 
-  // console.log("boardsFromDb", list);
-  // console.log("boards", boards);
+  useEffect(() => {
+    addColumns(cols);
+    addSubTasks(subTasks);
+    addTasks(tasks);
+  }, [addColumns, addSubTasks, addTasks, cols, subTasks, tasks]);
 
-  return (
-    <>
-      {openModul ? (
-        <div className="absolute w-full left-0 m-0 p-0 h-[100%] bg-slate-700 bg-opacity-50">
-          <ViewTask
-            boardName={boardName}
-            taskName={taskName}
-            boards={boards}
-            setOpenModul={setOpenModul}
-            colName={columnName}
-            tasks={tasks}
-            cols={cols}
-            subTasks={subTasks}
-          />
+  let st: any[] = [];
+  function getTasks() {
+    tasks?.map((task, i) => {
+      const ste = subTasks?.filter((subTask, i) => task.id === subTask.taskId);
+      st = [
+        ...st,
+        {
+          ...task,
+          subtask: [...ste],
+        },
+      ];
+    });
+  }
+
+  getTasks();
+
+  console.log("loader", loader);
+  if (loader) {
+    return (
+      <div className="absolute w-full left-0 m-0 p-0 h-[100%] bg-slate-700 bg-opacity-50">
+        <div className="w-[480px] mx-auto mt-[10%] bg-white rounded-md p-[32px] pb-[48px] h-auto shadow-lg">
+          {" "}
+          loading...
         </div>
-      ) : null}{" "}
-      <div className="w-[full] h-full mt-[100px] px-20 grid grid-cols-3 gap-8 text-white mb-[80px]">
-        {/*  */}
-        {/* {list?.columns?.map((col, index) => (
-          <div key={index}>
-            <div className="text-black my-4">
-              <ColumnText color={COLORS[index]}>{col.name}</ColumnText>
-            </div>
-            <KanbanCard
-              columnData={col}
-              boardName={boardName ? boardName : ""}
-              openModul={openModul}
+      </div>
+    );
+  } else {
+    return (
+      <>
+        {openModul ? (
+          <div className="absolute w-full left-0 m-0 p-0 h-[100%] bg-slate-700 bg-opacity-50">
+            <ViewTask
+              taskName={taskName}
               setOpenModul={setOpenModul}
-              setTaskName={setTaskName}
-              colName={col.name}
-              setColumnName={setColumnName}
+              tasks={st}
             />
           </div>
-        ))} */}
+        ) : null}
 
-        {cols?.map((col, index) => (
-          <div key={index}>
-            <div className="text-black my-4">
-              <ColumnText color={COLORS[index]}>{col.name}</ColumnText>
-            </div>
-            {tasks?.map((task, i) => (
-              <KanbanCard
-                key={i}
-                columnData={task}
-                boardName={boardName ? boardName : ""}
-                openModul={openModul}
-                setOpenModul={setOpenModul}
-                setTaskName={setTaskName}
-                colName={task.status}
-                setColumnName={setColumnName}
-              />
-            ))}
-          </div>
-        ))}
-      </div>
-    </>
-  );
+        <div className="w-[full] h-full mt-[100px] px-20 grid grid-cols-3 gap-8 text-white mb-[80px]">
+          {cols?.map((col, index) => {
+            if (col.boardId === bId) {
+              return (
+                <div key={index}>
+                  <div className="text-black my-4">
+                    <ColumnText color={COLORS[index]}>{col.name}</ColumnText>
+                  </div>
+                  {st?.map((task, i) => {
+                    if (task.status === col.name && col.id === task.columnId) {
+                      // console.log("dwfwefw", col.id === task.columnId);
+                      return (
+                        <div key={i}>
+                          <KanbanCard
+                            columnData={task}
+                            boardName={boardName ? boardName : ""}
+                            openModul={openModul}
+                            setOpenModul={setOpenModul}
+                            setTaskName={setTaskName}
+                            setTaskId={setTaskId}
+                            colName={task.status}
+                            subTaskAmount={
+                              // @ts-ignore
+                              task.subtask ? task.subtask.length : 0
+                            }
+                            setColumnName={setColumnName}
+                          />
+                        </div>
+                      );
+                    }
+                  })}
+                </div>
+              );
+            }
+          })}
+        </div>
+      </>
+    );
+  }
 };
 
 export default KanbanGrid;

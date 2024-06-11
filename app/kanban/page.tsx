@@ -4,6 +4,7 @@ import { BoardsData } from "@/types/data-types";
 
 const KanbanPage = async () => {
   const isEmpty = true;
+
   // const { boards } = useStore() as BoardsData;
   // const router = useRouter();
 

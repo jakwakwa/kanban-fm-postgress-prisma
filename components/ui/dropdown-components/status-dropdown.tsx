@@ -1,19 +1,19 @@
 "use-client";
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import * as Radix from "@radix-ui/react-select";
 
 // TODO: use data
-const items = ["Todo", "Doing", "Done"];
+const itemsInitial = ["Todo", "Doing", "Done"];
 
-const StatusDropdown = () => {
+const StatusDropdown = ({ status }: { status: string }) => {
   const [toggled, setToggled] = useState("closed");
-
+  console.log("status", status);
   return (
     <form style={{ width: "100%", maxWidth: 420 }}>
       <div>
         <Radix.Root
           dir="ltr"
-          defaultValue={items?.[0]}
+          defaultValue={status}
           onOpenChange={(e: boolean) =>
             setToggled(e === true ? "open" : "closed")
           }
@@ -29,7 +29,7 @@ const StatusDropdown = () => {
           <Radix.Content asChild>
             <div className="rounded-md bg-white p-[16px] text-sm shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),_0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)] will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade">
               <Radix.Viewport>
-                {items.map((item, i) => {
+                {itemsInitial.map((item, i) => {
                   return (
                     <Radix.Item
                       key={i}
