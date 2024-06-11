@@ -21,5 +21,5 @@ export interface Board {
 }
 
 export interface BoardsData {
-  boards: Board[];
+  boardsStore: Board[];
 }
