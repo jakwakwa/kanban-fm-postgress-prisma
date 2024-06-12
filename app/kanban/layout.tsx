@@ -45,7 +45,7 @@ export default async function Layout({
         <KanbanHeader />
         <SideNav boards={boards} />
       </div>
-      <div className="w-[20000px] flex-grow p-6 md:overflow-y-auto md:p-0">
+      <div className="w-full flex-grow p-6 md:overflow-y-auto md:p-0">
         {children}
       </div>
     </div>

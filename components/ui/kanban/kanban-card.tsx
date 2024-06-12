@@ -1,21 +1,20 @@
-import { Column } from "@/types/data-types";
+import { Task } from "@/types/data-types";
 import Link from "next/link";
+import React, { useState } from "react";
+
 interface KanbanGridProps {
-  columnData: any;
-  boardName: string;
-  openModul: any;
-  setOpenModul: any;
-  setTaskName: any;
+  task: Task;
+  setOpenModul: React.Dispatch<React.SetStateAction<boolean>>;
+  setTaskName: React.Dispatch<React.SetStateAction<string>>;
   subTaskAmount: number;
-  setTaskId: any;
-  colName: any;
-  setColumnName: any;
-  setColumnId: any;
+  setTaskId: React.Dispatch<React.SetStateAction<string>>;
+  colName: string;
+  setColumnName: React.Dispatch<React.SetStateAction<string>>;
+  setColumnId: React.Dispatch<React.SetStateAction<string>>;
 }
+
 const KanbanCard = ({
-  columnData,
-  boardName,
-  openModul,
+  task,
   setOpenModul,
   setTaskName,
   subTaskAmount = 0,
@@ -26,10 +25,10 @@ const KanbanCard = ({
 }: KanbanGridProps) => {
   // const columnList = columnData.tasks?.map((col) => col);
 
-  function handleViewTask(name: any, id: any) {
+  function handleViewTask(name: string, id: any) {
     setOpenModul(true);
     setTaskName(name);
-    setTaskId(columnData.id);
+    setTaskId(task.id);
     setColumnName(colName);
     setColumnId(id);
   }
@@ -37,18 +36,15 @@ const KanbanCard = ({
   return (
     <div className="flex flex-col gap-6 h-[100px]">
       {/*
-
       // @ts-ignore */}
-
       <div
-        // @ts-ignore
-        onClick={() => handleViewTask(columnData.title, columnData.columnId)}
+        onClick={() => handleViewTask(task.title, task.columnId)}
         className="bg-white hover:bg-violet3 h-[auto] rounded-md shadow-md p-[16px] cursor-pointer"
       >
-        <h2 className="text-kblack-main">{columnData?.title}</h2>
+        <h2 className="text-kblack-main">{task?.title}</h2>
         <h4 className="text-gray-400 mt-[4px]">
           {/*
-                      //  @ts-ignore */}
+          //  @ts-ignore */}
           {subTaskAmount} of {subTaskAmount} subtasks
         </h4>
       </div>
