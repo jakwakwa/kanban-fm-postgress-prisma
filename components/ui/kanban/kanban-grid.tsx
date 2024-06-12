@@ -8,6 +8,7 @@ import { COLORS } from "@/constants/theme";
 import { useEffect, useState } from "react";
 import ViewTask from "./view-task";
 import Subtask from "./subtask";
+import { SpinnerRoundFilled } from "spinners-react";
 
 const KanbanGrid = ({
   boardsFromDb,
@@ -46,12 +47,12 @@ const KanbanGrid = ({
     addTasks(tasks);
   }, [addColumns, addSubTasks, addTasks, cols, subTasks, tasks]);
 
-  let st: any[] = [];
+  let tasksByBoard: any[] = [];
   function getTasks() {
     tasks?.map((task, i) => {
       const ste = subTasks?.filter((subTask, i) => task.id === subTask.taskId);
-      st = [
-        ...st,
+      tasksByBoard = [
+        ...tasksByBoard,
         {
           ...task,
           subtasks: [...ste],
@@ -82,10 +83,19 @@ const KanbanGrid = ({
 
   if (loader) {
     return (
-      <div className="absolute w-full left-0 m-0 p-0 h-[100%] bg-slate-700 bg-opacity-50">
-        <div className="w-[480px] mx-auto mt-[10%] bg-white rounded-md p-[32px] pb-[48px] h-auto shadow-lg">
-          {" "}
-          loading...
+      <div
+        className="absolute w-full left-0 m-0 p-0 h-[100%]"
+        style={{
+          background: "rgba(72, 54, 113, 0.2)",
+        }}
+      >
+        <div className="absolute top-[40%] left-1/2 w-full h-full mx-auto rounded-md p-[32px] pb-[48px]">
+          <SpinnerRoundFilled
+            size={50}
+            thickness={100}
+            speed={100}
+            color="rgba(74, 57, 172, 0.71)"
+          />
         </div>
       </div>
     );
@@ -100,7 +110,7 @@ const KanbanGrid = ({
             ></div>
             <ViewTask
               taskName={taskName}
-              tasks={st}
+              tasks={tasksByBoard}
               router={router}
               boardName={boardName}
               boardId={bId}
@@ -111,7 +121,7 @@ const KanbanGrid = ({
           </>
         ) : null}
 
-        <div className="w-[full] h-full mt-[100px] px-20 grid grid-cols-3 gap-8 text-white mb-[80px]">
+        <div className="w-[full] h-full px-20 grid grid-cols-3 gap-8 text-white pt-[100px]">
           {cols?.map((col, index) => {
             if (col.boardId === bId) {
               return (
@@ -119,21 +129,18 @@ const KanbanGrid = ({
                   <div className="text-black my-4">
                     <ColumnText color={COLORS[index]}>{col.name}</ColumnText>
                   </div>
-                  {st?.map((task, i) => {
+                  {tasksByBoard?.map((task, i) => {
                     if (task.status === col.name && col.id === task.columnId) {
                       return (
                         <div key={i}>
                           <KanbanCard
-                            columnData={task}
-                            boardName={boardName ? boardName : ""}
-                            openModul={openModul}
+                            task={task}
                             setOpenModul={setOpenModul}
                             setTaskName={setTaskName}
                             setTaskId={setTaskId}
-                            colName={task.status}
+                            colName={task?.status}
                             subTaskAmount={
-                              // @ts-ignore
-                              task.subtask ? task.subtask.length : 0
+                              task?.subtasks ? task?.subtasks.length : 0
                             }
                             setColumnName={setColumnName}
                             setColumnId={setColumnId}

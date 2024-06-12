@@ -9,11 +9,21 @@ export interface Task {
   description: string;
   status: string;
   subtasks: Subtask[];
+  columnId: string;
 }
 
 export interface Column {
+  id: string;
+  boardId: string;
   name: string;
   tasks: Task[];
+}
+
+export interface ColumnData {
+  id: string;
+  boardId: string;
+  tasks: Task[];
+  title: string;
 }
 
 export interface Board {

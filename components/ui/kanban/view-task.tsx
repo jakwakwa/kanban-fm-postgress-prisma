@@ -7,6 +7,7 @@ import Image from "next/image";
 import * as Form from "@radix-ui/react-form";
 import useStore from "@/context/store";
 import { Task } from "@/types/data-types";
+import { SpinnerCircularSplit } from "spinners-react";
 
 interface ViewTaskProps {
   taskName: any;
@@ -55,9 +56,9 @@ function ViewTask({
     if (updated) {
       addTasks(tasks);
 
-      setLoading(false);
       setTimeout(() => {
         setOpenModul(false);
+        setLoading(false);
       }, 4000);
     }
 
@@ -110,7 +111,7 @@ function ViewTask({
               src={"/assets/icon-vertical-ellipsis.svg"}
               width={4}
               height={4}
-              alt={""}
+              alt={"Options Menu"}
             />
           </button>
         </div>
@@ -235,8 +236,18 @@ function ViewTask({
                   className="text-white text-xs font-bold  "
                   onClick={(e) => handleUpdateTitle(e)}
                 >
-                  Save Changes
-                  {loading && "(Loading changes)"}
+                  <div className="flex flex-row gap-2 align-middle items-center">
+                    {!loading ? "Save Changes" : "Saving"}
+                    {loading && (
+                      <SpinnerCircularSplit
+                        size={20}
+                        thickness={100}
+                        speed={100}
+                        color="rgba(255, 255, 255, 1)"
+                        secondaryColor="rgba(255, 255, 255, 0.17)"
+                      />
+                    )}
+                  </div>
                 </button>
               </div>
             </Form.Submit>
