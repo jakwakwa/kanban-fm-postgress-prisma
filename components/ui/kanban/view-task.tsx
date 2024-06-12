@@ -16,6 +16,7 @@ interface ViewTaskProps {
   boardId: any;
   setOpenModul: any;
   columnStatus: any;
+  columnId: any;
 }
 
 function ViewTask({
@@ -25,16 +26,19 @@ function ViewTask({
   boardName,
   boardId,
   setOpenModul,
-
   columnStatus,
+  columnId,
 }: ViewTaskProps) {
   const task: Task = tasks.find((t: { title: any }) => t.title === taskName);
   const [openOptions, setOpenOptions] = useState(false);
   const [updatedTitle, setUpdatedTitle] = useState(taskName);
   const [loading, setLoading] = useState(false);
   const [updatedStatus, setUpdatedStatus] = useState(
-    '{"columnId":"e9dc878e-2a47-4247-9cd0-acc7b0d231c4","columnStatus":"Doing"}'
+    `{"columnId":"${columnId}","columnStatus":"${task.status}", "boardId":"${boardId}"}`
   );
+  const [updatedDescription, setUpdatedDescription] = useState(
+    task.description
+  ); // Define updatedDescription variable
 
   const [newStatus, setNewStatus] = useState<any>(
     '{"columnId":"","columnStatus":""}'
@@ -58,7 +62,9 @@ function ViewTask({
       addTasks(tasks);
 
       setLoading(false);
-      setOpenModul(false);
+      setTimeout(() => {
+        setOpenModul(false);
+      }, 4000);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -73,6 +79,7 @@ function ViewTask({
     try {
       await updateEntry(task.id, {
         title: updatedTitle,
+        description: updatedDescription,
         status: newStatus.columnStatus,
         columnId: newStatus.columnId,
       });
@@ -185,9 +192,28 @@ function ViewTask({
               />
             </Form.Control>
           </Form.Field>
-          <div className="my-[24px] w-96 text-kgray-text text-xs font-medium  leading-snug">
-            {task?.description}
-          </div>
+          <Form.Field className="grid mb-[10px]" name="title">
+            <div className="flex items-baseline justify-between">
+              <Form.Label className="text-[15px] font-medium leading-[35px] text-slate-500">
+                Description
+              </Form.Label>
+              <Form.Message
+                className="text-[13px] text-slate-600 opacity-[0.8]"
+                match="valueMissing"
+              >
+                Please enter a description
+              </Form.Message>
+            </div>
+            <Form.Control asChild>
+              <input
+                className="box-border w-full bg-slate-100 shadow-blackA6 inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black] selection:color-white selection:bg-blackA6"
+                type="textArea"
+                value={updatedDescription}
+                onChange={(e) => setUpdatedDescription(e.target.value)}
+              />
+            </Form.Control>
+          </Form.Field>
+
           <div className="text-kgray-text text-xs font-bold  mb-[16px]">
             Subtasks ({task?.subtasks.length} of {task?.subtasks.length})
           </div>

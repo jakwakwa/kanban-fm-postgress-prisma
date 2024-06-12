@@ -32,10 +32,10 @@ const StatusDropdown = ({
     if (toggled == "open") {
       setChanged(true);
     }
-    console.log(status);
+
     // @ts-ignore
     setSelectStatus(parsed.columnStatus);
-  }, [toggled]);
+  }, [setNewStatus, toggled, updatedStatus]);
 
   if (!disabled) {
     return (

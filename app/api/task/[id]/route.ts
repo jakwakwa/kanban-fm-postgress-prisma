@@ -19,7 +19,7 @@ export const DELETE = async (
       },
     },
   });
-  // update(["/board"]);
+  update(["/kanban"]);
 
   return NextResponse.json({ data: { id: params.id } });
 };
@@ -32,7 +32,7 @@ export const PATCH = async (request: Request, { params }: { params: any }) => {
       data: updates,
     });
 
-    // update(["/board"]);
+    update(["/kanban"]);
     return NextResponse.json({ data: { ...entry } });
   } catch (error) {
     // Handle the error here

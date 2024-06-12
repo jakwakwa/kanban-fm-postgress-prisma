@@ -31,6 +31,7 @@ const KanbanGrid = ({
   const [taskName, setTaskName] = useState("");
   const [taskId, setTaskId] = useState("");
   const [columnName, setColumnName] = useState("");
+  const [columnId, setColumnId] = useState("");
   const slug = useSearchParams();
   const boardName = slug.get("board");
   const bId = slug.get("id");
@@ -105,6 +106,7 @@ const KanbanGrid = ({
               boardId={bId}
               setOpenModul={setOpenModul}
               columnStatus={filteredColsbyBoard}
+              columnId={columnId}
             />
           </>
         ) : null}
@@ -134,6 +136,7 @@ const KanbanGrid = ({
                               task.subtask ? task.subtask.length : 0
                             }
                             setColumnName={setColumnName}
+                            setColumnId={setColumnId}
                           />
                         </div>
                       );
