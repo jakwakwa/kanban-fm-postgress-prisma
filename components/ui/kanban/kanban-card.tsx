@@ -10,6 +10,7 @@ interface KanbanGridProps {
   setTaskId: any;
   colName: any;
   setColumnName: any;
+  setColumnId: any;
 }
 const KanbanCard = ({
   columnData,
@@ -21,14 +22,16 @@ const KanbanCard = ({
   setTaskId,
   colName,
   setColumnName,
+  setColumnId,
 }: KanbanGridProps) => {
   // const columnList = columnData.tasks?.map((col) => col);
 
-  function handleViewTask(name: any) {
+  function handleViewTask(name: any, id: any) {
     setOpenModul(true);
     setTaskName(name);
     setTaskId(columnData.id);
     setColumnName(colName);
+    setColumnId(id);
   }
 
   return (
@@ -39,7 +42,7 @@ const KanbanCard = ({
 
       <div
         // @ts-ignore
-        onClick={() => handleViewTask(columnData.title)}
+        onClick={() => handleViewTask(columnData.title, columnData.columnId)}
         className="bg-white hover:bg-violet3 h-[auto] rounded-md shadow-md p-[16px] cursor-pointer"
       >
         <h2 className="text-kblack-main">{columnData?.title}</h2>

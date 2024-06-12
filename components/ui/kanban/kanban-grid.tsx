@@ -31,12 +31,15 @@ const KanbanGrid = ({
   const [taskName, setTaskName] = useState("");
   const [taskId, setTaskId] = useState("");
   const [columnName, setColumnName] = useState("");
+  const [columnId, setColumnId] = useState("");
   const slug = useSearchParams();
   const boardName = slug.get("board");
   const bId = slug.get("id");
   // @ts-ignore
   const loader = useStore((state) => state.loading);
+  const router = useRouter();
 
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     addColumns(cols);
     addSubTasks(subTasks);
@@ -51,12 +54,30 @@ const KanbanGrid = ({
         ...st,
         {
           ...task,
-          subtask: [...ste],
+          subtasks: [...ste],
         },
       ];
     });
   }
 
+  let columnDetes: any[] = [];
+  function getCols() {
+    cols?.map((col) => {
+      columnDetes = [
+        ...columnDetes,
+        {
+          columnId: col.id,
+          columnStatus: col.name,
+          boardId: col.boardId,
+        },
+      ];
+      return columnDetes;
+    });
+  }
+
+  getCols();
+  const filteredColsbyBoard = columnDetes.filter((c) => c.boardId === bId);
+  console.log(filteredColsbyBoard);
   getTasks();
 
   if (loader) {
@@ -72,13 +93,22 @@ const KanbanGrid = ({
     return (
       <>
         {openModul ? (
-          <div className="absolute w-full left-0 m-0 p-0 h-[100%] bg-slate-700 bg-opacity-50">
+          <>
+            <div
+              className="absolute w-full left-0 m-0 p-0 h-[100%] bg-slate-700 bg-opacity-50"
+              onClick={() => setOpenModul(false)}
+            ></div>
             <ViewTask
               taskName={taskName}
-              setOpenModul={setOpenModul}
               tasks={st}
+              router={router}
+              boardName={boardName}
+              boardId={bId}
+              setOpenModul={setOpenModul}
+              columnStatus={filteredColsbyBoard}
+              columnId={columnId}
             />
-          </div>
+          </>
         ) : null}
 
         <div className="w-[full] h-full mt-[100px] px-20 grid grid-cols-3 gap-8 text-white mb-[80px]">
@@ -106,6 +136,7 @@ const KanbanGrid = ({
                               task.subtask ? task.subtask.length : 0
                             }
                             setColumnName={setColumnName}
+                            setColumnId={setColumnId}
                           />
                         </div>
                       );
