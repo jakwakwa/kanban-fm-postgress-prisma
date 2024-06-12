@@ -1,6 +1,7 @@
 import { prisma } from "@/utils/db";
 import KanbanGrid from "@/components/ui/kanban/kanban-grid";
 import { getUserByClerkId } from "@/utils/auth";
+import { useRouter } from "next/router";
 
 const getBoards = async () => {
   const user = await getUserByClerkId();
