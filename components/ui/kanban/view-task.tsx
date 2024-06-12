@@ -34,10 +34,12 @@ function ViewTask({
   const [updatedTitle, setUpdatedTitle] = useState(taskName);
   const [loading, setLoading] = useState(false);
   const [updatedStatus, setUpdatedStatus] = useState(
-    `{"columnId":"${columnId}","columnStatus":"${task.status}", "boardId":"${boardId}"}`
+    `{"columnId":"${columnId}","columnStatus":"${
+      task?.status ? task?.status : "no status"
+    }", "boardId":"${boardId}"}`
   );
   const [updatedDescription, setUpdatedDescription] = useState(
-    task.description
+    task?.description ? task?.description : "no description"
   ); // Define updatedDescription variable
 
   const [newStatus, setNewStatus] = useState<any>(
@@ -45,16 +47,8 @@ function ViewTask({
   );
 
   const [editMode, setEditMode] = useState(false);
-  // const [boardName, setBoardName] = useState("");
   const [updated, setUpdated] = useState(false);
   // @ts-ignore
-
-  // setBoardName(boardName);
-  // Use the boardName variable as needed
-
-  // const statusObj = JSON.parse(updatedStatus);
-  // console.log("status obj:", JSON.parse(updatedStatus));
-
   const addTasks = useStore((state) => state.addTasks);
 
   useEffect(() => {
@@ -83,12 +77,9 @@ function ViewTask({
         status: newStatus.columnStatus,
         columnId: newStatus.columnId,
       });
-
-      router.push(`/kanban/board?board=${boardName}&id=${boardId}`);
-
       setUpdated(true);
+      router.push(`/kanban/board?board=${boardName}&id=${boardId}`);
     } catch (error) {
-      // Handle the error here
       console.error("An error occurred:", error);
     }
   };
@@ -152,7 +143,7 @@ function ViewTask({
               Current Status
             </div>
             <StatusDropdown
-              status={task?.status}
+              status={task?.status ? task?.status : "no status"}
               updatedStatus={updatedStatus}
               setUpdatedStatus={setUpdatedStatus}
               columnStatus={columnStatus}
@@ -218,13 +209,13 @@ function ViewTask({
             Subtasks ({task?.subtasks.length} of {task?.subtasks.length})
           </div>
           <div className="flex flex-col gap-2">
-            {task?.subtasks !== undefined && <Subtask task={task.subtasks} />}
+            {task?.subtasks !== undefined && <Subtask task={task?.subtasks} />}
             <div className="w-full h-16 relative mt-[16px]">
               <div className="left-0 top-0 text-kgray-text text-xs font-bold">
                 Current Status
               </div>
               <StatusDropdown
-                status={task?.status}
+                status={task?.status ? task?.status : "no status"}
                 updatedStatus={updatedStatus}
                 setUpdatedStatus={setUpdatedStatus}
                 columnStatus={columnStatus}
