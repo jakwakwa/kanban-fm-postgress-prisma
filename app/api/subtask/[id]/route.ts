@@ -51,28 +51,9 @@ export const DELETE_TASK = async (
 };
 
 // TASK UPDATES ( Edit Task )
-export const PATCH = async (request: Request, { params }: { params: any }) => {
-  try {
-    const { updates } = await request.json();
-
-    const updatedTaskEntry = await prisma.task.update({
-      where: { id: params.id },
-      data: updates,
-    });
-
-    update(["/kanban"]);
-    return NextResponse.json({ data: { ...updatedTaskEntry } });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.error();
-  }
-};
 
 // SUBTASK UPDATES ( Edit Subtask )
-export const PATCH_SUBTASK = async (
-  request: Request,
-  { params }: { params: any }
-) => {
+export const PATCH = async (request: Request, { params }: { params: any }) => {
   try {
     const { updates } = await request.json();
 

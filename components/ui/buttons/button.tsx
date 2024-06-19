@@ -5,6 +5,7 @@ interface ButtonProps {
   children: React.ReactNode;
   variant?: "primary" | "secondary";
   isDisabled?: boolean;
+  setOpenModul: any;
 }
 
 const Button = ({
@@ -12,6 +13,7 @@ const Button = ({
   children,
   variant,
   isDisabled = true,
+  setOpenModul,
 }: ButtonProps) => {
   return (
     <div>

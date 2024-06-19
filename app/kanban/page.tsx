@@ -1,16 +1,8 @@
-import useStore from "@/context/store";
-import { useRouter } from "next/navigation";
-import { BoardsData } from "@/types/data-types";
-
-const KanbanPage = async () => {
+const KanbanMainPage = async () => {
   const isEmpty = true;
 
-  // const { boards } = useStore() as BoardsData;
-  // const router = useRouter();
-
-  // if (boards.length > 0)
-  //   router.push(`/kanban/board?board=${boards[0].name}`, { scroll: false });
-
+  // ? Main Page after initial sign up
+  // TODO: Refactor task: Children is in Sidenav, invesitgate why, and should it not be here
   return (
     <>
       {isEmpty && (
@@ -22,4 +14,4 @@ const KanbanPage = async () => {
   );
 };
 
-export default KanbanPage;
+export default KanbanMainPage;

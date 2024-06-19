@@ -12,6 +12,8 @@ const StatusDropdown = ({
   setNewStatus,
   newStatus,
   disabled,
+
+  setNewColId,
 }: {
   status: string;
   updatedStatus: string;
@@ -20,6 +22,7 @@ const StatusDropdown = ({
   setNewStatus: any;
   newStatus: any;
   disabled: boolean;
+  setNewColId: any;
 }) => {
   const [toggled, setToggled] = useState("closed");
   const [changed, setChanged] = useState(false);
@@ -28,14 +31,17 @@ const StatusDropdown = ({
   useEffect(() => {
     const parsed: string = JSON.parse(updatedStatus);
     // @ts-ignore
-    setNewStatus(parsed);
+    setNewStatus(parsed.columnStatus);
+    // @ts-ignore
+    setNewColId(parsed.columnId);
+
     if (toggled == "open") {
       setChanged(true);
     }
 
     // @ts-ignore
     setSelectStatus(parsed.columnStatus);
-  }, [setNewStatus, toggled, updatedStatus]);
+  }, [newStatus, setNewColId, setNewStatus, toggled, updatedStatus]);
 
   if (!disabled) {
     return (
