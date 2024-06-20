@@ -110,7 +110,6 @@ const EditTask = ({
   useEffect(() => {
     const newSub = updatedSubTasks.subtasks.find(
       (s: { id: string }, i: number) => {
-        console.log(i);
         if (s.id === i.toString()) {
           return s;
         }

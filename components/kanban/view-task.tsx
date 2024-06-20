@@ -334,8 +334,6 @@ export const addSubTaskEntry = async (
   updates: Partial<SubTask>,
   setToastSuccess: (arg0: boolean) => void
 ) => {
-  console.log(updates);
-
   const url = createURL("/api/subtask"); // Ensure createURL is defined and used correctly
 
   const res = await fetch(
