@@ -76,24 +76,3 @@ export const PATCH = async (request: Request, { params }: { params: any }) => {
     return NextResponse.error();
   }
 };
-
-// SUBTASK UPDATES ( Edit Subtask )
-export const PATCH_SUBTASK = async (
-  request: Request,
-  { params }: { params: any }
-) => {
-  try {
-    const { updates } = await request.json();
-
-    const updatedSubtaskEntry = await prisma.subtask.update({
-      where: { id: params.id },
-      data: updates,
-    });
-
-    update(["/kanban/task"]);
-    return NextResponse.json({ data: { ...updatedSubtaskEntry } });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.error();
-  }
-};

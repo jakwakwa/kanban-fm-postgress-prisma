@@ -114,7 +114,6 @@ const KanbanGrid = ({
 
   getTasks();
   const [addTaskMode, setAddTaskmode] = useState(false);
-  // console.log(boards);
 
   const [newTask, setNewTask] = useState({
     columnId: "",

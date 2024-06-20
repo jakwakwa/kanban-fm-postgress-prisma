@@ -3,8 +3,7 @@ import { getUserByClerkId } from "@/utils/auth";
 import { prisma } from "@/utils/db";
 import { NextResponse } from "next/server";
 
-// TASK REMOVAL ( Delete Task )
-export const DELETE_TASK = async (
+export const POST = async (
   request: Request,
   { params }: { params: { id: string } }
 ) => {

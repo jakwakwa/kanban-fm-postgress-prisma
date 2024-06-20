@@ -22,7 +22,6 @@ const AddBoard = () => {
       if (res.ok) {
         const newBoard = await res.json();
 
-        console.log("newb ===============================>:", { ...newBoard });
         router.push(
           `kanban/board?board=${newBoard.data.name}&id=${newBoard.data.id}`
         );

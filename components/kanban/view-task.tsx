@@ -177,7 +177,7 @@ function ViewTask({
       status: newStatus,
       columnId: newColId,
     });
-  }, [newColId, newStatus]);
+  }, [newColId, newStatus, updatedTask]);
 
   if (!editMode && !addTaskMode) {
     return (

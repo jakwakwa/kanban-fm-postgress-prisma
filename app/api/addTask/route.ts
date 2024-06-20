@@ -8,8 +8,6 @@ export const POST = async (request: Request) => {
     const user = await getUserByClerkId();
     const { title, description, columnId, status } = await request.json();
 
-    console.log("Request payload:", { title, description, columnId, status });
-
     // Ensure the column belongs to the user
     const column = await prisma.column.findUnique({
       where: {
