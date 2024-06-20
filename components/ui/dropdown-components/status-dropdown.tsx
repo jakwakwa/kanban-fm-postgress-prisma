@@ -57,7 +57,7 @@ const StatusDropdown = ({
             onValueChange={setUpdatedStatus}
           >
             <Select.Trigger asChild data-state={toggled}>
-              <button className={`${inputStyle}`}>
+              <button className=" rounded-md w-full h-10 justify-start text-black bg-white outline-none hover:bg-violet3  focus:shadow-[0_0_0_1.5px_#9443f7] text-left px-[16px] border border-slate-300 text-xs capitalize">
                 <span>
                   <Select.Value>
                     {!changed ? status : selectStatus}
@@ -67,14 +67,14 @@ const StatusDropdown = ({
               </button>
             </Select.Trigger>
             <Select.Content asChild>
-              <div className="rounded-md bg-white p-[16px] text-sm shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),_0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)] will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade">
+              <div className="rounded-md bg-white p-[16px] text-sm shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),_0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)] will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade capitalize">
                 <Select.Viewport>
                   {columnStatus.map((item, i) => {
                     return (
                       <Select.Item
                         key={i}
                         value={JSON.stringify(item)}
-                        className="p-2 hover:bg-violet5"
+                        className="p-2 hover:bg-violet5 capitalize"
                       >
                         <Select.ItemText> {item.columnStatus} </Select.ItemText>
                       </Select.Item>
@@ -90,7 +90,7 @@ const StatusDropdown = ({
   } else {
     return (
       <div>
-        <div className="mt-4 rounded-md w-full h-10 justify-start text-black bg-white outline-none  focus:shadow-[0_0_0_1.5px] focus:shadow-black text-left px-[16px] border border-slate-300 text-xs flex items-center">
+        <div className="mt-4 rounded-md w-full h-10 justify-start text-black bg-white outline-none  focus:shadow-[0_0_0_1.5px] focus:shadow-black text-left px-[16px] border border-slate-300 text-xs flex items-center capitalize">
           <div>{!changed ? status : selectStatus}</div>
         </div>
       </div>

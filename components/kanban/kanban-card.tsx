@@ -39,11 +39,11 @@ const KanbanCard = ({
       // @ts-ignore */}
       <div
         onClick={() => handleViewTask(task.title, task.columnId)}
-        className="bg-white hover:bg-violet3 h-[auto] min-h-[140px] rounded-md shadow-md p-[16px] flex flex-col justify-between cursor-pointer capitalize"
+        className="bg-white hover:bg-slate-50 h-[auto] min-h-[140px] rounded-md shadow-md p-[16px] flex flex-col justify-between cursor-pointer capitalize"
       >
         <div>
           <h2 className="text-2md text-kblack-main">{task?.title}</h2>
-          <h3 className="text-slate-500 mt-[4px] font-normal italic text-xs">
+          <h3 className="text-slate-500 font-normal italic text-xs text-ellipsis h-8 overflow-clip  line-clamp-2 pr-2 mt-2">
             {task.description}
           </h3>
         </div>
