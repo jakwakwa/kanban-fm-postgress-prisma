@@ -27,7 +27,6 @@ const getBoards = async () => {
 };
 
 const getAllCols = async () => {
-  // const user = await getUserByClerkId();
   const cols = await prisma.column.findMany({});
   return cols;
 };

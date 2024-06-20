@@ -1,12 +1,17 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { MouseEvent, useState } from "react";
 import * as Form from "@radix-ui/react-form";
 
-const AddBoard = () => {
+const AddBoard = ({ setAddBoardModul }: any) => {
   const [name, setName] = useState("");
   const [userId, setUserId] = useState(""); // You need to set the userId appropriately
   const router = useRouter();
+
+  const handleCancel = (e: MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    setAddBoardModul(false);
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -33,7 +38,7 @@ const AddBoard = () => {
     }
   };
   return (
-    <div className="absolute w-[480px] mx-auto mt-[0%] bg-white rounded-xl p-[32px] pb-[48px] h-auto shadow-lg left-[35%]">
+    <div className="absolute w-[520px] mx-auto mt-[0%] bg-white rounded-xl p-[32px] pb-[48px] h-auto shadow-lg left-[35%]">
       <div className="text-xl font-bold mb-4">Add New Board</div>
       <Form.Root className="w-full">
         <Form.Field className="grid mb-[10px]" name="title">
@@ -62,7 +67,7 @@ const AddBoard = () => {
           </Form.Control>
         </Form.Field>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-row gap-2">
           <Form.Submit asChild>
             <div
               className="mt-6 flex justify-center text-center w-full h-10 bg-indigo-500 hover:bg-indigo-700 rounded-2xl align-middle items-center cursor-pointer"
@@ -80,6 +85,24 @@ const AddBoard = () => {
               </button>
             </div>
           </Form.Submit>
+          <div
+            className="mt-6 flex justify-center text-center h-10 rounded-2xl align-middle items-center cursor-pointer w-40 text-black"
+            style={{
+              transition: "200ms ease-in",
+            }}
+          >
+            <button
+              className="text-black text-xs font-bold hover:text-gray hover:underline"
+              onClick={(e) =>
+                // @ts-ignore
+                handleCancel(e)
+              }
+            >
+              <div className="flex flex-row gap-2 align-middle items-center">
+                Cancel
+              </div>
+            </button>
+          </div>
         </div>
       </Form.Root>
     </div>

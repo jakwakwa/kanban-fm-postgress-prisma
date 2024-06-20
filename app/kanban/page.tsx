@@ -1,24 +1,35 @@
-import AddBoard from "@/components/kanban/add-board";
-import Button from "@/components/ui/buttons/button";
+import KanbanContainer from "@/components/kanban/kanban-main";
 
+import { getUserByClerkId } from "@/utils/auth";
+import { prisma } from "@/utils/db";
+
+const getBoards = async () => {
+  const user = await getUserByClerkId();
+  const boards = await prisma.board.findMany({
+    where: {
+      userId: user.id,
+    },
+    include: {
+      columns: {
+        include: {
+          tasks: {
+            include: {
+              subtasks: true,
+            },
+          },
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+  return boards;
+};
 const KanbanMainPage = async () => {
-  const isEmpty = true;
+  const boards = await getBoards();
 
-  // ? Main Page after initial sign up
-  // TODO: Refactor task: Children is in Sidenav, invesitgate why, and should it not be here
-  return (
-    <>
-      {isEmpty && (
-        <div className="h-full flex flex-col items-center justify-center align-middle">
-          <div className="mb-4">Pick a board to get started.</div>
-          <Button href={"#"} isDisabled={false}>
-            Add Board{" "}
-          </Button>
-          <AddBoard />
-        </div>
-      )}
-    </>
-  );
+  return <KanbanContainer boards={boards ? boards : []} />;
 };
 
 export default KanbanMainPage;
