@@ -1,6 +1,6 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import Button from "./button";
+import Button from "./buttons/button";
 
 const KanbanHeader = () => {
   const pathname = useSearchParams();
@@ -13,11 +13,11 @@ const KanbanHeader = () => {
         <div className="w-full">
           <h1 className="pl-[330px] font-bold text-[24px]">{headerTitle}</h1>
         </div>
-        <div className="w-[200px] flex justify-end">
+        {/* <div className="w-[200px] flex justify-end">
           <Button href={"#"} variant="secondary">
             + Add New Task
           </Button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

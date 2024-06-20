@@ -1,25 +1,35 @@
-import useStore from "@/context/store";
-import { useRouter } from "next/navigation";
-import { BoardsData } from "@/types/data-types";
+import KanbanContainer from "@/components/kanban/kanban-main";
 
-const KanbanPage = async () => {
-  const isEmpty = true;
+import { getUserByClerkId } from "@/utils/auth";
+import { prisma } from "@/utils/db";
 
-  // const { boards } = useStore() as BoardsData;
-  // const router = useRouter();
+const getBoards = async () => {
+  const user = await getUserByClerkId();
+  const boards = await prisma.board.findMany({
+    where: {
+      userId: user.id,
+    },
+    include: {
+      columns: {
+        include: {
+          tasks: {
+            include: {
+              subtasks: true,
+            },
+          },
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+  return boards;
+};
+const KanbanMainPage = async () => {
+  const boards = await getBoards();
 
-  // if (boards.length > 0)
-  //   router.push(`/kanban/board?board=${boards[0].name}`, { scroll: false });
-
-  return (
-    <>
-      {isEmpty && (
-        <div className="h-full flex flex-col items-center justify-center align-middle">
-          <div className="mb-4">Pick a board to get started.</div>
-        </div>
-      )}
-    </>
-  );
+  return <KanbanContainer boards={boards ? boards : []} />;
 };
 
-export default KanbanPage;
+export default KanbanMainPage;

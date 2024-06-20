@@ -1,4 +1,4 @@
-import { ClerkProvider } from "@clerk/nextjs";
+import { ClerkProvider, RedirectToSignIn, SignedOut } from "@clerk/nextjs";
 import "./globals.css";
 import { Plus_Jakarta_Sans } from "next/font/google";
 

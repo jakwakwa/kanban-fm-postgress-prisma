@@ -1,5 +1,5 @@
-import Table from "@/components/table";
-import TablePlaceholder from "@/components/table-placeholder";
+import Table from "@/components/ui/table/table";
+import TablePlaceholder from "@/components/ui/table/table-placeholder";
 import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,9 +17,8 @@ export default async function Home() {
       </h1>
       <div className="w-screen h-[200px] flex justify-center items-center text-black">
         <div className="flex flex-col justify-center items-center w-full max-w-[600px] mx-auto">
-          <p className="text-xl mb-4 text-center">
-            This is the best Kanban app for tracking your projects <br />{" "}
-            through out your project lifecycle.
+          <p className="text-2xl font-bold mb-4 text-center">
+            A portfolio project by Jaco Kotzee.
           </p>
           <div className="py-4">
             <Link href={href}>
@@ -30,10 +29,12 @@ export default async function Home() {
           </div>
         </div>
       </div>
-      <Suspense fallback={<TablePlaceholder />}>
+      {/*
+      // ! USER LIST */}
+      {/* <Suspense fallback={<TablePlaceholder />}>
         <Table />
         <div className="pb-12"></div>
-      </Suspense>
+      </Suspense> */}
 
       <div className="sm:absolute sm:bottom-0 w-full px-20 py-10 flex justify-between">
         <Link href="https://vercel.com">

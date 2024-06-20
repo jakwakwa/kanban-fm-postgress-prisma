@@ -34,15 +34,20 @@ const KanbanCard = ({
   }
 
   return (
-    <div className="flex flex-col gap-6 h-[100px]">
+    <div className="flex flex-col gap-4 h-[auto] min-h-[140px] mb-4">
       {/*
       // @ts-ignore */}
       <div
         onClick={() => handleViewTask(task.title, task.columnId)}
-        className="bg-white hover:bg-violet3 h-[auto] rounded-md shadow-md p-[16px] cursor-pointer"
+        className="bg-white hover:bg-violet3 h-[auto] min-h-[140px] rounded-md shadow-md p-[16px] flex flex-col justify-between cursor-pointer capitalize"
       >
-        <h2 className="text-kblack-main">{task?.title}</h2>
-        <h4 className="text-gray-400 mt-[4px]">
+        <div>
+          <h2 className="text-2md text-kblack-main">{task?.title}</h2>
+          <h3 className="text-slate-500 mt-[4px] font-normal italic text-xs">
+            {task.description}
+          </h3>
+        </div>
+        <h4 className="text-slate-600 mt-[4px] text-right">
           {/*
           //  @ts-ignore */}
           {subTaskAmount} of {subTaskAmount} subtasks

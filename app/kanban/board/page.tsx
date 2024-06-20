@@ -1,29 +1,34 @@
 import { prisma } from "@/utils/db";
-import KanbanGrid from "@/components/ui/kanban/kanban-grid";
+import KanbanGrid from "@/components/kanban/kanban-grid";
 import { getUserByClerkId } from "@/utils/auth";
-import { useRouter } from "next/router";
 
 const getBoards = async () => {
   const user = await getUserByClerkId();
-  const entries = await prisma.board.findMany({
+  const boards = await prisma.board.findMany({
     where: {
       userId: user.id,
+    },
+    include: {
+      columns: {
+        include: {
+          tasks: {
+            include: {
+              subtasks: true,
+            },
+          },
+        },
+      },
     },
     orderBy: {
       createdAt: "desc",
     },
   });
-  return entries;
+  return boards;
 };
 
 const getAllCols = async () => {
   const cols = await prisma.column.findMany({});
   return cols;
-};
-
-const getAllTasks = async () => {
-  const tasks = await prisma.task.findMany({});
-  return tasks;
 };
 
 const getAllSubTasks = async () => {
@@ -32,22 +37,17 @@ const getAllSubTasks = async () => {
 };
 
 const Page = async () => {
-  const boardsDb = await getBoards();
   const cols = await getAllCols();
-  const tasks = await getAllTasks();
-  const subtasks = await getAllSubTasks();
 
+  const boardData = await getBoards();
+
+  const subtasks = await getAllSubTasks();
   const isEmpty = false;
 
   return (
     <>
       {!isEmpty && (
-        <KanbanGrid
-          boardsFromDb={boardsDb}
-          cols={cols}
-          tasks={tasks}
-          subTasks={subtasks}
-        />
+        <KanbanGrid cols={cols} subTasks={subtasks} boards={boardData} />
       )}
     </>
   );

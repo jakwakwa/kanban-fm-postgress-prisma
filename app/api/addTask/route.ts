@@ -8,6 +8,7 @@ export const POST = async (request: Request) => {
     const user = await getUserByClerkId();
     const { title, description, columnId, status } = await request.json();
 
+    // Ensure the column belongs to the user
     const column = await prisma.column.findUnique({
       where: {
         id: columnId,
@@ -17,18 +18,20 @@ export const POST = async (request: Request) => {
       },
     });
 
-    if (!column || column.board.userId !== user.id) {
-      return NextResponse.json(
-        { error: "Column not found or unauthorized" },
-        { status: 404 }
-      );
+    if (!column) {
+      console.error("Column not found");
+      return NextResponse.json({ error: "Column not found" }, { status: 404 });
+    }
+
+    if (column.board.userId !== user.id) {
+      console.error("Unauthorized access to column");
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
     const newTask = await prisma.task.create({
       data: {
         title,
         description,
-        columnId,
         status,
         column: {
           connect: { id: columnId },
@@ -36,11 +39,11 @@ export const POST = async (request: Request) => {
       },
     });
 
-    update(["/kanban/"]);
+    update(["/kanban"]);
 
     return NextResponse.json({ data: { ...newTask } });
   } catch (error) {
-    console.error(error);
+    console.error("Error adding task:", error);
     return NextResponse.json({ error: "Failed to add task" }, { status: 500 });
   }
 };

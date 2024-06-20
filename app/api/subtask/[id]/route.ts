@@ -3,10 +3,7 @@ import { getUserByClerkId } from "@/utils/auth";
 import { prisma } from "@/utils/db";
 import { NextResponse } from "next/server";
 
-// TASK REMOVAL ( Delete Task )
-// app/api/task/[id]/route.ts
-
-export const DELETE = async (
+export const POST = async (
   request: Request,
   { params }: { params: { id: string } }
 ) => {
@@ -24,7 +21,6 @@ export const DELETE = async (
             board: true,
           },
         },
-        subtasks: true, // Include subtasks
       },
     });
 
@@ -35,19 +31,13 @@ export const DELETE = async (
       );
     }
 
-    // Delete associated subtasks first
-    await prisma.subtask.deleteMany({
-      where: {
-        taskId: params.id,
-      },
-    });
-
-    // Delete the task
     await prisma.task.delete({
       where: {
         id: params.id,
       },
     });
+
+    update(["/kanban/subtask"]);
 
     return NextResponse.json({ data: { id: params.id } });
   } catch (error) {
@@ -60,17 +50,19 @@ export const DELETE = async (
 };
 
 // TASK UPDATES ( Edit Task )
+
+// SUBTASK UPDATES ( Edit Subtask )
 export const PATCH = async (request: Request, { params }: { params: any }) => {
   try {
     const { updates } = await request.json();
 
-    const updatedTaskEntry = await prisma.task.update({
+    const updatedSubtaskEntry = await prisma.subtask.update({
       where: { id: params.id },
       data: updates,
     });
 
-    update(["/kanban/task"]);
-    return NextResponse.json({ data: { ...updatedTaskEntry } });
+    update(["/kanban"]);
+    return NextResponse.json({ data: { ...updatedSubtaskEntry } });
   } catch (error) {
     console.error(error);
     return NextResponse.error();

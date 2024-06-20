@@ -1,12 +1,12 @@
 import KanbanHeader from "../../components/ui/header";
-import SideNav from "../../components/ui/kanban/sidenav";
-
+import SideNav from "../../components/kanban/sidenav";
 import { getUserByClerkId } from "@/utils/auth";
 import { prisma } from "@/utils/db";
 
 const getBoards = async () => {
   const user = await getUserByClerkId();
-  const entries = await prisma.board.findMany({
+
+  const boards = await prisma.board.findMany({
     where: {
       userId: user.id,
     },
@@ -14,22 +14,7 @@ const getBoards = async () => {
       createdAt: "desc",
     },
   });
-  return entries;
-};
-
-const getCols = async () => {
-  const cols = await prisma.column.findMany({});
-  return cols;
-};
-
-const getTasks = async () => {
-  const tasks = await prisma.task.findMany({});
-  return tasks;
-};
-
-const getSubTasks = async () => {
-  const tasks = await prisma.subtask.findMany({});
-  return tasks;
+  return boards;
 };
 
 export default async function Layout({
