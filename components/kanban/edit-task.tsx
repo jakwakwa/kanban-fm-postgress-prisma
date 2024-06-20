@@ -4,6 +4,7 @@ import StatusDropdown from "../ui/dropdown-components/status-dropdown";
 import * as Form from "@radix-ui/react-form";
 import { Task, Subtask as SubTask } from "@/types/data-types";
 import { SpinnerCircularSplit } from "spinners-react";
+import FormLabel from "./form-label";
 
 interface EditTaskProps {
   updatedTask: {
@@ -44,6 +45,8 @@ interface EditTaskProps {
   handleUpdateSubTask: (e: { preventDefault: () => void }) => Promise<void>;
   loading: boolean;
 }
+const inputStyle =
+  "box-border w-full bg-white inline-flex appearance-none items-center rounded-[4px] p-[10px] text-[13px] leading-none text-black shadow-[0_0_0_1px_#828FA340] outline-none  focus:shadow-[0_0_0_2px_#c18eff] selection:bg-medium-gray/95text-xs font-medium font-['Plus Jakarta Sans'] leading-snug";
 const EditTask = ({
   updatedTask,
   setUpdatedTask,
@@ -65,9 +68,7 @@ const EditTask = ({
       <Form.Root className="w-full">
         <Form.Field className="grid mb-[10px]" name="title">
           <div className="flex items-baseline justify-between">
-            <Form.Label className="text-[15px] font-medium leading-[35px] text-slate-500">
-              Title
-            </Form.Label>
+            <FormLabel>Title</FormLabel>
             <Form.Message
               className="text-[13px] text-white opacity-[0.8]"
               match="valueMissing"
@@ -77,7 +78,7 @@ const EditTask = ({
           </div>
           <Form.Control asChild>
             <input
-              className="box-border w-full bg-slate-100 shadow-blackA6 inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_#9443f7] selection:color-white selection:bg-blackA6"
+              className={`${inputStyle} h-10`}
               required
               type="text"
               value={updatedTask.title}
@@ -94,9 +95,7 @@ const EditTask = ({
         </Form.Field>
         <Form.Field className="grid mb-[10px]" name="description">
           <div className="flex items-baseline justify-between">
-            <Form.Label className="text-[15px] font-medium leading-[35px] text-slate-500">
-              Description
-            </Form.Label>
+            <FormLabel>Description</FormLabel>
             <Form.Message
               className="text-[13px] text-slate-600 opacity-[0.8]"
               match="valueMissing"
@@ -106,7 +105,7 @@ const EditTask = ({
           </div>
           <Form.Control asChild>
             <textarea
-              className="box-border w-full bg-slate-100 shadow-blackA6 inline-flex h-[55px] appearance-none items-center justify-center rounded-[4px] p-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_#9443f7] selection:color-white selection:bg-blackA3"
+              className={`${inputStyle} h-20`}
               value={updatedTask.description}
               onChange={(e) => {
                 const des = e.target.value;
@@ -120,9 +119,7 @@ const EditTask = ({
           </Form.Control>
         </Form.Field>
 
-        <div className="text-kgray-text text-xs font-bold  mb-[16px]">
-          Subtasks ({task?.subtasks.length} of {task?.subtasks.length})
-        </div>
+        <FormLabel isLabel={false}>Subtasks</FormLabel>
         <div className="flex flex-col gap-2">
           {task?.subtasks?.map((sub, subIndex) => {
             return (
@@ -131,11 +128,7 @@ const EditTask = ({
                 name={`subtask-${subIndex}`}
                 key={subIndex}
               >
-                <div className="flex items-baseline justify-between">
-                  <Form.Label className="text-[15px] font-medium leading-[35px] text-slate-500">
-                    SubTask
-                  </Form.Label>
-                </div>
+                <div className="flex items-baseline justify-between"></div>
                 <Form.Control asChild>
                   <input
                     className="box-border w-full bg-slate-100 shadow-blackA6 inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_#9443f7]  selection:color-white selection:bg-blackA6"
@@ -154,25 +147,23 @@ const EditTask = ({
               </Form.Field>
             );
           })}
-
-          <div className="w-full h-16 relative mt-[16px]">
-            <div className="left-0 top-0 text-kgray-text text-xs font-bold">
-              Current Status
+          <div className="h-10 relative w-full bg-indigo-500/10 rounded-2xl hover:bg-indigo-500/20 transition-colors ease-in delay-150 cursor-pointer">
+            <div className="h-10 flex justify-center align-middle items-center text-center text-indigo-500 text-xs font-bold font-['Plus Jakarta Sans'] leading-snug">
+              + Add New Subtask
             </div>
+          </div>
+          <div className="w-full h-16 relative mt-[16px]">
+            <FormLabel isLabel={false}>Status</FormLabel>
             <StatusDropdown
               status={task?.status ? task?.status : "Todo"}
               updatedStatus={updatedStatus}
               setUpdatedStatus={setUpdatedStatus}
-              // @ts-ignore
               columnStatus={columnStatus}
               setNewStatus={setNewStatus}
               setNewColId={setNewColId}
               newStatus={newStatus}
               disabled={false}
-              // @ts-ignore
-              setUpdatedTask={setUpdatedTask}
-              task={updatedTask}
-              newColId={newColId}
+              inputStyle={inputStyle}
             />
           </div>
           <Form.Submit asChild>

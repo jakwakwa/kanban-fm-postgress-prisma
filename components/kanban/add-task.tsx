@@ -111,7 +111,8 @@ AddTaskProps) => {
           </div>
           <Form.Control asChild>
             <textarea
-              className="box-border w-full bg-slate-100 shadow-blackA6 inline-flex h-[55px] appearance-none items-center justify-center rounded-[4px] p-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black] selection:color-white selection:bg-blackA6"
+              className="box-border w-full bg-slate-100 shadow-blackA6 inline-flex h-28 appearance-none items-center justify-center rounded-[4px] p-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black] selection:color-white selection:bg-blackA6"
+              defaultValue={`e.g. It’s always good to take a break. This 15 minute break will recharge the batteries a little.`}
               value={newTask.description}
               onChange={(e) => {
                 const newTaskDesc = e.target.value;

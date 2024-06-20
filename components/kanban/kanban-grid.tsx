@@ -250,7 +250,7 @@ const KanbanGrid = ({
             let inx = 0;
             if (col.boardId === bId) {
               inx += inx + 1;
-              console.log(col);
+
               return (
                 <div
                   key={index}

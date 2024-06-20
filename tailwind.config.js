@@ -17,6 +17,8 @@ export const theme = {
       "kgreen-main": "#67e2ae",
       "kgray-text": "#828fa3",
       "kblue-todo": "#49C4E5",
+      "indigo-500": "#635FC7",
+      "medium-gray": "#828FA3",
       ...blackA,
       ...violet,
     },

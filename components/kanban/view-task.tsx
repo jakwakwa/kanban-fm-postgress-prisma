@@ -134,17 +134,19 @@ function ViewTask({
     e.preventDefault();
 
     setLoading(true);
-    try {
-      // @ts-ignore
-      await updateSubTaskEntry(task?.subtasks[0]!.id, {
-        ...updatedSubTasks.subtasks[0],
-      });
-      //
+    if (task) {
+      try {
+        for (let i = 0; i < task?.subtasks.length; i++) {
+          await updateSubTaskEntry(task?.subtasks[i]!.id, {
+            ...updatedSubTasks.subtasks[i],
+          });
+        }
 
-      setUpdated(true);
-      router.push(`/kanban/board?board=${boardName}&id=${boardId}`);
-    } catch (error) {
-      console.error("An error occurred:", error);
+        setUpdated(true);
+        router.push(`/kanban/board?board=${boardName}&id=${boardId}`);
+      } catch (error) {
+        console.error("An error occurred:", error);
+      }
     }
   };
 
@@ -240,6 +242,9 @@ export const updateEntry = async (id: string, updates: Partial<Task>) => {
     new Request(createURL(`/api/task/${id}`), {
       method: "PATCH",
       body: JSON.stringify({ updates }),
+      headers: {
+        "Content-Type": "application/json",
+      },
     })
   );
 
@@ -258,6 +263,9 @@ export const updateSubTaskEntry = async (
     new Request(createURL(`/api/subtask/${id}`), {
       method: "PATCH",
       body: JSON.stringify({ updates }),
+      headers: {
+        "Content-Type": "application/json",
+      },
     })
   );
 

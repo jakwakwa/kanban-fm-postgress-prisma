@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import { MouseEvent, useState } from "react";
 import * as Form from "@radix-ui/react-form";
+import FormLabel from "./form-label";
 
 const AddBoard = ({ setAddBoardModul }: any) => {
   const [name, setName] = useState("");
@@ -66,7 +67,51 @@ const AddBoard = ({ setAddBoardModul }: any) => {
             />
           </Form.Control>
         </Form.Field>
+        <FormLabel isLabel={false}>Columns</FormLabel>
+        <div className="w-full h-12 relative">
+          <div className="w-full h-10 left-0 top-[23px]">
+            <div className="w-full flex-row flex justify-between align-middle items-center">
+              <div className="flex justify-between align-middle items-center w-full text-gray-950 text-xs font-medium leading-snug  left-0 top-0  bg-white rounded border border-slate-400/opacity-25 h-10 p-4">
+                Todo
+              </div>
+              <div className="flex align-middle items-center w-4.5 h-1.5 p-4">
+                x
+              </div>
+            </div>
+          </div>
+        </div>
 
+        <div className="w-full h-12 relative">
+          <div className="w-full h-10 left-0 top-[23px]">
+            <div className="w-full flex-row flex justify-between align-middle items-center">
+              <div className="flex justify-between align-middle items-center w-full text-gray-950 text-xs font-medium leading-snug  left-0 top-0  bg-white rounded border border-slate-400/opacity-25 h-10 p-4">
+                Doing
+              </div>
+              <div className="flex align-middle items-center w-4.5 h-1.5 p-4">
+                x
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="w-full h-12 relative">
+          <div className="w-full h-10 left-0 top-[23px]">
+            <div className="w-full flex-row flex justify-between align-middle items-center">
+              <div className="flex justify-between align-middle items-center w-full text-gray-950 text-xs font-medium leading-snug  left-0 top-0  bg-white rounded border border-slate-400/opacity-25 h-10 p-4">
+                Done
+              </div>
+              <div className="flex align-middle items-center w-4.5 h-1.5 p-4">
+                x
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="h-10 relative w-full bg-indigo-500/10 rounded-2xl hover:bg-indigo-500/20 transition-colors ease-in delay-150 cursor-pointer">
+          <div className="h-10 flex justify-center align-middle items-center text-center text-indigo-500 text-xs font-bold font-['Plus Jakarta Sans'] leading-snug">
+            + Add New Column
+          </div>
+        </div>
         <div className="flex flex-row gap-2">
           <Form.Submit asChild>
             <div
