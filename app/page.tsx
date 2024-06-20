@@ -29,10 +29,12 @@ export default async function Home() {
           </div>
         </div>
       </div>
-      <Suspense fallback={<TablePlaceholder />}>
+      {/*
+      // ! USER LIST */}
+      {/* <Suspense fallback={<TablePlaceholder />}>
         <Table />
         <div className="pb-12"></div>
-      </Suspense>
+      </Suspense> */}
 
       <div className="sm:absolute sm:bottom-0 w-full px-20 py-10 flex justify-between">
         <Link href="https://vercel.com">

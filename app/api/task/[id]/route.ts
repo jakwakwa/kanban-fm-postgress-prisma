@@ -4,7 +4,9 @@ import { prisma } from "@/utils/db";
 import { NextResponse } from "next/server";
 
 // TASK REMOVAL ( Delete Task )
-export const DELETE_TASK = async (
+// app/api/task/[id]/route.ts
+
+export const DELETE = async (
   request: Request,
   { params }: { params: { id: string } }
 ) => {
@@ -22,6 +24,7 @@ export const DELETE_TASK = async (
             board: true,
           },
         },
+        subtasks: true, // Include subtasks
       },
     });
 
@@ -32,13 +35,19 @@ export const DELETE_TASK = async (
       );
     }
 
+    // Delete associated subtasks first
+    await prisma.subtask.deleteMany({
+      where: {
+        taskId: params.id,
+      },
+    });
+
+    // Delete the task
     await prisma.task.delete({
       where: {
         id: params.id,
       },
     });
-
-    update(["/kanban"]);
 
     return NextResponse.json({ data: { id: params.id } });
   } catch (error) {
@@ -60,7 +69,7 @@ export const PATCH = async (request: Request, { params }: { params: any }) => {
       data: updates,
     });
 
-    update(["/kanban"]);
+    update(["/kanban/task"]);
     return NextResponse.json({ data: { ...updatedTaskEntry } });
   } catch (error) {
     console.error(error);
@@ -81,7 +90,7 @@ export const PATCH_SUBTASK = async (
       data: updates,
     });
 
-    update(["/kanban"]);
+    update(["/kanban/task"]);
     return NextResponse.json({ data: { ...updatedSubtaskEntry } });
   } catch (error) {
     console.error(error);

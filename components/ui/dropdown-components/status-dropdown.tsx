@@ -56,7 +56,7 @@ const StatusDropdown = ({
             onValueChange={setUpdatedStatus}
           >
             <Select.Trigger asChild data-state={toggled}>
-              <button className="mt-4 rounded-md w-full h-10 justify-start text-black bg-white outline-none hover:bg-violet3 focus:shadow-[0_0_0_1.5px] focus:shadow-black text-left px-[16px] border border-slate-300 text-xs">
+              <button className="mt-4 rounded-md w-full h-10 justify-start text-black bg-white outline-none hover:bg-violet3  focus:shadow-[0_0_0_1.5px_#9443f7] text-left px-[16px] border border-slate-300 text-xs">
                 <span>
                   <Select.Value>
                     {!changed ? status : selectStatus}

@@ -38,7 +38,7 @@ export const DELETE_TASK = async (
       },
     });
 
-    update(["/kanban"]);
+    update(["/kanban/subtask"]);
 
     return NextResponse.json({ data: { id: params.id } });
   } catch (error) {

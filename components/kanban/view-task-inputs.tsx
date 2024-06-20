@@ -29,6 +29,7 @@ interface ViewTaskInpProps {
       columnId: any;
     }>
   >;
+  deleteTask: any;
 }
 const ViewTaskInputs = ({
   handleOptions,
@@ -43,6 +44,7 @@ const ViewTaskInputs = ({
   newStatus,
   setNewColId,
   setUpdatedTask,
+  deleteTask,
 }: ViewTaskInpProps) => {
   return (
     <div className="absolute w-[480px] mx-auto mt-[10%] bg-white rounded-md p-[32px] pb-[48px] h-auto shadow-lg left-[35%]">
@@ -69,13 +71,18 @@ const ViewTaskInputs = ({
               Edit Task
             </button>
 
-            <button className="text-red-500  hover:text-red-600 text-xs font-medium font-['Plus Jakarta Sans'] leading-snug">
+            <button
+              className="text-red-500  hover:text-red-600 text-xs font-medium font-['Plus Jakarta Sans'] leading-snug"
+              onClick={task ? () => deleteTask(task.id) : () => {}}
+            >
               Delete Task
             </button>
           </div>
         </div>
       )}
-      <div className=" text-gray-950 text-lg font-bold">{taskName}</div>
+      <div className=" text-gray-950 text-lg capitalize font-bold">
+        {taskName}
+      </div>
       <div className="my-[24px] w-96 text-kgray-text text-xs font-medium  leading-snug">
         {task?.description}
       </div>

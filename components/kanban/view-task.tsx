@@ -140,6 +140,27 @@ function ViewTask({
     }
   };
 
+  const deleteTask = async (taskId: string) => {
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/task/${taskId}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        // Redirect or update the UI after successful deletion
+        setOpenModul(false);
+        router.push(`/kanban/board?board=${boardName}&id=${boardId}`);
+      } else {
+        console.error("Failed to delete task");
+      }
+    } catch (error) {
+      console.error("An error occurred while deleting the task:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (editMode) {
       setOpenOptions(false);
@@ -173,6 +194,7 @@ function ViewTask({
         newStatus={newStatus}
         setNewColId={setNewColId}
         setUpdatedTask={setUpdatedTask}
+        deleteTask={deleteTask}
       />
     );
   }

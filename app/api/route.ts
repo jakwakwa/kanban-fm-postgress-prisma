@@ -36,7 +36,7 @@ export const POST = async (request: Request) => {
       },
     });
 
-    update(["/kanban"]);
+    update(["/kanban/"]);
 
     return NextResponse.json({ data: { ...newTask } });
   } catch (error) {
