@@ -26,7 +26,7 @@ const KanbanGrid = ({
   const addSubTasks = useStore((state) => state.addSubTasks);
   const addBoards = useStore((state) => state.addBoard);
   const tasksStore = useStore((state) => state.tasks);
-
+  const [isDisabled] = useState(false);
   const [openModul, setOpenModul] = useState<boolean>(false);
   const [taskName, setTaskName] = useState<string>("");
   const [taskId, setTaskId] = useState<string>("");
@@ -195,22 +195,37 @@ const KanbanGrid = ({
   } else {
     return (
       <>
-        <div className="absolute t z-40 w-[200px] flex justify-end">
-          <button onClick={() => setAddTaskmode(true)}>+ Add New Task</button>
+        <div className="absolute top-4 right-2 t z-40 w-[200px] flex justify-end">
+          <button
+            className={`${
+              isDisabled
+                ? "bg-kpurple-light cursor-not-allowed"
+                : "bg-kpurple-main hover:bg-slate-500"
+            } px-5 py-3 rounded-3xl text-md text-white text-sm font-semibold `}
+            onClick={() => setAddTaskmode(true)}
+          >
+            + Add New Task
+          </button>
         </div>
 
         {addTaskMode ? (
-          <AddTask
-            // @ts-ignore
-            newTask={newTask}
-            loading={loading}
-            setNewTask={setNewTask}
-            setNewSubtasks={setNewSubtasks}
-            handleAddTask={handleAddTask}
-            columnId={columnId}
-            columnStatus={filteredColsbyBoard}
-            boardId={bId}
-          />
+          <>
+            <div
+              className="absolute w-full left-0 m-0 p-0 h-[100%] bg-slate-700 bg-opacity-50"
+              onClick={() => setAddTaskmode(false)}
+            ></div>
+            <AddTask
+              // @ts-ignore
+              newTask={newTask}
+              loading={loading}
+              setNewTask={setNewTask}
+              setNewSubtasks={setNewSubtasks}
+              handleAddTask={handleAddTask}
+              columnId={columnId}
+              columnStatus={filteredColsbyBoard}
+              boardId={bId}
+            />
+          </>
         ) : null}
 
         {openModul ? (
