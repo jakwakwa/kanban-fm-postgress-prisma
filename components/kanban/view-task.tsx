@@ -60,7 +60,7 @@ function ViewTask({
 
   const [updatedStatus, setUpdatedStatus] = useState(
     `{"columnId":"${columnId}","columnStatus":"${
-      task?.status ? task?.status : "no status"
+      task?.status ? task?.status : "Todo"
     }", "boardId":"${boardId}"}`
   );
   const [updatedDescription, setUpdatedDescription] = useState(

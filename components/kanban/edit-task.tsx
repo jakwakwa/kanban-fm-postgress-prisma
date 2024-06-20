@@ -160,7 +160,7 @@ const EditTask = ({
               Current Status
             </div>
             <StatusDropdown
-              status={task?.status ? task?.status : "no status"}
+              status={task?.status ? task?.status : "Todo"}
               updatedStatus={updatedStatus}
               setUpdatedStatus={setUpdatedStatus}
               // @ts-ignore

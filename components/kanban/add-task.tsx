@@ -52,7 +52,7 @@ AddTaskProps) => {
   );
   const [updatedStatus, setUpdatedStatus] = useState(
     `{"columnId":"${columnId}","columnStatus":"${
-      newTask?.status ? newTask?.status : "no status"
+      newTask?.status ? newTask?.status : "Todo"
     }", "boardId":"${boardId}"}`
   );
   const [updatedTask, setUpdatedTask] = useState({
@@ -131,7 +131,7 @@ AddTaskProps) => {
               Current Status
             </div>
             <StatusDropdown
-              status={newTask?.status ? newTask?.status : "no status"}
+              status={newTask?.status ? newTask?.status : "Todo"}
               updatedStatus={updatedStatus}
               setUpdatedStatus={setUpdatedStatus}
               // @ts-ignore
