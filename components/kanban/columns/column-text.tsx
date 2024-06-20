@@ -9,13 +9,13 @@ const ColumnText = ({
     <div className="uppercase text-sm flex items-center gap-2 tracking-[2px] text-kgray-text">
       <div
         className={`rounded-xl w-[10px] h-[10px] ${
-          color === "blue"
+          color === "todo" || color === "Todo"
             ? "bg-kblue-todo"
-            : color === "purple"
+            : color === "doing" || color === "Doing"
             ? "bg-kpurple-main"
-            : color === "green"
+            : color === "done" || color === "Done"
             ? "bg-kgreen-main"
-            : "bg-slate-400"
+            : "bg-kgreen-main"
         }`}
       ></div>
       {children}

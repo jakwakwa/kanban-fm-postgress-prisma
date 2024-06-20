@@ -245,13 +245,19 @@ const KanbanGrid = ({
           </>
         ) : null}
 
-        <div className="w-[full] h-full px-20 grid grid-cols-3 gap-8 text-white pt-[100px]">
+        <div className="w-[full] h-full px-20 grid grid-cols-3 gap-6 text-white pt-[100px] ">
           {cols?.map((col, index) => {
+            let inx = 0;
             if (col.boardId === bId) {
+              inx += inx + 1;
+              console.log(col);
               return (
-                <div key={index}>
+                <div
+                  key={index}
+                  className="bg-[#f1f1fb] rounded-xl overflow-hidden px-4 py-1"
+                >
                   <div className="text-black my-4">
-                    <ColumnText color={COLORS[index]}>{col.name}</ColumnText>
+                    <ColumnText color={col.name}>{col.name}</ColumnText>
                   </div>
                   {tasksStore?.map((task, i) => {
                     if (task.status === col.name && col.id === task.columnId) {
