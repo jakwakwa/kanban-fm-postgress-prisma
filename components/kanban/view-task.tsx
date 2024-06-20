@@ -56,6 +56,8 @@ function ViewTask({
     ],
   });
 
+  const addTasks = useStore((state) => state.addTasks);
+
   const [updatedStatus, setUpdatedStatus] = useState(
     `{"columnId":"${columnId}","columnStatus":"${
       task?.status ? task?.status : "no status"
@@ -95,10 +97,14 @@ function ViewTask({
   useEffect(() => {
     if (updated) {
       setTimeout(() => {
+        addTasks(tasks);
         setOpenModul(false);
         setLoading(false);
+        router.refresh();
       }, 4000);
     }
+    //
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setOpenModul, updated]);
 
   useEffect(() => {
@@ -133,6 +139,8 @@ function ViewTask({
       await updateSubTaskEntry(task?.subtasks[0]!.id, {
         ...updatedSubTasks.subtasks[0],
       });
+      //
+
       setUpdated(true);
       router.push(`/kanban/board?board=${boardName}&id=${boardId}`);
     } catch (error) {
@@ -177,7 +185,9 @@ function ViewTask({
       status: newStatus,
       columnId: newColId,
     });
-  }, [newColId, newStatus, updatedTask]);
+    //
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newColId, newStatus]);
 
   if (!editMode && !addTaskMode) {
     return (

@@ -5,8 +5,14 @@ import * as Form from "@radix-ui/react-form";
 import { Task, Subtask as SubTask } from "@/types/data-types";
 import { SpinnerCircularSplit } from "spinners-react";
 
+interface TaskProp {
+  columnId: string;
+  title: string;
+  description: string;
+  status: string;
+}
 interface AddTaskProps {
-  newTask: Task;
+  newTask: TaskProp;
   loading: boolean;
   setNewTask: any;
   setNewSubtasks: any;

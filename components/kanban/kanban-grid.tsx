@@ -194,7 +194,7 @@ const KanbanGrid = ({
   } else {
     return (
       <>
-        <div className="absolute top-4 right-2 t z-40 w-[200px] flex justify-end">
+        <div className="absolute top-4 right-2 t z-0 w-[200px] flex justify-end">
           <button
             className={`${
               isDisabled
@@ -214,7 +214,6 @@ const KanbanGrid = ({
               onClick={() => setAddTaskmode(false)}
             ></div>
             <AddTask
-              // @ts-ignore
               newTask={newTask}
               loading={loading}
               setNewTask={setNewTask}
