@@ -1,5 +1,4 @@
 import KanbanContainer from "@/components/kanban/kanban-main";
-
 import { getUserByClerkId } from "@/utils/auth";
 import { prisma } from "@/utils/db";
 
@@ -26,9 +25,9 @@ const getBoards = async () => {
   });
   return boards;
 };
+
 const KanbanMainPage = async () => {
   const boards = await getBoards();
-
   return <KanbanContainer boards={boards ? boards : []} />;
 };
 

@@ -3,11 +3,11 @@ import KanbanCard from "@/components/kanban/kanban-card";
 import ColumnText from "@/components/kanban/columns/column-text";
 import useStore from "@/context/store";
 import { useSearchParams, useRouter } from "next/navigation";
-import { BoardsData, Column, Task } from "@/types/data-types";
+import { BoardsData, Column, Task, Subtask, Board } from "@/types/data-types";
 import { COLORS } from "@/constants/theme";
 import { useEffect, useRef, useState } from "react";
 import ViewTask from "./view-task";
-import Subtask from "./subtask";
+
 import { SpinnerRoundFilled } from "spinners-react";
 import Button from "../ui/buttons/button";
 import AddTask from "./add-task";
@@ -18,9 +18,9 @@ const KanbanGrid = ({
   subTasks,
   boards,
 }: {
-  cols: any[];
-  subTasks: any[];
-  boards: any[];
+  cols: Column[];
+  subTasks: Subtask[];
+  boards: Board[];
 }): JSX.Element => {
   const addColumns = useStore((state) => state.addColumns);
   const addTasks = useStore((state) => state.addTasks);
@@ -40,13 +40,13 @@ const KanbanGrid = ({
   const [openDeleteToast, setOpenDeleteToast] = useState(false);
   const eventDateRef = useRef(new Date());
   const timerRef = useRef(0);
-  // @ts-ignore
   const loader = useStore((state) => state.loading);
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
   useEffect(() => {
-    return () => clearTimeout(timerRef.current);
+    const timerId = timerRef.current;
+    return () => clearTimeout(timerId);
   }, []);
   useEffect(() => {
     addSubTasks(subTasks);
@@ -293,14 +293,12 @@ const KanbanGrid = ({
                       return (
                         <div key={i}>
                           <KanbanCard
-                            // @ts-ignore
                             task={task}
                             setOpenModul={setOpenModul}
                             setTaskName={setTaskName}
                             setTaskId={setTaskId}
                             colName={task?.status}
                             subTaskAmount={
-                              // @ts-ignore
                               task?.subtasks ? task?.subtasks.length : 0
                             }
                             setColumnName={setColumnName}

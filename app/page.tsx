@@ -1,9 +1,6 @@
-import Table from "@/components/ui/table/table";
-import TablePlaceholder from "@/components/ui/table/table-placeholder";
 import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
-import { Suspense } from "react";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {

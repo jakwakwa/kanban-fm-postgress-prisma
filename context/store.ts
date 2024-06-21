@@ -9,11 +9,12 @@ interface Subtask {
 }
 
 interface Task {
-  id: any;
+  id: string;
   title: string;
-  description: string;
+  description?: string;
   status: string;
   columnId: string;
+  subtasks?: Subtask[];
 }
 
 interface Column {
