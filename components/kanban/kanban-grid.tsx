@@ -140,11 +140,16 @@ const KanbanGrid = ({
 
     // Parse the input string
     const pars = JSON.parse(s);
-
+    console.log(pars);
     // Create the new task object
     const newT = {
       ...newTask,
-      status: pars.columnStatus,
+      status:
+        pars.columnStatus === "undefined" ||
+        pars.columnStatus === undefined ||
+        pars.columnStatus === null
+          ? "Todo"
+          : pars.columnStatus,
       columnId: pars.columnId,
     };
 

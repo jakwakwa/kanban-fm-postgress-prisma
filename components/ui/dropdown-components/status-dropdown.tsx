@@ -15,6 +15,8 @@ const StatusDropdown = ({
   disabled,
   setNewColId,
   inputStyle,
+  changed,
+  setChanged,
 }: {
   status: string;
   updatedStatus: string;
@@ -25,9 +27,11 @@ const StatusDropdown = ({
   disabled: boolean;
   setNewColId: any;
   inputStyle: string;
+  changed: any;
+  setChanged: any;
 }) => {
   const [toggled, setToggled] = useState("closed");
-  const [changed, setChanged] = useState(false);
+
   const [selectStatus, setSelectStatus] = useState("ss");
 
   useEffect(() => {
@@ -43,7 +47,14 @@ const StatusDropdown = ({
 
     // @ts-ignore
     setSelectStatus(parsed.columnStatus);
-  }, [newStatus, setNewColId, setNewStatus, toggled, updatedStatus]);
+  }, [
+    newStatus,
+    setChanged,
+    setNewColId,
+    setNewStatus,
+    toggled,
+    updatedStatus,
+  ]);
 
   if (!disabled) {
     return (
@@ -58,13 +69,15 @@ const StatusDropdown = ({
             onValueChange={setUpdatedStatus}
           >
             <Select.Trigger asChild data-state={toggled}>
-              <button className=" rounded-md w-full h-10 justify-start text-black bg-white outline-none hover:bg-violet3  focus:shadow-[0_0_0_1.5px_#9443f7] text-left px-[16px] border border-slate-300 text-xs capitalize">
+              <button className=" rounded-md w-full h-10 justify-start text-black bg-white outline-none hover:bg-violet3  focus:shadow-[0_0_0_1.5px_#9443f7] text-left px-[16px] border border-slate-500 text-xs capitalize relative">
                 <span>
-                  <Select.Value>
-                    {!changed ? status : selectStatus}
-                  </Select.Value>
+                  <Select.Value>{!changed ? "" : selectStatus}</Select.Value>
                 </span>
-                <Select.Icon asChild>{/* TODO: Chevron */}</Select.Icon>
+                <Select.Icon asChild>
+                  <div className="absolute rotate-180 right-3 top-2 text-md bold text-slate-500">
+                    {"^"}
+                  </div>
+                </Select.Icon>
               </button>
             </Select.Trigger>
             <Select.Content asChild>
