@@ -4,6 +4,7 @@ import StatusDropdown from "../ui/dropdown-components/status-dropdown";
 import Subtask from "./subtask";
 import Image from "next/image";
 import { Task } from "@/types/data-types";
+import FormLabel from "./form-label";
 
 interface ViewTaskInpProps {
   handleOptions: () => void;
@@ -47,7 +48,7 @@ const ViewTaskInputs = ({
   deleteTask,
 }: ViewTaskInpProps) => {
   return (
-    <div className="absolute w-[480px] mx-auto mt-[10%] bg-white rounded-md p-[32px] pb-[48px] h-auto shadow-lg left-[35%]">
+    <div className="absolute w-[480px] h-auto max-h-[78vh]  overflow-scroll mx-auto mt-[10%] bg-white rounded-md p-[32px] pb-[48px] shadow-lg left-[35%]">
       <div className="absolute right-[32px] flex flex-col items-end text-xs text-right">
         <button
           onClick={handleOptions}
@@ -83,20 +84,25 @@ const ViewTaskInputs = ({
       <div className=" text-gray-950 text-lg capitalize font-bold">
         {taskName}
       </div>
-      <div className="my-[24px] w-96 text-kgray-text text-xs font-medium  leading-snug">
+
+      <div className="my-[24px] w-96 text-gray-950  text-sm font-medium capitalize leading-snug">
+        <FormLabel isLabel={false}>Description</FormLabel>
         {task?.description}
       </div>
-      <div className="text-kgray-text text-xs font-bold  mb-[16px]">
-        Subtasks ({task?.subtasks.length} of {task?.subtasks.length})
-      </div>
+      {task?.subtasks && task?.subtasks.length > 0 && (
+        <div className="text-kgray-text text-xs font-bold  mb-[16px]">
+          Subtasks ({task?.subtasks.length} of {task?.subtasks.length})
+        </div>
+      )}
       <div className="flex flex-col gap-2">
         {task?.subtasks !== undefined && (
           <Subtask task={task.subtasks} edit={false} />
         )}
+
         <div className="w-full h-16 relative mt-[16px]">
-          <div className="left-0 top-0 text-kgray-text text-xs font-bold">
-            Current Status
-          </div>
+          <FormLabel isLabel={false} spacing={true}>
+            Status
+          </FormLabel>
           <StatusDropdown
             status={task?.status ? task?.status : "Todo"}
             updatedStatus={updatedStatus}

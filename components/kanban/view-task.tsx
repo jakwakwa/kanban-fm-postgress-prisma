@@ -12,7 +12,6 @@ import useStore from "@/context/store";
 import { Task, Subtask as SubTask } from "@/types/data-types";
 import ViewTaskInputs from "./view-task-inputs";
 import EditTask from "./edit-task";
-import AddTask from "./add-task";
 
 interface ViewTaskProps {
   taskName: string;
@@ -23,6 +22,8 @@ interface ViewTaskProps {
   setOpenModul: (open: boolean) => void;
   columnStatus: any;
   columnId: string;
+  setOpen: any;
+  open: any;
 }
 
 function ViewTask({
@@ -34,6 +35,8 @@ function ViewTask({
   setOpenModul,
   columnStatus,
   columnId,
+  setOpen,
+  open,
 }: ViewTaskProps) {
   const task: Task | undefined = tasks.find((t) => t.title === taskName);
   const [openOptions, setOpenOptions] = useState(false);
@@ -75,7 +78,12 @@ function ViewTask({
     task ? { subtasks: task.subtasks } : { subtasks: [] }
   );
 
-  const [subTask, setSubTask] = useState<SubTask[]>([]);
+  const [newSubtask, setNewSubTask] = useState<SubTask>({
+    id: "",
+    title: "",
+    taskId: "",
+    isCompleted: false,
+  });
 
   const [newStatus, setNewStatus] = useState<any>(
     '{"columnId":"","columnStatus":""}'
@@ -96,20 +104,19 @@ function ViewTask({
 
   useEffect(() => {
     if (updated) {
+      addTasks(tasks);
+
+      router.refresh();
+      setOpenModul(false);
+
       setTimeout(() => {
-        addTasks(tasks);
-        setOpenModul(false);
-        setLoading(false);
-        router.refresh();
-      }, 4000);
+        setOpen(true);
+      }, 1000);
     }
+
     //
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setOpenModul, updated]);
-
-  useEffect(() => {
-    setSubTask(updatedSubTasks.subtasks);
-  }, [updatedSubTasks]);
+  }, [setOpenModul, updated, open]);
 
   const handleUpdateTitle = async (e: {
     preventDefault: () => void;
@@ -118,9 +125,13 @@ function ViewTask({
     setLoading(true);
 
     try {
-      await updateEntry(task!.id, {
-        ...updatedTask,
-      });
+      await updateEntry(
+        task!.id,
+        {
+          ...updatedTask,
+        },
+        setLoading
+      );
       setUpdated(true);
       router.push(`/kanban/board?board=${boardName}&id=${boardId}`);
     } catch (error) {
@@ -134,15 +145,42 @@ function ViewTask({
     e.preventDefault();
 
     setLoading(true);
-    try {
-      // @ts-ignore
-      await updateSubTaskEntry(task?.subtasks[0]!.id, {
-        ...updatedSubTasks.subtasks[0],
-      });
-      //
+    if (task) {
+      try {
+        for (let i = 0; i < task?.subtasks.length; i++) {
+          await updateSubTaskEntry(
+            task?.subtasks[i]!.id,
+            {
+              ...updatedSubTasks.subtasks[i],
+            },
+            setLoading
+          );
+        }
 
+        setUpdated(true);
+        router.push(`/kanban/board?board=${boardName}&id=${boardId}`);
+      } catch (error) {
+        console.error("An error occurred:", error);
+      }
+    }
+  };
+
+  const handleAddSubTask = async (e: {
+    preventDefault: () => void;
+  }): Promise<void> => {
+    e.preventDefault();
+    setLoading(true);
+    const newSubtaskEnt = {
+      title: newSubtask.title,
+      isCompleted: newSubtask.isCompleted,
+      taskId: newSubtask.taskId,
+    };
+
+    try {
+      await addSubTaskEntry(newSubtaskEnt, setLoading);
+
+      await router.push(`/kanban/board?board=${boardName}&id=${boardId}`);
       setUpdated(true);
-      router.push(`/kanban/board?board=${boardName}&id=${boardId}`);
     } catch (error) {
       console.error("An error occurred:", error);
     }
@@ -225,7 +263,12 @@ function ViewTask({
         newColId={newColId}
         handleUpdateTitle={handleUpdateTitle}
         handleUpdateSubTask={handleUpdateSubTask}
+        handleAddSubTask={handleAddSubTask}
         loading={loading}
+        updatedSubTasks={updatedSubTasks}
+        setNewSubTask={setNewSubTask}
+        newSubTask={newSubtask}
+        setEditMode={setEditMode}
       />
     );
   }
@@ -235,15 +278,27 @@ export default ViewTask;
 
 export const createURL = (path: string) => window.location.origin + path;
 
-export const updateEntry = async (id: string, updates: Partial<Task>) => {
+export const updateEntry = async (
+  id: string,
+  updates: Partial<Task>,
+  setToastSuccess: (arg0: boolean) => void
+) => {
+  setToastSuccess(false);
   const res = await fetch(
     new Request(createURL(`/api/task/${id}`), {
       method: "PATCH",
       body: JSON.stringify({ updates }),
+      headers: {
+        "Content-Type": "application/json",
+      },
     })
   );
 
   if (res.ok) {
+    setTimeout(() => {
+      setToastSuccess(true);
+    }, 1500);
+
     return res.json();
   } else {
     throw new Error("Something went wrong on API server!");
@@ -252,18 +307,52 @@ export const updateEntry = async (id: string, updates: Partial<Task>) => {
 
 export const updateSubTaskEntry = async (
   id: string,
-  updates: Partial<SubTask>
+  updates: Partial<SubTask>,
+  setToastSuccess: (arg0: boolean) => void
 ) => {
   const res = await fetch(
     new Request(createURL(`/api/subtask/${id}`), {
       method: "PATCH",
       body: JSON.stringify({ updates }),
+      headers: {
+        "Content-Type": "application/json",
+      },
     })
   );
 
   if (res.ok) {
+    setTimeout(() => {
+      setToastSuccess(true);
+    }, 1500);
     return res.json();
   } else {
     throw new Error("Something went wrong on API server!");
+  }
+};
+
+export const addSubTaskEntry = async (
+  updates: Partial<SubTask>,
+  setToastSuccess: (arg0: boolean) => void
+) => {
+  const url = createURL("/api/subtask"); // Ensure createURL is defined and used correctly
+
+  const res = await fetch(
+    new Request(url, {
+      method: "POST",
+      body: JSON.stringify(updates), // Directly stringify the updates object
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+  );
+
+  if (res.ok) {
+    setTimeout(() => {
+      setToastSuccess(true);
+    }, 1500);
+    return res.json();
+  } else {
+    const errorText = await res.text(); // Get error text for better debugging
+    throw new Error(`Something went wrong on API server: ${errorText}`);
   }
 };

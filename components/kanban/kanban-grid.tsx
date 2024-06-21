@@ -5,12 +5,13 @@ import useStore from "@/context/store";
 import { useSearchParams, useRouter } from "next/navigation";
 import { BoardsData, Column, Task } from "@/types/data-types";
 import { COLORS } from "@/constants/theme";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ViewTask from "./view-task";
 import Subtask from "./subtask";
 import { SpinnerRoundFilled } from "spinners-react";
 import Button from "../ui/buttons/button";
 import AddTask from "./add-task";
+import * as Toast from "@radix-ui/react-toast";
 
 const KanbanGrid = ({
   cols,
@@ -35,12 +36,17 @@ const KanbanGrid = ({
   const slug = useSearchParams();
   const boardName = slug.get("board");
   const bId = slug.get("id");
+  const [open, setOpen] = useState(false);
+  const eventDateRef = useRef(new Date());
+  const timerRef = useRef(0);
   // @ts-ignore
   const loader = useStore((state) => state.loading);
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
-
+  useEffect(() => {
+    return () => clearTimeout(timerRef.current);
+  }, []);
   useEffect(() => {
     addSubTasks(subTasks);
 
@@ -163,6 +169,10 @@ const KanbanGrid = ({
       const result = await res.json();
       addTasks([...tasksStore, result]);
       setAddTaskmode(false);
+      setTimeout(() => {
+        setOpen(true);
+      }, 1000);
+
       // Update UI after adding a new task
       getTasks();
       router.refresh(); // Refresh the router to update the UI
@@ -181,20 +191,27 @@ const KanbanGrid = ({
           background: "rgba(72, 54, 113, 0.2)",
         }}
       >
-        <div className="absolute top-[40%] left-1/2 w-full h-full mx-auto rounded-md p-[32px] pb-[48px]">
-          <SpinnerRoundFilled
-            size={50}
-            thickness={100}
-            speed={100}
-            color="rgba(74, 57, 172, 0.71)"
-          />
+        <div className="absolute top-[40%] left-[50%] w-full mx-auto rounded-md p-[32px] pb-[48px] h-screen">
+          <div className="flex items-center align-middle flex-row h-[50px] gap-0 animate-pulse">
+            <div className="h-[25px] w-[120px] p-0 m-0 text-sm leading-1 text-indigo-500">
+              Loading board...
+            </div>
+            <div className="h-[50px] w-[50px]">
+              <SpinnerRoundFilled
+                size={50}
+                thickness={100}
+                speed={100}
+                color="rgba(74, 57, 172, 0.71)"
+              />
+            </div>
+          </div>
         </div>
       </div>
     );
   } else {
     return (
       <>
-        <div className="absolute top-4 right-2 t z-0 w-[200px] flex justify-end">
+        <div className="fixed right-12 top-4 z-0 w-[200px] flex justify-end">
           <button
             className={`${
               isDisabled
@@ -222,6 +239,8 @@ const KanbanGrid = ({
               columnId={columnId}
               columnStatus={filteredColsbyBoard}
               boardId={bId}
+              setOpen={setOpen}
+              open={open}
             />
           </>
         ) : null}
@@ -229,7 +248,7 @@ const KanbanGrid = ({
         {openModul ? (
           <>
             <div
-              className="absolute w-full left-0 m-0 p-0 h-[100%] bg-slate-700 bg-opacity-50"
+              className="w-full h-full left-0 m-0 p-0  bg-slate-700 bg-opacity-50 fixed"
               onClick={() => setOpenModul(false)}
             ></div>
             <ViewTask
@@ -241,20 +260,22 @@ const KanbanGrid = ({
               setOpenModul={setOpenModul}
               columnStatus={filteredColsbyBoard}
               columnId={columnId}
+              setOpen={setOpen}
+              open={open}
             />
           </>
         ) : null}
 
-        <div className="w-[full] h-full px-20 grid grid-cols-3 gap-6 text-white pt-[100px] ">
+        <div className="w-[full] h-full px-20 grid grid-cols-3 gap-6 pt-[100px] ">
           {cols?.map((col, index) => {
             let inx = 0;
             if (col.boardId === bId) {
               inx += inx + 1;
-              console.log(col);
+
               return (
                 <div
                   key={index}
-                  className="bg-[#f1f1fb] rounded-xl overflow-hidden px-4 py-1"
+                  className="bg-[#c8cdfa22] overflow-hidden rounded-xl px-4 py-1 h-auto border-2"
                 >
                   <div className="text-black my-4">
                     <ColumnText color={col.name}>{col.name}</ColumnText>
@@ -286,6 +307,35 @@ const KanbanGrid = ({
             }
           })}
         </div>
+        <Toast.Provider swipeDirection="right">
+          <Toast.Root
+            className="bg-kpurple-main rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] p-[15px] grid [grid-template-areas:_'title_action'_'description_action'] grid-cols-[auto_max-content] gap-x-[15px] items-center data-[state=open]:animate-slideIn data-[state=closed]:animate-hide data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=cancel]:translate-x-0 data-[swipe=cancel]:transition-[transform_200ms_ease-out] data-[swipe=end]:animate-swipeOut text-white"
+            open={open}
+            onOpenChange={setOpen}
+          >
+            <Toast.Title className="[grid-area:_title] mb-[5px] font-medium text-slate12 text-[15px]">
+              Successfully updated
+            </Toast.Title>
+            <Toast.Description asChild>
+              <time
+                className="[grid-area:_description] m-0 text-slate11 text-[13px] leading-[1.3]"
+                dateTime={eventDateRef.current.toISOString()}
+              >
+                {prettyDate(eventDateRef.current)}
+              </time>
+            </Toast.Description>
+            <Toast.Action
+              className="[grid-area:_action]"
+              asChild
+              altText="Goto schedule to undo"
+            >
+              <button className="inline-flex items-center justify-center rounded font-medium text-xs px-[10px] leading-[25px] h-[25px] bg-green2 text-green11 shadow-[inset_0_0_0_1px] shadow-green7 hover:shadow-[inset_0_0_0_1px] hover:shadow-green8 focus:shadow-[0_0_0_2px] focus:shadow-green8">
+                Undo
+              </button>
+            </Toast.Action>
+          </Toast.Root>
+          <Toast.Viewport className="[--viewport-padding:_25px] fixed bottom-0 right-0 flex flex-col p-[var(--viewport-padding)] gap-[10px] w-[390px] max-w-[100vw] m-0 list-none z-[2147483647] outline-none" />
+        </Toast.Provider>
       </>
     );
   }
@@ -294,3 +344,16 @@ const KanbanGrid = ({
 export default KanbanGrid;
 
 export const createURL = (path: string) => window.location.origin + path;
+
+function oneWeekAway(date: undefined) {
+  const now = new Date();
+  const inOneWeek = now.setDate(now.getDate() + 7);
+  return new Date(inOneWeek);
+}
+
+function prettyDate(date: number | Date | undefined) {
+  return new Intl.DateTimeFormat("en-US", {
+    dateStyle: "full",
+    timeStyle: "short",
+  }).format(date);
+}

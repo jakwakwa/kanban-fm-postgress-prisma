@@ -4,6 +4,7 @@ import StatusDropdown from "../ui/dropdown-components/status-dropdown";
 import * as Form from "@radix-ui/react-form";
 import { Task, Subtask as SubTask } from "@/types/data-types";
 import { SpinnerCircularSplit } from "spinners-react";
+import FormLabel from "./form-label";
 
 interface TaskProp {
   columnId: string;
@@ -20,6 +21,8 @@ interface AddTaskProps {
   columnStatus: any;
   columnId: any;
   boardId: any;
+  setOpen: any;
+  open: any;
   // updatedStatus: any;
   // setUpdatedStatus: any;
   // columnStatus: any;
@@ -34,6 +37,8 @@ const AddTask = ({
   columnStatus,
   columnId,
   boardId,
+  setOpen,
+  open,
 }: // updatedStatus,
 // setUpdatedStatus,
 // columnStatus,
@@ -70,9 +75,7 @@ AddTaskProps) => {
       <Form.Root className="w-full">
         <Form.Field className="grid mb-[10px]" name="title">
           <div className="flex items-baseline justify-between">
-            <Form.Label className="text-[15px] font-medium leading-[35px] text-slate-500">
-              Title
-            </Form.Label>
+            <FormLabel>Title</FormLabel>
             <Form.Message
               className="text-[13px] text-white opacity-[0.8]"
               match="valueMissing"
@@ -82,9 +85,10 @@ AddTaskProps) => {
           </div>
           <Form.Control asChild>
             <input
-              className="box-border w-full bg-slate-100 shadow-blackA6 inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black] selection:color-white selection:bg-blackA6"
+              className="box-border w-full bg-slate-100 shadow-blackA6 inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black] selection:color-white selection:bg-blackA6 placeholder:text-xs placeholder:text-slate-400  placeholder:italic"
               required
               type="text"
+              placeholder={`e.g. Collect the Laundry.`}
               value={newTask?.title}
               onChange={(e) => {
                 const newTaskTitle = e.target.value;
@@ -99,9 +103,7 @@ AddTaskProps) => {
         </Form.Field>
         <Form.Field className="grid mb-[10px]" name="description">
           <div className="flex items-baseline justify-between">
-            <Form.Label className="text-[15px] font-medium leading-[35px] text-slate-500">
-              Description
-            </Form.Label>
+            <FormLabel>Description</FormLabel>
             <Form.Message
               className="text-[13px] text-slate-600 opacity-[0.8]"
               match="valueMissing"
@@ -111,7 +113,8 @@ AddTaskProps) => {
           </div>
           <Form.Control asChild>
             <textarea
-              className="box-border w-full bg-slate-100 shadow-blackA6 inline-flex h-[55px] appearance-none items-center justify-center rounded-[4px] p-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black] selection:color-white selection:bg-blackA6"
+              className="box-border w-full bg-slate-100 placeholder:text-xs placeholder:text-slate-400  placeholder:italic shadow-blackA6 inline-flex h-28 appearance-none items-center justify-center rounded-[4px] p-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black] selection:color-white selection:bg-blackA6"
+              placeholder={`e.g. It’s always good to take a break. This 15 minute break will recharge the batteries a little.`}
               value={newTask.description}
               onChange={(e) => {
                 const newTaskDesc = e.target.value;
@@ -127,9 +130,7 @@ AddTaskProps) => {
 
         <div className="flex flex-col gap-2">
           <div className="w-full h-16 relative mt-[16px]">
-            <div className="left-0 top-0 text-kgray-text text-xs font-bold">
-              Current Status
-            </div>
+            <FormLabel isLabel={false}>Status</FormLabel>
             <StatusDropdown
               status={newTask?.status ? newTask?.status : "Todo"}
               updatedStatus={updatedStatus}

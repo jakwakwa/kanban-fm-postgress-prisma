@@ -12,7 +12,16 @@
   --background-start-rgb: 194, 159, 255;
   --background-end-rgb: 215, 255, 255;
 }
-
+.ToastRoot[data-swipe='move'] {
+  transform: translateX(var(--radix-toast-swipe-move-x));
+}
+.ToastRoot[data-swipe='cancel'] {
+  transform: translateX(0);
+  transition: transform 200ms ease-out;
+}
+.ToastRoot[data-swipe='end'] {
+  animation: slideRight 100ms ease-out;
+}
 body {
 
   letter-spacing: 0.1px;
