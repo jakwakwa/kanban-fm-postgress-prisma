@@ -121,6 +121,8 @@ const EditTask = ({
     });
   }, [setNewSubTask, updatedSubTasks]);
 
+  const [changed, setChanged] = useState(false);
+
   return (
     <div className="absolute w-[480px] mx-auto mt-[10%] bg-white rounded-md p-[32px] pb-[48px] h-auto shadow-lg left-[35%]">
       <div className="text-xl font-bold mb-4">Edit Task</div>
@@ -249,6 +251,8 @@ const EditTask = ({
               newStatus={newStatus}
               disabled={false}
               inputStyle={inputStyle}
+              changed={changed}
+              setChanged={setChanged}
             />
           </div>
           <Form.Submit asChild>
