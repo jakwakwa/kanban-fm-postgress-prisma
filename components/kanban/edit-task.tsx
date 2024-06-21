@@ -122,7 +122,7 @@ const EditTask = ({
   }, [setNewSubTask, updatedSubTasks]);
 
   return (
-    <div className="absolute w-[480px] mx-auto mt-[10%] bg-white rounded-md p-[32px] pb-[48px] h-auto shadow-lg left-[35%] max-h-[78vh] overflow-scroll ">
+    <div className="absolute w-[480px] mx-auto mt-[10%] bg-white rounded-md p-[32px] pb-[48px] h-auto shadow-lg left-[35%]">
       <div className="text-xl font-bold mb-4">Edit Task</div>
       <Form.Root className="w-full">
         <Form.Field className="grid mb-[10px]" name="title">

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import StatusDropdown from "../ui/dropdown-components/status-dropdown";
 import * as Form from "@radix-ui/react-form";
 import { Task, Subtask as SubTask } from "@/types/data-types";
@@ -68,6 +68,16 @@ AddTaskProps) => {
   });
 
   const [newColId, setNewColId] = useState("");
+
+  useEffect(() => {
+    setNewTask({
+      columnId: "",
+      title: "",
+      description: "",
+      status: "",
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="absolute w-[480px] mx-auto mt-[10%] bg-white rounded-md p-[32px] pb-[48px] h-auto shadow-lg left-[35%]">
