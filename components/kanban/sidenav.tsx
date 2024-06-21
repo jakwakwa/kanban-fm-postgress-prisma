@@ -5,11 +5,14 @@ import { SignOutButton } from "@clerk/nextjs";
 import { PowerIcon, ViewColumnsIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import Logo from "../ui/logo";
+import { useState } from "react";
+import { SpinnerCircular } from "spinners-react";
 
 export default function SideNav({ boards }: { boards: any[] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentBoardName = searchParams.get("board");
+  const [boardLoading, setBoardLoading] = useState(false);
 
   // @ts-ignore
   const addBoard = useStore((state) => state.addBoard);
@@ -20,9 +23,11 @@ export default function SideNav({ boards }: { boards: any[] }) {
   const setLoader = useStore((state) => state.setLoader);
 
   async function handleBoardsStore(selectedBoardId: any) {
-    await addBoardId(selectedBoardId);
+    addBoardId(selectedBoardId);
+
     setTimeout(() => {
       setLoader(false);
+      setBoardLoading(false);
     }, 5000);
   }
 
@@ -40,6 +45,7 @@ export default function SideNav({ boards }: { boards: any[] }) {
         <div className="px-0 pb-5 pl-4 uppercase tracking-widest text-sm font-medium text-kgray-text">
           All boards ({boards.length})
         </div>
+
         <div className="text-black">
           <div className="flex flex-col w-full">
             {boards?.map((board: { name: any; id: any }, i: number) => (
@@ -49,12 +55,16 @@ export default function SideNav({ boards }: { boards: any[] }) {
                     pathname: `/kanban/board/`,
                     query: { board: board.name, id: board.id },
                   }}
-                  onClick={() => handleBoardsStore(board.id)}
+                  onClick={() =>
+                    currentBoardName !== board.name
+                      ? (handleBoardsStore(board.id), setLoader(true))
+                      : null
+                  }
                   key={board.name}
-                  className={`flex w-[90%] h-[48px] grow items-center justify-center gap-2 rounded-md bg-white p-3 text-sm font-medium hover:bg-violet-100 hover:text-indigo-600 md:flex-none md:justify-start md:p-0 md:px-0 rounded-r-full ${
+                  className={`flex w-[90%] h-[48px] grow items-center justify-center gap-2 rounded-md  p-3 text-sm font-medium   md:flex-none md:justify-start md:p-0 md:px-0 transition-colors duration-75 ease-in-out rounded-r-full ${
                     currentBoardName === board.name
-                      ? "bg-indigo-600 text-indigo-100 hover:bg-indigo-600 hover:text-white"
-                      : ""
+                      ? "bg-violet-500 text-indigo-100 hover:bg-violet-500 hover:text-indigo-100 cursor-default"
+                      : "bg-white hover:bg-violet-100 hover:text-indigo-700"
                   }`}
                 >
                   <ViewColumnsIcon className="w-6 ml-4" />
@@ -62,6 +72,12 @@ export default function SideNav({ boards }: { boards: any[] }) {
                 </Link>
               </div>
             ))}
+            {boardLoading && (
+              <div className="flex justify-start text-sm text-slate-400 px-2">
+                <span className="px-2">Board Loading... </span>
+                <SpinnerCircular color="indigo" size={20} />
+              </div>
+            )}
           </div>
         </div>
         <div className="hidden h-auto w-full grow rounded-md md:block"></div>
