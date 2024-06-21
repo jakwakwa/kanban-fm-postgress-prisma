@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import StatusDropdown from "../ui/dropdown-components/status-dropdown";
 import * as Form from "@radix-ui/react-form";
 import { Task, Subtask as SubTask } from "@/types/data-types";
@@ -63,11 +63,22 @@ AddTaskProps) => {
   const [updatedTask, setUpdatedTask] = useState({
     title: updatedTitle,
     description: updatedDescription,
-    status: newStatus.columnStatus,
+    status:
+      newStatus.columnStatus !== undefined ? newStatus.columnStatus : "Todo",
     columnId: newStatus.columnId,
   });
 
   const [newColId, setNewColId] = useState("");
+
+  useEffect(() => {
+    setNewTask({
+      columnId: "",
+      title: "",
+      description: "",
+      status: "",
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="absolute w-[480px] mx-auto mt-[10%] bg-white rounded-md p-[32px] pb-[48px] h-auto shadow-lg left-[35%]">
@@ -145,19 +156,21 @@ AddTaskProps) => {
               setUpdatedTask={setUpdatedTask}
               task={updatedTask}
               newColId={newColId}
+              changed={changed}
+              setChanged={setChanged}
             />
           </div>
+
           <Form.Submit asChild>
-            <div
-              className="mt-6 flex justify-center text-center w-full h-10 bg-indigo-500 hover:bg-indigo-700 rounded-2xl align-middle items-center cursor-pointer"
+            <button
+              className="mt-6 flex justify-center text-center w-full h-10 bg-indigo-500 hover:bg-indigo-700 rounded-2xl align-middle items-center cursor-pointer disabled:cursor-not-allowed disabled:bg-slate-300"
               style={{
                 transition: "200ms ease-in",
               }}
+              disabled={!changed}
+              onClick={(e) => handleAddTask(e, updatedStatus)}
             >
-              <button
-                className="text-white text-xs font-bold  "
-                onClick={(e) => handleAddTask(e, updatedStatus)}
-              >
+              <div className="text-white text-xs font-bold  ">
                 <div className="flex flex-row gap-2 align-middle items-center">
                   {!loading ? "Save Changes" : "Saving"}
                   {loading && (
@@ -170,9 +183,14 @@ AddTaskProps) => {
                     />
                   )}
                 </div>
-              </button>
-            </div>
+              </div>
+            </button>
           </Form.Submit>
+          {!changed && (
+            <div className="text-[#e26666] border border-[#e26666] px-2 py-1 inline-block text-xs rounded w-[60%]">
+              * Please select a status to enable save{" "}
+            </div>
+          )}
         </div>
       </Form.Root>
     </div>

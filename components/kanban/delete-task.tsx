@@ -29,9 +29,11 @@ const DeleteTaskButton = ({ userId }: { userId: number }) => {
   };
 
   return (
-    <button onClick={deleteTask} disabled={loading}>
-      {loading ? "Deleting..." : "Delete User"}
-    </button>
+    <>
+      <button onClick={deleteTask} disabled={loading}>
+        {loading ? "Deleting..." : "Delete User"}
+      </button>
+    </>
   );
 };
 

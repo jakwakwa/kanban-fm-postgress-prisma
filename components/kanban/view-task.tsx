@@ -12,6 +12,7 @@ import useStore from "@/context/store";
 import { Task, Subtask as SubTask } from "@/types/data-types";
 import ViewTaskInputs from "./view-task-inputs";
 import EditTask from "./edit-task";
+import { SpinnerRoundFilled } from "spinners-react";
 
 interface ViewTaskProps {
   taskName: string;
@@ -24,6 +25,8 @@ interface ViewTaskProps {
   columnId: string;
   setOpen: any;
   open: any;
+  openDeletToast: any;
+  setOpenDeleteToast: any;
 }
 
 function ViewTask({
@@ -37,6 +40,8 @@ function ViewTask({
   columnId,
   setOpen,
   open,
+  openDeletToast,
+  setOpenDeleteToast,
 }: ViewTaskProps) {
   const task: Task | undefined = tasks.find((t) => t.title === taskName);
   const [openOptions, setOpenOptions] = useState(false);
@@ -109,9 +114,9 @@ function ViewTask({
       router.refresh();
       setOpenModul(false);
 
-      setTimeout(() => {
-        setOpen(true);
-      }, 1000);
+      // setTimeout(() => {
+      //   setOpen(true);
+      // }, 1000);
     }
 
     //
@@ -130,9 +135,15 @@ function ViewTask({
         {
           ...updatedTask,
         },
-        setLoading
+        setOpen
       );
-      setUpdated(true);
+      setTimeout(() => {
+        setUpdated(true);
+      }, 2200);
+
+      setTimeout(() => {
+        setLoading(false);
+      }, 2700);
       router.push(`/kanban/board?board=${boardName}&id=${boardId}`);
     } catch (error) {
       console.error("An error occurred:", error);
@@ -153,11 +164,17 @@ function ViewTask({
             {
               ...updatedSubTasks.subtasks[i],
             },
-            setLoading
+            setOpen
           );
         }
 
-        setUpdated(true);
+        setTimeout(() => {
+          setUpdated(true);
+        }, 2200);
+
+        setTimeout(() => {
+          setLoading(false);
+        }, 2700);
         router.push(`/kanban/board?board=${boardName}&id=${boardId}`);
       } catch (error) {
         console.error("An error occurred:", error);
@@ -177,33 +194,40 @@ function ViewTask({
     };
 
     try {
-      await addSubTaskEntry(newSubtaskEnt, setLoading);
+      await addSubTaskEntry(newSubtaskEnt, setOpen);
 
       await router.push(`/kanban/board?board=${boardName}&id=${boardId}`);
-      setUpdated(true);
+      setTimeout(() => {
+        setUpdated(true);
+      }, 2200);
+
+      setTimeout(() => {
+        setLoading(false);
+      }, 2700);
     } catch (error) {
       console.error("An error occurred:", error);
     }
   };
 
-  const deleteTask = async (taskId: string) => {
+  const deleteTask = async (
+    e: { preventDefault: () => void },
+    taskId: string
+  ) => {
+    e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch(`/api/task/${taskId}`, {
-        method: "DELETE",
-      });
+      await addDeleteTaskEntry(taskId, setOpenDeleteToast);
+      await router.push(`/kanban/board?board=${boardName}&id=${boardId}`);
 
-      if (response.ok) {
-        // Redirect or update the UI after successful deletion
-        setOpenModul(false);
-        router.push(`/kanban/board?board=${boardName}&id=${boardId}`);
-      } else {
-        console.error("Failed to delete task");
-      }
+      setTimeout(() => {
+        setUpdated(true);
+      }, 2200);
+
+      setTimeout(() => {
+        setLoading(false);
+      }, 2700);
     } catch (error) {
-      console.error("An error occurred while deleting the task:", error);
-    } finally {
-      setLoading(false);
+      console.error("An error occurred:", error);
     }
   };
 
@@ -229,21 +253,42 @@ function ViewTask({
 
   if (!editMode && !addTaskMode) {
     return (
-      <ViewTaskInputs
-        handleOptions={handleOptions}
-        openOptions={openOptions}
-        setEditMode={setEditMode}
-        taskName={taskName}
-        task={task}
-        updatedStatus={updatedStatus}
-        setUpdatedStatus={setUpdatedStatus}
-        columnStatus={columnStatus}
-        setNewStatus={setNewStatus}
-        newStatus={newStatus}
-        setNewColId={setNewColId}
-        setUpdatedTask={setUpdatedTask}
-        deleteTask={deleteTask}
-      />
+      <>
+        {loading && (
+          <div className="absolute bg-[#475ca77c] w-screen h-screen top-0 left-0 z-10 spinner text-black">
+            <div className="absolute mx-auto top-[20%] left-0 z-10 spinner w-screen text-black">
+              <div className="bg-white px-12 py-14 w-[400px] mx-auto flex flex-col justify-center rounded-3xl shadow-2xl">
+                <div className="h-[25px] w-full p-0 m-0 text-sm leading-1 text-indigo-500 text-center animate-pulse ">
+                  Please wait while deleting the task...
+                </div>
+                <div className="h-[50px] w-[20%] mx-auto ">
+                  <SpinnerRoundFilled
+                    size={50}
+                    thickness={100}
+                    speed={100}
+                    color="rgba(74, 57, 172, 0.71)"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        <ViewTaskInputs
+          handleOptions={handleOptions}
+          openOptions={openOptions}
+          setEditMode={setEditMode}
+          taskName={taskName}
+          task={task}
+          updatedStatus={updatedStatus}
+          setUpdatedStatus={setUpdatedStatus}
+          columnStatus={columnStatus}
+          setNewStatus={setNewStatus}
+          newStatus={newStatus}
+          setNewColId={setNewColId}
+          setUpdatedTask={setUpdatedTask}
+          deleteTask={deleteTask}
+        />
+      </>
     );
   }
 
@@ -297,7 +342,7 @@ export const updateEntry = async (
   if (res.ok) {
     setTimeout(() => {
       setToastSuccess(true);
-    }, 1500);
+    }, 3500);
 
     return res.json();
   } else {
@@ -323,7 +368,7 @@ export const updateSubTaskEntry = async (
   if (res.ok) {
     setTimeout(() => {
       setToastSuccess(true);
-    }, 1500);
+    }, 3500);
     return res.json();
   } else {
     throw new Error("Something went wrong on API server!");
@@ -349,10 +394,28 @@ export const addSubTaskEntry = async (
   if (res.ok) {
     setTimeout(() => {
       setToastSuccess(true);
-    }, 1500);
+    }, 3500);
     return res.json();
   } else {
     const errorText = await res.text(); // Get error text for better debugging
     throw new Error(`Something went wrong on API server: ${errorText}`);
+  }
+};
+
+export const addDeleteTaskEntry = async (
+  id: string,
+  setToastSuccess: (arg0: boolean) => void
+) => {
+  const res = await fetch(`/api/task/${id}`, {
+    method: "DELETE",
+  });
+
+  if (res.ok) {
+    setTimeout(() => {
+      setToastSuccess(true);
+    }, 3500);
+    return res.json();
+  } else {
+    console.error("Failed to delete task", res.status, res.statusText);
   }
 };

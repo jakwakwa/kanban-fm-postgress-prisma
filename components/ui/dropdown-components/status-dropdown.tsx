@@ -2,6 +2,7 @@
 import { SetStateAction, useEffect, useState } from "react";
 // import * as Radix from "@radix-ui/react-select";
 import * as Select from "@radix-ui/react-select";
+import ColumnText from "@/components/kanban/columns/column-text";
 const itemsInitial = ["Todo", "Doing", "Done"];
 
 const StatusDropdown = ({
@@ -14,6 +15,8 @@ const StatusDropdown = ({
   disabled,
   setNewColId,
   inputStyle,
+  changed,
+  setChanged,
 }: {
   status: string;
   updatedStatus: string;
@@ -24,9 +27,11 @@ const StatusDropdown = ({
   disabled: boolean;
   setNewColId: any;
   inputStyle: string;
+  changed: any;
+  setChanged: any;
 }) => {
   const [toggled, setToggled] = useState("closed");
-  const [changed, setChanged] = useState(false);
+
   const [selectStatus, setSelectStatus] = useState("ss");
 
   useEffect(() => {
@@ -42,7 +47,14 @@ const StatusDropdown = ({
 
     // @ts-ignore
     setSelectStatus(parsed.columnStatus);
-  }, [newStatus, setNewColId, setNewStatus, toggled, updatedStatus]);
+  }, [
+    newStatus,
+    setChanged,
+    setNewColId,
+    setNewStatus,
+    toggled,
+    updatedStatus,
+  ]);
 
   if (!disabled) {
     return (
@@ -57,13 +69,15 @@ const StatusDropdown = ({
             onValueChange={setUpdatedStatus}
           >
             <Select.Trigger asChild data-state={toggled}>
-              <button className=" rounded-md w-full h-10 justify-start text-black bg-white outline-none hover:bg-violet3  focus:shadow-[0_0_0_1.5px_#9443f7] text-left px-[16px] border border-slate-300 text-xs capitalize">
+              <button className=" rounded-md w-full h-10 justify-start text-black bg-white outline-none hover:bg-violet3  focus:shadow-[0_0_0_1.5px_#9443f7] text-left px-[16px] border border-slate-500 text-xs capitalize relative">
                 <span>
-                  <Select.Value>
-                    {!changed ? status : selectStatus}
-                  </Select.Value>
+                  <Select.Value>{!changed ? "" : selectStatus}</Select.Value>
                 </span>
-                <Select.Icon asChild>{/* TODO: Chevron */}</Select.Icon>
+                <Select.Icon asChild>
+                  <div className="absolute rotate-180 right-3 top-2 text-md bold text-slate-500">
+                    {"^"}
+                  </div>
+                </Select.Icon>
               </button>
             </Select.Trigger>
             <Select.Content asChild>
@@ -90,8 +104,14 @@ const StatusDropdown = ({
   } else {
     return (
       <div>
-        <div className="mt-4 rounded-md w-full h-10 justify-start text-black bg-white outline-none  focus:shadow-[0_0_0_1.5px] focus:shadow-black text-left px-[16px] border border-slate-300 text-xs flex items-center capitalize">
-          <div>{!changed ? status : selectStatus}</div>
+        <div className="mt-4 rounded-md w-[100px] h-10 justify-start text-slate-700   outline-none focus:shadow-[0_0_0_1.5px] focus:shadow-black text-[13px] flex items-center capitalize font-bold text-left">
+          <div className="text-left"></div>
+          <div className="text-black my-0">
+            <ColumnText color={status}>
+              {" "}
+              {!changed ? status : selectStatus}
+            </ColumnText>
+          </div>
         </div>
       </div>
     );

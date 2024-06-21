@@ -48,7 +48,7 @@ const ViewTaskInputs = ({
   deleteTask,
 }: ViewTaskInpProps) => {
   return (
-    <div className="absolute w-[480px] h-auto max-h-[78vh]  overflow-scroll mx-auto mt-[10%] bg-white rounded-md p-[32px] pb-[48px] shadow-lg left-[35%]">
+    <div className="absolute w-[480px] h-auto mx-auto mt-[10%] bg-white rounded-md p-[32px] pb-[48px] shadow-lg left-[35%]">
       <div className="absolute right-[32px] flex flex-col items-end text-xs text-right">
         <button
           onClick={handleOptions}
@@ -74,7 +74,7 @@ const ViewTaskInputs = ({
 
             <button
               className="text-red-500  hover:text-red-600 text-xs font-medium font-['Plus Jakarta Sans'] leading-snug"
-              onClick={task ? () => deleteTask(task.id) : () => {}}
+              onClick={task ? (e) => deleteTask(e, task.id) : () => {}}
             >
               Delete Task
             </button>
@@ -99,7 +99,7 @@ const ViewTaskInputs = ({
           <Subtask task={task.subtasks} edit={false} />
         )}
 
-        <div className="w-full h-16 relative mt-[16px]">
+        <div className="w-full h-16 relative mt-[26px]">
           <FormLabel isLabel={false} spacing={true}>
             Status
           </FormLabel>
