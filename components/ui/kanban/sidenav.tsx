@@ -33,7 +33,7 @@ export default function SideNav({ boards }: { boards: any[] }) {
         </div>
       </Link>
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-0">
-        <div className="px-4 pb-2">All boards ({boards.length})</div>
+        <div className="px-4 pb-2">All boardssss ({boards.length})</div>
         <div className="text-black">
           <div className="flex flex-col w-full">
             {boards?.map((board: { name: any; id: any }, i: number) => (

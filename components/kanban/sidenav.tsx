@@ -24,9 +24,10 @@ export default function SideNav({ boards }: { boards: any[] }) {
 
   async function handleBoardsStore(selectedBoardId: any) {
     addBoardId(selectedBoardId);
-
+    setLoader(true);
     setTimeout(() => {
       setLoader(false);
+      setBoardLoading(false);
       setBoardLoading(false);
     }, 5000);
   }
@@ -45,39 +46,84 @@ export default function SideNav({ boards }: { boards: any[] }) {
         <div className="px-0 pb-5 pl-4 uppercase tracking-widest text-sm font-medium text-kgray-text">
           All boards ({boards.length})
         </div>
-
+        {boardLoading && currentBoardName === null ? (
+          <div className="pl-4 flex flex-row gap-2">
+            <div className="text-xs text-violet-400 animate-pulse pb-2">
+              {"Loading board... "}
+            </div>
+            <SpinnerCircular color="indigo" size={20} />
+          </div>
+        ) : null}
         <div className="text-black">
           <div className="flex flex-col w-full">
             {boards?.map((board: { name: any; id: any }, i: number) => (
               <div className="text-black" key={i}>
-                <Link
-                  href={{
-                    pathname: `/kanban/board/`,
-                    query: { board: board.name, id: board.id },
-                  }}
-                  onClick={() =>
-                    currentBoardName !== board.name
-                      ? (handleBoardsStore(board.id), setLoader(true))
-                      : null
-                  }
-                  key={board.name}
-                  className={`flex w-[90%] h-[48px] grow items-center justify-center gap-2 rounded-md  p-3 text-sm font-medium   md:flex-none md:justify-start md:p-0 md:px-0 transition-colors duration-75 ease-in-out rounded-r-full ${
-                    currentBoardName === board.name
-                      ? "bg-violet-500 text-indigo-100 hover:bg-violet-500 hover:text-indigo-100 cursor-default"
-                      : "bg-white hover:bg-violet-100 hover:text-indigo-700"
-                  }`}
-                >
-                  <ViewColumnsIcon className="w-6 ml-4" />
-                  <p className="hidden md:block ml-4"> {board?.name}</p>
-                </Link>
+                {currentBoardName !== board.name ? (
+                  <Link
+                    href={{
+                      pathname: `/kanban/board/`,
+                      query: { board: board.name, id: board.id },
+                    }}
+                    onClick={() => {
+                      setBoardLoading(true);
+                      if (
+                        currentBoardName !== board.name &&
+                        currentBoardName !== null
+                      ) {
+                        setLoader(true);
+                        handleBoardsStore(board.id);
+                      }
+                      if (
+                        currentBoardName !== board.name &&
+                        currentBoardName === null
+                      ) {
+                        handleBoardsStore(board.id);
+                      }
+                    }}
+                    key={board.name}
+                    className={`flex w-[90%] h-[48px] grow items-center justify-center gap-2 rounded-md  p-3 text-sm font-medium   md:flex-none md:justify-start md:p-0 md:px-0 transition-colors duration-75 ease-in-out ${
+                      boardLoading && "cursor-not-allowed"
+                    } rounded-r-full ${
+                      currentBoardName === board.name
+                        ? "bg-violet-500 text-indigo-100 hover:bg-violet-500 hover:text-indigo-100 cursor-not-allowed"
+                        : "bg-white hover:bg-violet-100 hover:text-indigo-700"
+                    }`}
+                  >
+                    <ViewColumnsIcon className="w-6 ml-4" />
+
+                    <div className="flex relative flex-row md:block ml-4 w-full">
+                      <div className="w-[80%]">
+                        {board?.name}{" "}
+                        <div className="absolute top-0 right-[20px] w-[10px]">
+                          {currentBoardName === board.name && boardLoading ? (
+                            <SpinnerCircular color="white" size={20} />
+                          ) : null}
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                ) : (
+                  <div
+                    className={`flex w-[90%] h-[48px] grow items-center justify-center gap-2 rounded-md  p-3 text-sm font-medium   md:flex-none md:justify-start md:p-0 md:px-0 transition-colors duration-75 ease-in-out ${
+                      boardLoading && "cursor-not-allowed"
+                    } rounded-r-full ${
+                      currentBoardName === board.name
+                        ? "bg-violet-500 text-indigo-100 hover:bg-violet-500 hover:text-indigo-100 cursor-not-allowed"
+                        : "bg-white hover:bg-violet-100 hover:text-indigo-700"
+                    }`}
+                  >
+                    <ViewColumnsIcon className="w-6 ml-4" />
+
+                    <div className="flex relative flex-row md:block ml-4 w-full">
+                      <div className="flex items-center w-[80%]">
+                        {board?.name}
+                        <div className="absolute right-[20px] rounded-full bg-violet-100 h-2 w-2 p-1"></div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
-            {boardLoading && (
-              <div className="flex justify-start text-sm text-slate-400 px-2">
-                <span className="px-2">Board Loading... </span>
-                <SpinnerCircular color="indigo" size={20} />
-              </div>
-            )}
           </div>
         </div>
         <div className="hidden h-auto w-full grow rounded-md md:block"></div>

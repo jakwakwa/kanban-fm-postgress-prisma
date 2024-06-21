@@ -3,18 +3,22 @@ import { useRouter } from "next/navigation";
 import { MouseEvent, useState } from "react";
 import * as Form from "@radix-ui/react-form";
 import FormLabel from "./form-label";
+import { SpinnerCircularSplit } from "spinners-react";
 
 const AddBoard = ({ setAddBoardModul }: any) => {
   const [name, setName] = useState("");
   const [userId, setUserId] = useState(""); // You need to set the userId appropriately
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const handleCancel = (e: MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     setAddBoardModul(false);
   };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const res = await fetch("/api/addBoard", {
@@ -36,8 +40,11 @@ const AddBoard = ({ setAddBoardModul }: any) => {
       }
     } catch (error) {
       console.error("An error occurred:", error);
+    } finally {
+      setLoading(false);
     }
   };
+
   return (
     <div className="absolute w-[520px] mx-auto mt-[0%] bg-white rounded-xl p-[32px] pb-[48px] h-auto shadow-lg left-[35%]">
       <div className="text-xl font-bold mb-4">Add New Board</div>
@@ -114,21 +121,31 @@ const AddBoard = ({ setAddBoardModul }: any) => {
         </div>
         <div className="flex flex-row gap-2">
           <Form.Submit asChild>
-            <div
-              className="mt-6 flex justify-center text-center w-full h-10 bg-indigo-500 hover:bg-indigo-700 rounded-2xl align-middle items-center cursor-pointer"
+            <button
+              className={`mt-6 flex justify-center text-center w-full h-10 bg-indigo-500 hover:bg-indigo-700 rounded-2xl align-middle items-center disabled:bg-indigo-400   ${
+                loading ? "cursor-not-allowed animate-pulse" : "cursor-pointer"
+              }`}
+              onClick={handleSubmit}
+              disabled={loading}
               style={{
                 transition: "200ms ease-in",
               }}
             >
-              <button
-                className="text-white text-xs font-bold  "
-                onClick={handleSubmit}
-              >
+              <div className={`text-white text-xs font-bold`}>
                 <div className="flex flex-row gap-2 align-middle items-center">
-                  Add
+                  {!loading ? "Save Changes" : "Saving"}
+                  {loading && (
+                    <SpinnerCircularSplit
+                      size={20}
+                      thickness={100}
+                      speed={100}
+                      color="rgba(255, 255, 255, 1)"
+                      secondaryColor="rgba(255, 255, 255, 0.17)"
+                    />
+                  )}
                 </div>
-              </button>
-            </div>
+              </div>
+            </button>
           </Form.Submit>
           <div
             className="mt-6 flex justify-center text-center h-10 rounded-2xl align-middle items-center cursor-pointer w-40 text-black"
@@ -138,10 +155,10 @@ const AddBoard = ({ setAddBoardModul }: any) => {
           >
             <button
               className="text-black text-xs font-bold hover:text-gray hover:underline"
-              onClick={(e) =>
+              onClick={(e) => {
                 // @ts-ignore
-                handleCancel(e)
-              }
+                handleCancel(e);
+              }}
             >
               <div className="flex flex-row gap-2 align-middle items-center">
                 Cancel

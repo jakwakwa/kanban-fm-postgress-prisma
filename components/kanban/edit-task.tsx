@@ -52,7 +52,7 @@ interface EditTaskProps {
   setEditMode: any;
 }
 const inputStyle =
-  "box-border w-full bg-slate-100 placeholder:text-xs placeholder:text-slate-400  placeholder:italic shadow-blackA6 inline-flex h-28 appearance-none items-center justify-center rounded-[4px] p-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black] selection:color-white selection:bg-blackA6";
+  "box-border w-full bg-slate-100 placeholder:text-xs placeholder:text-slate-400  placeholder:italic shadow-blackA6 inline-flex appearance-none items-center justify-center rounded-[4px] p-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black] selection:color-white selection:bg-blackA6";
 
 const EditTask = ({
   updatedTask,
@@ -139,7 +139,7 @@ const EditTask = ({
             <input
               className={`${inputStyle} h-10`}
               required
-              placeholder={`e.g. It’s always good to take a break. This 15 minute break will recharge the batteries a little.`}
+              placeholder={`e.g. Shopping List`}
               type="text"
               value={updatedTask.title}
               onChange={(e) => {
@@ -167,6 +167,7 @@ const EditTask = ({
             <textarea
               className={`${inputStyle} h-20`}
               value={updatedTask.description}
+              placeholder="eg. It's best to take a break every 15mins..."
               onChange={(e) => {
                 const des = e.target.value;
 
@@ -251,18 +252,15 @@ const EditTask = ({
             />
           </div>
           <Form.Submit asChild>
-            <div
-              className="mt-6 flex justify-center text-center w-full h-10 bg-indigo-500 hover:bg-indigo-700 rounded-2xl align-middle items-center cursor-pointer"
-              style={{
-                transition: "200ms ease-in",
+            <button
+              className={`mt-6 flex justify-center text-center w-full h-10 bg-indigo-500 hover:bg-indigo-700 rounded-2xl align-middle items-center cursor-pointer disabled:bg-indigo-400   ${
+                loading ? "cursor-wait animate-pulse" : "cursor-pointer"
+              }`}
+              onClick={(e) => {
+                handleUpdateTitle(e), handleUpdateSubTask(e);
               }}
             >
-              <button
-                className="text-white text-xs font-bold  "
-                onClick={(e) => {
-                  handleUpdateTitle(e), handleUpdateSubTask(e);
-                }}
-              >
+              <div className="text-white text-xs font-bold  ">
                 <div className="flex flex-row gap-2 align-middle items-center">
                   {!loading ? "Save Changes" : "Saving"}
                   {loading && (
@@ -275,8 +273,8 @@ const EditTask = ({
                     />
                   )}
                 </div>
-              </button>
-            </div>
+              </div>
+            </button>
           </Form.Submit>
         </div>
       </Form.Root>
