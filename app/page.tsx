@@ -1,9 +1,6 @@
-import Table from "@/components/ui/table/table";
-import TablePlaceholder from "@/components/ui/table/table-placeholder";
 import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
-import { Suspense } from "react";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
@@ -22,19 +19,13 @@ export default async function Home() {
           </p>
           <div className="py-4">
             <Link href={href}>
-              <button className="bg-black px-4 py-2 rounded-lg text-md text-white">
+              <div className="bg-black px-4 py-2 rounded-lg text-md text-white">
                 {userId ? "Continue to Kanban" : "Get Started"}
-              </button>
+              </div>
             </Link>
           </div>
         </div>
       </div>
-      {/*
-      // ! USER LIST */}
-      {/* <Suspense fallback={<TablePlaceholder />}>
-        <Table />
-        <div className="pb-12"></div>
-      </Suspense> */}
 
       <div className="sm:absolute sm:bottom-0 w-full px-20 py-10 flex justify-between">
         <Link href="https://vercel.com">

@@ -9,43 +9,52 @@ import {
   useState,
 } from "react";
 import useStore from "@/context/store";
-import { Task, Subtask as SubTask } from "@/types/data-types";
+import { Task, Subtask as SubTask, Subtask } from "@/types/data-types";
 import ViewTaskInputs from "./view-task-inputs";
 import EditTask from "./edit-task";
 import { SpinnerRoundFilled } from "spinners-react";
 
-interface ViewTaskProps {
+interface StateT {
+  isDisabled: boolean;
+  openModul: boolean;
   taskName: string;
+  taskId: string;
+  columnName: string;
+  columnId: string;
+  open: boolean;
+  openDeleteToast: boolean;
+  loading: boolean;
+  addTaskMode: boolean;
+  newTask: {
+    columnId: string;
+    title: string;
+    description: string;
+    status: string;
+  };
+  newSubtasks: Subtask[];
+}
+
+interface ViewTaskProps {
+  state: any;
+  setState: Dispatch<SetStateAction<any>>;
   tasks: Task[];
   router: any;
   boardName: string;
   boardId: string;
-  setOpenModul: (open: boolean) => void;
   columnStatus: any;
-  columnId: string;
-  setOpen: any;
-  open: any;
-  openDeletToast: any;
-  setOpenDeleteToast: any;
 }
-
 function ViewTask({
-  taskName,
+  state,
+  setState,
   tasks,
   router,
   boardName,
   boardId,
-  setOpenModul,
   columnStatus,
-  columnId,
-  setOpen,
-  open,
-  openDeletToast,
-  setOpenDeleteToast,
 }: ViewTaskProps) {
-  const task: Task | undefined = tasks.find((t) => t.title === taskName);
+  const task: Task | undefined = tasks.find((t) => t.title === state.taskName);
   const [openOptions, setOpenOptions] = useState(false);
-  const [updatedTitle, setUpdatedTitle] = useState(taskName);
+  const [updatedTitle, setUpdatedTitle] = useState(state.taskName);
   const [loading, setLoading] = useState(false);
 
   const [newTask, setNewTask] = useState({
@@ -67,7 +76,7 @@ function ViewTask({
   const addTasks = useStore((state) => state.addTasks);
 
   const [updatedStatus, setUpdatedStatus] = useState(
-    `{"columnId":"${columnId}","columnStatus":"${
+    `{"columnId":"${state.columnId}","columnStatus":"${
       task?.status ? task?.status : "Todo"
     }", "boardId":"${boardId}"}`
   );
@@ -99,7 +108,8 @@ function ViewTask({
   const [editMode, setEditMode] = useState(false);
   const [addTaskMode, setAddTaskMode] = useState(false);
   const [updated, setUpdated] = useState(false);
-
+  const [subtaskAdded, setSubtaskAdded] = useState(false);
+  const [subtaskLoading, setSubtaskLoading] = useState(true);
   const [updatedTask, setUpdatedTask] = useState({
     title: updatedTitle,
     description: updatedDescription,
@@ -112,16 +122,22 @@ function ViewTask({
       addTasks(tasks);
 
       router.refresh();
-      setOpenModul(false);
+      setState((prevState: StateT) => ({
+        ...prevState,
+        openModul: false,
+      }));
 
-      // setTimeout(() => {
-      //   setOpen(true);
-      // }, 1000);
+      setTimeout(() => {
+        setState((prevState: StateT) => ({
+          ...prevState,
+          open: true,
+        }));
+      }, 1000);
     }
 
     //
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setOpenModul, updated, open]);
+  }, [updated, open]);
 
   const handleUpdateTitle = async (e: {
     preventDefault: () => void;
@@ -134,8 +150,8 @@ function ViewTask({
         task!.id,
         {
           ...updatedTask,
-        },
-        setOpen
+        }
+        // setOpen
       );
       setTimeout(() => {
         setUpdated(true);
@@ -158,13 +174,15 @@ function ViewTask({
     setLoading(true);
     if (task) {
       try {
+        // @ts-ignore
         for (let i = 0; i < task?.subtasks.length; i++) {
           await updateSubTaskEntry(
+            // @ts-ignore
             task?.subtasks[i]!.id,
             {
+              // @ts-ignore
               ...updatedSubTasks.subtasks[i],
-            },
-            setOpen
+            }
           );
         }
 
@@ -186,7 +204,7 @@ function ViewTask({
     preventDefault: () => void;
   }): Promise<void> => {
     e.preventDefault();
-    setLoading(true);
+    // setLoading(true);
     const newSubtaskEnt = {
       title: newSubtask.title,
       isCompleted: newSubtask.isCompleted,
@@ -194,16 +212,18 @@ function ViewTask({
     };
 
     try {
-      await addSubTaskEntry(newSubtaskEnt, setOpen);
+      await addSubTaskEntry(newSubtaskEnt);
 
       await router.push(`/kanban/board?board=${boardName}&id=${boardId}`);
       setTimeout(() => {
-        setUpdated(true);
+        setSubtaskAdded(true);
       }, 2200);
 
       setTimeout(() => {
-        setLoading(false);
+        setSubtaskLoading(false);
       }, 2700);
+
+      setEditMode(false);
     } catch (error) {
       console.error("An error occurred:", error);
     }
@@ -216,7 +236,7 @@ function ViewTask({
     e.preventDefault();
     setLoading(true);
     try {
-      await addDeleteTaskEntry(taskId, setOpenDeleteToast);
+      await addDeleteTaskEntry(taskId);
       await router.push(`/kanban/board?board=${boardName}&id=${boardId}`);
 
       setTimeout(() => {
@@ -277,7 +297,7 @@ function ViewTask({
           handleOptions={handleOptions}
           openOptions={openOptions}
           setEditMode={setEditMode}
-          taskName={taskName}
+          taskName={state.taskName}
           task={task}
           updatedStatus={updatedStatus}
           setUpdatedStatus={setUpdatedStatus}
@@ -298,6 +318,7 @@ function ViewTask({
         updatedTask={updatedTask}
         setUpdatedTask={setUpdatedTask}
         task={task}
+        // @ts-ignore
         setUpdatedSubTasks={setUpdatedSubTasks}
         updatedStatus={updatedStatus}
         setUpdatedStatus={setUpdatedStatus}
@@ -314,6 +335,10 @@ function ViewTask({
         setNewSubTask={setNewSubTask}
         newSubTask={newSubtask}
         setEditMode={setEditMode}
+        subTaskLoading={subtaskLoading}
+        setSubtaskLoading={setSubtaskLoading}
+        subtaskAdded={subtaskAdded}
+        setSubtaskAdded={setSubtaskAdded}
       />
     );
   }
@@ -325,10 +350,10 @@ export const createURL = (path: string) => window.location.origin + path;
 
 export const updateEntry = async (
   id: string,
-  updates: Partial<Task>,
-  setToastSuccess: (arg0: boolean) => void
+  updates: Partial<Task>
+  // setToastSuccess: (arg0: boolean) => void
 ) => {
-  setToastSuccess(false);
+  // setToastSuccess(false);
   const res = await fetch(
     new Request(createURL(`/api/task/${id}`), {
       method: "PATCH",
@@ -340,9 +365,9 @@ export const updateEntry = async (
   );
 
   if (res.ok) {
-    setTimeout(() => {
-      setToastSuccess(true);
-    }, 3500);
+    // setTimeout(() => {
+    //   setToastSuccess(true);
+    // }, 3500);
 
     return res.json();
   } else {
@@ -352,8 +377,7 @@ export const updateEntry = async (
 
 export const updateSubTaskEntry = async (
   id: string,
-  updates: Partial<SubTask>,
-  setToastSuccess: (arg0: boolean) => void
+  updates: Partial<SubTask>
 ) => {
   const res = await fetch(
     new Request(createURL(`/api/subtask/${id}`), {
@@ -366,19 +390,13 @@ export const updateSubTaskEntry = async (
   );
 
   if (res.ok) {
-    setTimeout(() => {
-      setToastSuccess(true);
-    }, 3500);
     return res.json();
   } else {
     throw new Error("Something went wrong on API server!");
   }
 };
 
-export const addSubTaskEntry = async (
-  updates: Partial<SubTask>,
-  setToastSuccess: (arg0: boolean) => void
-) => {
+export const addSubTaskEntry = async (updates: Partial<SubTask>) => {
   const url = createURL("/api/subtask"); // Ensure createURL is defined and used correctly
 
   const res = await fetch(
@@ -392,9 +410,6 @@ export const addSubTaskEntry = async (
   );
 
   if (res.ok) {
-    setTimeout(() => {
-      setToastSuccess(true);
-    }, 3500);
     return res.json();
   } else {
     const errorText = await res.text(); // Get error text for better debugging
@@ -402,18 +417,12 @@ export const addSubTaskEntry = async (
   }
 };
 
-export const addDeleteTaskEntry = async (
-  id: string,
-  setToastSuccess: (arg0: boolean) => void
-) => {
+export const addDeleteTaskEntry = async (id: string) => {
   const res = await fetch(`/api/task/${id}`, {
     method: "DELETE",
   });
 
   if (res.ok) {
-    setTimeout(() => {
-      setToastSuccess(true);
-    }, 3500);
     return res.json();
   } else {
     console.error("Failed to delete task", res.status, res.statusText);

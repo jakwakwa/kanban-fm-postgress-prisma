@@ -1,3 +1,5 @@
+import { User } from "@prisma/client";
+
 export interface Subtask {
   title: string;
   isCompleted: boolean;
@@ -8,9 +10,9 @@ export interface Subtask {
 export interface Task {
   id: string;
   title: string;
-  description: string;
+  description?: string;
   status: string;
-  subtasks: Subtask[];
+  subtasks?: Subtask[];
   columnId: string;
 }
 
@@ -29,7 +31,12 @@ export interface ColumnData {
 }
 
 export interface Board {
+  createdAt: string;
+  updatedAt: string;
+  id: string;
   name: string;
+  userId: string;
+  user: User;
   columns: Column[];
 }
 

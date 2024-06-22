@@ -33,8 +33,11 @@ const AddBoard = ({ setAddBoardModul }: any) => {
         const newBoard = await res.json();
 
         router.push(
-          `kanban/board?board=${newBoard.data.name}&id=${newBoard.data.id}`
+          `/kanban/board?board=${newBoard.data.name}&id=${newBoard.data.id}`
         );
+
+        setAddBoardModul(false);
+        router.refresh();
       } else {
         console.error("Failed to add board");
       }
@@ -74,8 +77,8 @@ const AddBoard = ({ setAddBoardModul }: any) => {
             />
           </Form.Control>
         </Form.Field>
-        <FormLabel isLabel={false}>Columns</FormLabel>
-        <div className="w-full h-12 relative">
+        {/* <FormLabel isLabel={false}>Columns</FormLabel> */}
+        {/* <div className="w-full h-12 relative">
           <div className="w-full h-10 left-0 top-[23px]">
             <div className="w-full flex-row flex justify-between align-middle items-center">
               <div className="flex justify-between align-middle items-center w-full text-gray-950 text-xs font-medium leading-snug  left-0 top-0  bg-white rounded border border-slate-400/opacity-25 h-10 p-4">
@@ -86,9 +89,9 @@ const AddBoard = ({ setAddBoardModul }: any) => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
-        <div className="w-full h-12 relative">
+        {/* <div className="w-full h-12 relative">
           <div className="w-full h-10 left-0 top-[23px]">
             <div className="w-full flex-row flex justify-between align-middle items-center">
               <div className="flex justify-between align-middle items-center w-full text-gray-950 text-xs font-medium leading-snug  left-0 top-0  bg-white rounded border border-slate-400/opacity-25 h-10 p-4">
@@ -99,9 +102,9 @@ const AddBoard = ({ setAddBoardModul }: any) => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
-        <div className="w-full h-12 relative">
+        {/* <div className="w-full h-12 relative">
           <div className="w-full h-10 left-0 top-[23px]">
             <div className="w-full flex-row flex justify-between align-middle items-center">
               <div className="flex justify-between align-middle items-center w-full text-gray-950 text-xs font-medium leading-snug  left-0 top-0  bg-white rounded border border-slate-400/opacity-25 h-10 p-4">
@@ -112,21 +115,22 @@ const AddBoard = ({ setAddBoardModul }: any) => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
-        <div className="h-10 relative w-full bg-indigo-500/10 rounded-2xl hover:bg-indigo-500/20 transition-colors ease-in delay-150 cursor-pointer">
+        {/* <div className="h-10 relative w-full bg-indigo-500/10 rounded-2xl hover:bg-indigo-500/20 transition-colors ease-in delay-150 cursor-pointer">
           <div className="h-10 flex justify-center align-middle items-center text-center text-indigo-500 text-xs font-bold font-['Plus Jakarta Sans'] leading-snug">
             + Add New Column
           </div>
-        </div>
+        </div> */}
         <div className="flex flex-row gap-2">
           <Form.Submit asChild>
             <button
-              className={`mt-6 flex justify-center text-center w-full h-10 bg-indigo-500 hover:bg-indigo-700 rounded-2xl align-middle items-center disabled:bg-indigo-400   ${
+              className={`mt-6 flex justify-center text-center w-full h-10 bg-indigo-500 hover:bg-indigo-700 rounded-2xl align-middle items-center disabled:bg-indigo-200 disabled:cursor-not-allowed   ${
                 loading ? "cursor-not-allowed animate-pulse" : "cursor-pointer"
               }`}
               onClick={handleSubmit}
-              disabled={loading}
+              // disabled={loading}
+              disabled={name.length === 0}
               style={{
                 transition: "200ms ease-in",
               }}
@@ -147,6 +151,7 @@ const AddBoard = ({ setAddBoardModul }: any) => {
               </div>
             </button>
           </Form.Submit>
+
           <div
             className="mt-6 flex justify-center text-center h-10 rounded-2xl align-middle items-center cursor-pointer w-40 text-black"
             style={{
@@ -160,12 +165,17 @@ const AddBoard = ({ setAddBoardModul }: any) => {
                 handleCancel(e);
               }}
             >
-              <div className="flex flex-row gap-2 align-middle items-center">
+              <div className="flex flex-row gap-2 align-middle items-center text-slate-500 text-xs uppercase tracking-widest">
                 Cancel
               </div>
             </button>
           </div>
         </div>
+        {!name && (
+          <div className="text-[#6866e2] border border-[#4172cd65] border-1 px-2 py-1 inline-block text-[8px] rounded w-[60%] mt-4">
+            * Please enter a board title to enable save{" "}
+          </div>
+        )}
       </Form.Root>
     </div>
   );

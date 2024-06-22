@@ -13,11 +13,6 @@ const KanbanHeader = () => {
         <div className="w-full">
           <h1 className="pl-[330px] font-bold text-[24px]">{headerTitle}</h1>
         </div>
-        {/* <div className="w-[200px] flex justify-end">
-          <Button href={"#"} variant="secondary">
-            + Add New Task
-          </Button>
-        </div> */}
       </div>
     </div>
   );

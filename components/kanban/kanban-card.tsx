@@ -1,42 +1,36 @@
-import { Task } from "@/types/data-types";
-import Link from "next/link";
+// import { Task } from "@/types/data-types";
+
 import React, { useState } from "react";
 
-interface KanbanGridProps {
+interface Task {
+  id: string;
+  title: string;
+  description: string;
+  status: string;
+  columnId: string;
+  subTasks?: Array<any>;
+}
+interface propType {
   task: Task;
-  setOpenModul: React.Dispatch<React.SetStateAction<boolean>>;
-  setTaskName: React.Dispatch<React.SetStateAction<string>>;
-  subTaskAmount: number;
-  setTaskId: React.Dispatch<React.SetStateAction<string>>;
-  colName: string;
-  setColumnName: React.Dispatch<React.SetStateAction<string>>;
-  setColumnId: React.Dispatch<React.SetStateAction<string>>;
+  setState: React.Dispatch<React.SetStateAction<any>>;
+  totalSubtasks: string;
 }
 
-const KanbanCard = ({
-  task,
-  setOpenModul,
-  setTaskName,
-  subTaskAmount = 0,
-  setTaskId,
-  colName,
-  setColumnName,
-  setColumnId,
-}: KanbanGridProps) => {
-  // const columnList = columnData.tasks?.map((col) => col);
+const KanbanCard = ({ task, setState, totalSubtasks }: propType) => {
+  // @ts-ignore
+  const subTaskAmount = task.subTasks?.length || 0;
 
-  function handleViewTask(name: string, id: any) {
-    setOpenModul(true);
-    setTaskName(name);
-    setTaskId(task.id);
-    setColumnName(colName);
-    setColumnId(id);
+  function handleViewTask(name: string, id: string) {
+    setState((prevState: any) => ({
+      ...prevState,
+      openModul: true,
+      taskName: name,
+      taskId: id,
+    }));
   }
 
   return (
     <div className="flex flex-col gap-4 h-[auto] min-h-[140px] mb-4">
-      {/*
-      // @ts-ignore */}
       <div
         onClick={() => handleViewTask(task.title, task.columnId)}
         className="bg-white hover:bg-slate-50 h-[auto] min-h-[140px] rounded-md shadow-md p-[16px] flex flex-col justify-between cursor-pointer capitalize"
@@ -48,9 +42,7 @@ const KanbanCard = ({
           </h3>
         </div>
         <h4 className="text-slate-600 mt-[4px] text-right">
-          {/*
-          //  @ts-ignore */}
-          {subTaskAmount} of {subTaskAmount} subtasks
+          {totalSubtasks} subtasks
         </h4>
       </div>
     </div>

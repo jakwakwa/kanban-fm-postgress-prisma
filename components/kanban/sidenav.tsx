@@ -5,7 +5,7 @@ import { SignOutButton } from "@clerk/nextjs";
 import { PowerIcon, ViewColumnsIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import Logo from "../ui/logo";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SpinnerCircular } from "spinners-react";
 import AddBoard from "./add-board";
 import Button from "../ui/buttons/button";
@@ -31,6 +31,12 @@ export default function SideNav({ boards }: { boards: any[] }) {
     }, 5000);
   }
 
+  useEffect(() => {
+    if (!boardLoading) {
+      router.refresh();
+    }
+  }, [boardLoading, router]);
+
   return (
     <>
       <div className="fixed w-[300px] z-1 flex h-full flex-col  py-0 md:px-0 bg-white border-r">
@@ -42,9 +48,17 @@ export default function SideNav({ boards }: { boards: any[] }) {
             <Logo />
           </div>
         </Link>
+
         <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-0">
           <div className="px-0 pb-5 pl-4 uppercase tracking-widest text-sm font-medium text-kgray-text">
             All boards ({boards.length})
+          </div>
+          <div className="pl-3 mt-4 pb-6">
+            <div onClick={() => setAddBoardModul(true)}>
+              <Button href={"#"} isDisabled={false} variant="secondary">
+                + Add Board
+              </Button>
+            </div>
           </div>
           {boardLoading && currentBoardName === null ? (
             <div className="pl-4 flex flex-row gap-2">
@@ -103,7 +117,7 @@ export default function SideNav({ boards }: { boards: any[] }) {
                       </div>
                     </Link>
                   ) : (
-                    <div
+                    <Link
                       className={`flex w-[90%] h-[48px] grow items-center justify-center gap-2 rounded-md  p-3 text-sm font-medium   md:flex-none md:justify-start md:p-0 md:px-0 transition-colors duration-75 ease-in-out ${
                         boardLoading && "cursor-not-allowed"
                       } rounded-r-full ${
@@ -111,6 +125,7 @@ export default function SideNav({ boards }: { boards: any[] }) {
                           ? "bg-violet-500 text-indigo-100 hover:bg-violet-500 hover:text-indigo-100 cursor-not-allowed"
                           : "bg-white hover:bg-violet-100 hover:text-indigo-700"
                       }`}
+                      href={""}
                     >
                       <ViewColumnsIcon className="w-6 ml-4" />
 
@@ -120,17 +135,10 @@ export default function SideNav({ boards }: { boards: any[] }) {
                           <div className="absolute right-[20px] rounded-full bg-violet-100 h-2 w-2 p-1"></div>
                         </div>
                       </div>
-                    </div>
+                    </Link>
                   )}
                 </div>
               ))}
-            </div>
-            <div className="pl-3 mt-4">
-              <button onClick={() => setAddBoardModul(true)}>
-                <Button href={"#"} isDisabled={false}>
-                  Add New Board
-                </Button>
-              </button>
             </div>
           </div>
           <div className="hidden h-auto w-full grow rounded-md md:block"></div>
@@ -151,7 +159,7 @@ export default function SideNav({ boards }: { boards: any[] }) {
             onClick={() => setAddBoardModul(false)}
           ></div>
           <div className="absolute top-[15%] left-0 w-screen mx-auto z-10">
-            <AddBoard setAddBoardModul={() => setAddBoardModul(true)} />
+            <AddBoard setAddBoardModul={setAddBoardModul} />
           </div>
         </>
       )}
