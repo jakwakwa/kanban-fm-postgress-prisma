@@ -31,7 +31,6 @@ interface AddTaskProps {
   handleAddTask: (e: any, updatedStatus: any) => void;
   columnStatus: any;
   boardId: string;
-  open: any;
 }
 
 const AddTask = ({
@@ -40,7 +39,6 @@ const AddTask = ({
   handleAddTask,
   columnStatus,
   boardId,
-  open,
 }: AddTaskProps) => {
   const [toggled, setToggled] = useState("closed");
   const [changed, setChanged] = useState(false);
