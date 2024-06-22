@@ -128,9 +128,10 @@ const KanbanGrid = ({
     setState((prevState: any) => ({ ...prevState, loading: true }));
 
     const parsed = JSON.parse(s);
+
     const newT = {
       ...state.newTask,
-      status: parsed.columnStatus || "Todo",
+      status: parsed.columnStatus || "todo",
       columnId: parsed.columnId,
     };
 
@@ -143,21 +144,21 @@ const KanbanGrid = ({
         body: JSON.stringify(newT),
       });
 
-      if (!res.ok) throw new Error("Failed to add task");
+      if (res.ok) {
+        const result = await res.json();
 
-      const result = await res.json();
-      addTasks([...tasksStore, result]);
-      setState((prevState: any) => ({
-        ...prevState,
-        addTaskMode: false,
-        open: true,
-        loading: false,
-      }));
-      setTimeout(
-        () => setState((prevState: any) => ({ ...prevState, open: true })),
-        1000
-      );
-      router.refresh();
+        router.push(`/kanban/board?board=${boardName}&id=${bId}`);
+        addTasks([...tasksStore, result]);
+        setState((prevState: any) => ({
+          ...prevState,
+          addTaskMode: false,
+          open: true,
+          loading: false,
+        }));
+        router.refresh();
+      }
+
+      if (!res.ok) throw new Error("Failed to add task");
     } catch (error) {
       console.error("Error adding task:", error);
       setState((prevState: any) => ({ ...prevState, loading: false }));
@@ -307,7 +308,6 @@ const KanbanGrid = ({
                         task.status === col.name &&
                         col.id === task.columnId
                       ) {
-                        console.log(task);
                         return (
                           <div key={i}>
                             <KanbanCard

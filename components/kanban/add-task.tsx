@@ -150,13 +150,10 @@ const AddTask = ({
               setUpdatedStatus={setUpdatedStatus}
               columnStatus={columnStatus}
               setNewStatus={setNewStatus}
-              setNewColId={setNewColId}
               newStatus={newStatus}
-              disabled={false}
-              // @ts-ignore
-              setUpdatedTask={setUpdatedTask}
-              task={updatedTask}
-              newColId={newColId}
+              disabled={state.isDisabled}
+              setNewColId={setNewColId}
+              inputStyle={""}
               changed={changed}
               setChanged={setChanged}
             />
