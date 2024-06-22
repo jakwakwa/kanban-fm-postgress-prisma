@@ -45,7 +45,7 @@ export default function SideNav({ boards }: { boards: any[] }) {
                   }}
                   onClick={() => handleBoardsStore(board.id)}
                   key={board.name}
-                  className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-white p-3 text-sm font-medium hover:bg-violet-100 hover:text-violet-600 md:flex-none md:justify-start md:p-2 md:px-3"
+                  className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-white p-3 text-sm font-medium hover:bg-indigo-100 hover:text-indigo-600 md:flex-none md:justify-start md:p-2 md:px-3"
                 >
                   <ViewColumnsIcon className="w-6" />
                   <p className="hidden md:block"> {board?.name}</p>
@@ -56,7 +56,7 @@ export default function SideNav({ boards }: { boards: any[] }) {
         </div>
         <div className="hidden h-auto w-full grow rounded-md md:block"></div>
         <form>
-          <button className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium md:flex-none md:justify-start md:p-2 md:px-3 bg-white hover:bg-violet-100 hover:text-violet-600">
+          <button className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium md:flex-none md:justify-start md:p-2 md:px-3 bg-white hover:bg-indigo-100 hover:text-indigo-600">
             <PowerIcon className="w-6" />
             <div className="hidden md:block">
               <SignOutButton />

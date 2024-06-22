@@ -6,7 +6,7 @@ import { PowerIcon, ViewColumnsIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import Logo from "../ui/logo";
 import { useState, useEffect } from "react";
-import { SpinnerCircular } from "spinners-react";
+import { SpinnerCircular, SpinnerRoundOutlined } from "spinners-react";
 import AddBoard from "./add-board";
 import Button from "../ui/buttons/button";
 
@@ -61,11 +61,18 @@ export default function SideNav({ boards }: { boards: any[] }) {
             </div>
           </div>
           {boardLoading && currentBoardName === null ? (
-            <div className="pl-4 flex flex-row gap-2">
-              <div className="text-xs text-violet-400 animate-pulse pb-2">
+            <div className="pl-4 flex flex-row align-middle items-center justify-start gap-2 h-[40px]">
+              <div className="text-xs text-indigo-400 animate-pulse pb-2 mb-2 h-[30px] line-clamp-1 leading-1">
                 {"Loading board... "}
               </div>
-              <SpinnerCircular color="indigo" size={20} />
+              <div className="h-[42px] animate-pulse opacity-30">
+                <SpinnerRoundOutlined
+                  size={20}
+                  thickness={109}
+                  speed={43}
+                  color="#635fc7"
+                />
+              </div>
             </div>
           ) : null}
           <div className="text-black">
@@ -99,8 +106,8 @@ export default function SideNav({ boards }: { boards: any[] }) {
                         boardLoading && "cursor-not-allowed"
                       } rounded-r-full ${
                         currentBoardName === board.name
-                          ? "bg-violet-500 text-indigo-100 hover:bg-violet-500 hover:text-indigo-100 cursor-not-allowed"
-                          : "bg-white hover:bg-violet-100 hover:text-indigo-700"
+                          ? "bg-indigo-500 text-indigo-100 hover:bg-indigo-500 hover:text-indigo-100 cursor-not-allowed"
+                          : "bg-white hover:bg-indigo-100 hover:text-indigo-700"
                       }`}
                     >
                       <ViewColumnsIcon className="w-6 ml-4" />
@@ -122,8 +129,8 @@ export default function SideNav({ boards }: { boards: any[] }) {
                         boardLoading && "cursor-not-allowed"
                       } rounded-r-full ${
                         currentBoardName === board.name
-                          ? "bg-violet-500 text-indigo-100 hover:bg-violet-500 hover:text-indigo-100 cursor-not-allowed"
-                          : "bg-white hover:bg-violet-100 hover:text-indigo-700"
+                          ? "bg-indigo-500 text-indigo-100 hover:bg-indigo-500 hover:text-indigo-100 cursor-not-allowed"
+                          : "bg-white hover:bg-indigo-100 hover:text-indigo-700"
                       }`}
                       href={""}
                     >
@@ -132,7 +139,7 @@ export default function SideNav({ boards }: { boards: any[] }) {
                       <div className="flex relative flex-row md:block ml-4 w-full">
                         <div className="flex items-center w-[80%]">
                           {board?.name}
-                          <div className="absolute right-[20px] rounded-full bg-violet-100 h-2 w-2 p-1"></div>
+                          <div className="absolute right-[20px] rounded-full bg-indigo-100 h-2 w-2 p-1"></div>
                         </div>
                       </div>
                     </Link>
@@ -143,7 +150,7 @@ export default function SideNav({ boards }: { boards: any[] }) {
           </div>
           <div className="hidden h-auto w-full grow rounded-md md:block"></div>
           <form>
-            <button className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium md:flex-none md:justify-start md:p-2 md:px-3 bg-white hover:bg-violet-100 hover:text-violet-600 border-t-2">
+            <button className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium md:flex-none md:justify-start md:p-2 md:px-3 bg-white hover:bg-indigo-100 hover:text-indigo-600 border-t-2">
               <PowerIcon className="w-6" />
               <div className="hidden md:block">
                 <SignOutButton />

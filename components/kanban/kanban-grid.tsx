@@ -5,33 +5,36 @@ import ViewTask from "./view-task";
 import AddTask from "./add-task";
 import useStore from "@/context/store";
 import { Subtask, Column, Board } from "@prisma/client";
-import * as Toast from "@radix-ui/react-toast";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { SpinnerRoundFilled } from "spinners-react";
 import ColumnText from "./columns/column-text";
 import KanbanCard from "./kanban-card";
+import { StateT, Task } from "@/types/data-types";
+import RenderToastMsg from "./render-toastmsg";
 
-interface StateT {
-  isDisabled: boolean;
-  openModul: boolean;
-  taskName: string;
-  taskId: string;
-  columnName: string;
-  columnId: string;
-  open: boolean;
-  openDeleteToast: boolean;
-  loading: boolean;
-  addTaskMode: boolean;
-  newTask: {
-    columnId: string;
-    title: string;
-    description: string;
-    status: string;
-  };
-  newSubtasks: Subtask[];
-}
-
+const BoardLoadSpinner = (
+  <div
+    className="absolute w-full left-0 m-0 p-0 h-[100%]"
+    style={{ background: "rgba(72, 54, 113, 0.2)" }}
+  >
+    <div className="absolute top-[40%] left-[50%] w-full mx-auto rounded-md p-[32px] pb-[48px] h-screen">
+      <div className="flex items-center align-middle flex-row h-[50px] gap-0 animate-pulse">
+        <div className="h-[25px] w-[120px] p-0 m-0 text-sm leading-1 text-indigo-500">
+          Loading board...
+        </div>
+        <div className="h-[50px] w-[50px]">
+          <SpinnerRoundFilled
+            size={50}
+            thickness={100}
+            speed={100}
+            color="rgba(74, 57, 172, 0.71)"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+);
 const KanbanGrid = ({
   cols,
   subTasks,
@@ -63,7 +66,7 @@ const KanbanGrid = ({
     columnName: "",
     columnId: "",
     open: false,
-    openDeleteToast: false,
+    openDeleteToast: true,
     loading: false,
     addTaskMode: false,
     newTask: {
@@ -80,7 +83,6 @@ const KanbanGrid = ({
 
   useEffect(() => {
     return () => {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
       if (timerRef.current) clearTimeout(timerRef.current);
     };
   }, []);
@@ -125,7 +127,11 @@ const KanbanGrid = ({
 
   const handleAddTask = async (e: FormEvent, s: string): Promise<void> => {
     e.preventDefault();
-    setState((prevState: any) => ({ ...prevState, loading: true }));
+    setState((prevState) => ({
+      ...prevState,
+      loading: true,
+      open: false,
+    }));
 
     const parsed = JSON.parse(s);
 
@@ -147,14 +153,15 @@ const KanbanGrid = ({
       if (res.ok) {
         const result = await res.json();
 
+        setState((prevState) => ({
+          ...prevState,
+          loading: false,
+          open: true,
+          addTaskMode: false,
+        }));
+
         router.push(`/kanban/board?board=${boardName}&id=${bId}`);
         addTasks([...tasksStore, result]);
-        setState((prevState: any) => ({
-          ...prevState,
-          addTaskMode: false,
-          open: true,
-          loading: false,
-        }));
         router.refresh();
       }
 
@@ -165,56 +172,8 @@ const KanbanGrid = ({
     }
   };
 
-  const renderToast = (
-    title: string,
-    openState: boolean,
-    setOpenState: (state: boolean) => void
-  ) => (
-    <Toast.Provider swipeDirection="right">
-      <Toast.Root
-        className="bg-kpurple-main rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] p-[15px] grid [grid-template-areas:_'title_action'_'description_action'] grid-cols-[auto_max-content] gap-x-[15px] items-center data-[state=open]:animate-slideIn data-[state=closed]:animate-hide data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=cancel]:translate-x-0 data-[swipe=cancel]:transition-[transform_200ms_ease-out] data-[swipe=end]:animate-swipeOut text-white"
-        open={openState}
-        onOpenChange={setOpenState}
-      >
-        <Toast.Title className="[grid-area:_title] mb-[5px] font-medium text-slate12 text-[15px]">
-          {title}
-        </Toast.Title>
-        <Toast.Description asChild>
-          <time
-            className="[grid-area:_description] m-0 text-slate11 text-[13px] leading-[1.3]"
-            dateTime={eventDateRef.current.toISOString()}
-          >
-            {prettyDate(eventDateRef.current)}
-          </time>
-        </Toast.Description>
-      </Toast.Root>
-      <Toast.Viewport className="[--viewport-padding:_25px] fixed bottom-0 right-0 flex flex-col p-[var(--viewport-padding)] gap-[10px] w-[390px] max-w-[100vw] m-0 list-none z-[2147483647] outline-none" />
-    </Toast.Provider>
-  );
-
   if (loader) {
-    return (
-      <div
-        className="absolute w-full left-0 m-0 p-0 h-[100%]"
-        style={{ background: "rgba(72, 54, 113, 0.2)" }}
-      >
-        <div className="absolute top-[40%] left-[50%] w-full mx-auto rounded-md p-[32px] pb-[48px] h-screen">
-          <div className="flex items-center align-middle flex-row h-[50px] gap-0 animate-pulse">
-            <div className="h-[25px] w-[120px] p-0 m-0 text-sm leading-1 text-indigo-500">
-              Loading board...
-            </div>
-            <div className="h-[50px] w-[50px]">
-              <SpinnerRoundFilled
-                size={50}
-                thickness={100}
-                speed={100}
-                color="rgba(74, 57, 172, 0.71)"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return BoardLoadSpinner;
   } else {
     return (
       <>
@@ -235,11 +194,10 @@ const KanbanGrid = ({
             + Add New Task
           </button>
         </div>
-
         {state.addTaskMode && (
           <>
             <div
-              className="absolute w-full left-0 m-0 p-0 h-[100%] bg-slate-700 bg-opacity-50"
+              className="absolute w-full left-0 m-0 p-0 h-[100%] bg-slate-700 bg-opacity-70"
               onClick={() =>
                 setState((prevState: any) => ({
                   ...prevState,
@@ -257,11 +215,10 @@ const KanbanGrid = ({
             />
           </>
         )}
-
         {state.openModul && (
           <>
             <div
-              className="w-full h-full left-0 m-0 p-0  bg-slate-700 bg-opacity-50 fixed"
+              className="w-full h-full left-0 m-0 p-0  bg-slate-700 bg-opacity-70 fixed"
               onClick={() =>
                 setState((prevState: any) => ({
                   ...prevState,
@@ -280,7 +237,6 @@ const KanbanGrid = ({
             />
           </>
         )}
-
         <div className="w-[full] h-full px-20 grid grid-cols-3 gap-6 pt-[100px] ">
           {cols?.map((col, index) => {
             if (col.boardId === bId) {
@@ -292,53 +248,37 @@ const KanbanGrid = ({
                   <div className="text-black my-4">
                     <ColumnText color={col.name}>{col.name}</ColumnText>
                   </div>
-                  {tasksStore?.map(
-                    (
-                      task: {
-                        id: string;
-                        title: string;
-                        description: string;
-                        status: string;
-                        columnId: string;
-                        subtasks: Array<any>;
-                      },
-                      i: Key | null | undefined
-                    ) => {
-                      if (
-                        task.status === col.name &&
-                        col.id === task.columnId
-                      ) {
-                        return (
-                          <div key={i}>
-                            <KanbanCard
-                              task={task}
-                              setState={setState}
-                              totalSubtasks={`${
-                                task?.subtasks !== undefined
-                                  ? task?.subtasks?.length
-                                  : "0"
-                              }`}
-                            />
-                            <div className="text-black"></div>
-                          </div>
-                        );
-                      }
+                  {tasksStore?.map((task: Task, i: Key | null | undefined) => {
+                    if (task.status === col.name && col.id === task.columnId) {
+                      return (
+                        <div key={i}>
+                          <KanbanCard
+                            task={task}
+                            setState={setState}
+                            totalSubtasks={`${
+                              task?.subtasks !== undefined
+                                ? task?.subtasks?.length
+                                : "0"
+                            }`}
+                          />
+                          <div className="text-black"></div>
+                        </div>
+                      );
                     }
-                  )}
+                  })}
                 </div>
               );
             }
           })}
         </div>
-        {renderToast("Successfully updated", state.open, (open) =>
-          setState((prevState: any) => ({ ...prevState, open }))
-        )}
-        {renderToast(
-          "Task Deleted Successfully",
-          state.openDeleteToast,
-          (openDeleteToast) =>
-            setState((prevState: any) => ({ ...prevState, openDeleteToast }))
-        )}
+        <RenderToastMsg
+          message={{
+            title: "Success",
+            description: "The item has been successfully updated",
+          }}
+          state={state}
+          setState={setState}
+        />
       </>
     );
   }
@@ -348,7 +288,7 @@ export default KanbanGrid;
 
 export const createURL = (path: string) => window.location.origin + path;
 
-function prettyDate(date: number | Date | undefined) {
+export function prettyDate(date: number | Date | undefined) {
   return new Intl.DateTimeFormat("en-US", {
     dateStyle: "full",
     timeStyle: "short",

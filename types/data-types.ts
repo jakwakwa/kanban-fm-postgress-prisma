@@ -7,6 +7,26 @@ export interface Subtask {
   taskId: string;
 }
 
+export interface StateT {
+  isDisabled: boolean;
+  openModul: boolean;
+  taskName: string;
+  taskId: string;
+  columnName: string;
+  columnId: string;
+  open: boolean;
+  openDeleteToast: boolean;
+  loading: boolean;
+  addTaskMode: boolean;
+  newTask: {
+    columnId: string;
+    title: string;
+    description: string;
+    status: string;
+  };
+  newSubtasks: Subtask[];
+}
+
 export interface Task {
   id: string;
   title: string;

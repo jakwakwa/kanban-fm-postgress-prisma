@@ -1,15 +1,5 @@
-// import { Task } from "@/types/data-types";
+import { Task } from "@/types/data-types";
 
-import React, { useState } from "react";
-
-interface Task {
-  id: string;
-  title: string;
-  description: string;
-  status: string;
-  columnId: string;
-  subTasks?: Array<any>;
-}
 interface propType {
   task: Task;
   setState: React.Dispatch<React.SetStateAction<any>>;
@@ -17,9 +7,6 @@ interface propType {
 }
 
 const KanbanCard = ({ task, setState, totalSubtasks }: propType) => {
-  // @ts-ignore
-  const subTaskAmount = task.subTasks?.length || 0;
-
   function handleViewTask(name: string, id: string) {
     setState((prevState: any) => ({
       ...prevState,

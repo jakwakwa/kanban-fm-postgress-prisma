@@ -56,7 +56,7 @@ interface EditTaskProps {
   setSubtaskAdded: Dispatch<SetStateAction<boolean>>;
 }
 const inputStyle =
-  "box-border w-full bg-slate-100 placeholder:text-xs placeholder:text-slate-400  placeholder:italic shadow-blackA6 inline-flex appearance-none items-center justify-center rounded-[4px] p-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black] selection:color-white selection:bg-blackA6";
+  "box-border w-full bg-slate-100 placeholder:text-xs placeholder:text-slate-400  placeholder:italic shadow-blackA6 inline-flex appearance-none items-center justify-center rounded-[4px] p-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_1.3px_#252525]  selection:color-white selection:bg-blackA6 hover:bg-[#e8ebf9]";
 
 const EditTask = ({
   updatedTask,
@@ -142,7 +142,7 @@ const EditTask = ({
   const [changed, setChanged] = useState(false);
 
   return (
-    <div className="absolute w-[480px] mx-auto mt-[10%] bg-white rounded-md p-[32px] pb-[48px] h-auto shadow-lg left-[35%]">
+    <div className="absolute w-[480px] mx-auto mt-[6%] bg-white rounded-md p-[32px] pb-[48px] h-auto shadow-lg left-[35%]">
       <div className="text-xl font-bold mb-4">Edit Task</div>
       <Form.Root className="w-full">
         <Form.Field className="grid mb-[10px]" name="title">
@@ -278,6 +278,11 @@ const EditTask = ({
               setChanged={setChanged}
             />
           </div>
+          {!changed || updatedTask?.title.length < 1 ? (
+            <div className="text-indigo-400 border-[#7b81f2] border-[1.2px] px-2 py-1 inline-block text-[8px] rounded w-[70%] mt-4 shadow-md shadow-slate-200 bg-[#ffffff]">
+              * Please add a title and status to enable save
+            </div>
+          ) : null}
           <Form.Submit asChild>
             <button
               className={`mt-6 flex justify-center text-center w-full h-10 bg-indigo-500 hover:bg-indigo-700 rounded-2xl align-middle items-center cursor-pointer disabled:bg-indigo-200  disabled:cursor-not-allowed  ${
@@ -304,11 +309,6 @@ const EditTask = ({
               </div>
             </button>
           </Form.Submit>
-          {!changed || updatedTask?.title.length < 1 ? (
-            <div className="text-[#6866e2] border border-[#4172cd65] border-1 px-2 py-1 inline-block text-[8px] rounded w-[60%] mt-4">
-              * Please add a title and status to enable save{" "}
-            </div>
-          ) : null}
         </div>
       </Form.Root>
     </div>
