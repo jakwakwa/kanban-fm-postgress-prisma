@@ -280,9 +280,10 @@ const EditTask = ({
           </div>
           <Form.Submit asChild>
             <button
-              className={`mt-6 flex justify-center text-center w-full h-10 bg-indigo-500 hover:bg-indigo-700 rounded-2xl align-middle items-center cursor-pointer disabled:bg-indigo-400   ${
+              className={`mt-6 flex justify-center text-center w-full h-10 bg-indigo-500 hover:bg-indigo-700 rounded-2xl align-middle items-center cursor-pointer disabled:bg-indigo-200  disabled:cursor-not-allowed  ${
                 loading ? "cursor-wait animate-pulse" : "cursor-pointer"
               }`}
+              disabled={!changed || updatedTask?.title.length < 1}
               onClick={(e) => {
                 handleUpdateTitle(e), handleUpdateSubTask(e);
               }}
@@ -303,6 +304,11 @@ const EditTask = ({
               </div>
             </button>
           </Form.Submit>
+          {!changed || updatedTask?.title.length < 1 ? (
+            <div className="text-[#6866e2] border border-[#4172cd65] border-1 px-2 py-1 inline-block text-[8px] rounded w-[60%] mt-4">
+              * Please add a title and status to enable save{" "}
+            </div>
+          ) : null}
         </div>
       </Form.Root>
     </div>

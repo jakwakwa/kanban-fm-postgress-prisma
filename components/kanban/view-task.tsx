@@ -236,7 +236,7 @@ function ViewTask({
     e.preventDefault();
     setLoading(true);
     try {
-      // await addDeleteTaskEntry(taskId, setOpenDeleteToast);
+      await addDeleteTaskEntry(taskId);
       await router.push(`/kanban/board?board=${boardName}&id=${boardId}`);
 
       setTimeout(() => {
@@ -417,18 +417,12 @@ export const addSubTaskEntry = async (updates: Partial<SubTask>) => {
   }
 };
 
-export const addDeleteTaskEntry = async (
-  id: string,
-  setToastSuccess: (arg0: boolean) => void
-) => {
+export const addDeleteTaskEntry = async (id: string) => {
   const res = await fetch(`/api/task/${id}`, {
     method: "DELETE",
   });
 
   if (res.ok) {
-    setTimeout(() => {
-      setToastSuccess(true);
-    }, 3500);
     return res.json();
   } else {
     console.error("Failed to delete task", res.status, res.statusText);
