@@ -33,8 +33,11 @@ const AddBoard = ({ setAddBoardModul }: any) => {
         const newBoard = await res.json();
 
         router.push(
-          `kanban/board?board=${newBoard.data.name}&id=${newBoard.data.id}`
+          `/kanban/board?board=${newBoard.data.name}&id=${newBoard.data.id}`
         );
+
+        setAddBoardModul(false);
+        router.refresh();
       } else {
         console.error("Failed to add board");
       }

@@ -5,7 +5,7 @@ import { SignOutButton } from "@clerk/nextjs";
 import { PowerIcon, ViewColumnsIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import Logo from "../ui/logo";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SpinnerCircular } from "spinners-react";
 import AddBoard from "./add-board";
 import Button from "../ui/buttons/button";
@@ -30,6 +30,12 @@ export default function SideNav({ boards }: { boards: any[] }) {
       setBoardLoading(false);
     }, 5000);
   }
+
+  useEffect(() => {
+    if (!boardLoading) {
+      router.refresh();
+    }
+  }, [boardLoading, router]);
 
   return (
     <>
