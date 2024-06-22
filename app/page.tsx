@@ -4,7 +4,7 @@ import Link from "next/link";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const { userId } = await auth();
+  const { userId } = auth();
   let href = userId ? `/kanban/` : "/new-user";
 
   return (
