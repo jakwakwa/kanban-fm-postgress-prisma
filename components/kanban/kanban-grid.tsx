@@ -1,16 +1,15 @@
 "use client";
 
-import { FormEvent, Key, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import ViewTask from "./view-task";
 import AddTask from "./add-task";
 import useStore from "@/context/store";
-import { Subtask, Column, Board } from "@prisma/client";
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
+
+import { useSearchParams, useRouter } from "next/navigation";
 import { SpinnerRoundFilled } from "spinners-react";
 import ColumnText from "./columns/column-text";
 import KanbanCard from "./kanban-card";
-import { StateT, Task } from "@/types/data-types";
+import { Board, Column, StateT, Subtask, Task } from "@/types/data-types";
 import RenderToastMsg from "./render-toastmsg";
 
 const BoardLoadSpinner = (
@@ -44,7 +43,6 @@ const KanbanGrid = ({
   subTasks: Subtask[];
   boards: Board[];
 }): JSX.Element => {
-  // const { cols, subTasks, boards } = initialData;
   const addColumns = useStore((state: { addColumns: any }) => state.addColumns);
   const addTasks = useStore((state: { addTasks: any }) => state.addTasks);
   const addSubTasks = useStore(
@@ -54,7 +52,7 @@ const KanbanGrid = ({
   const tasksStore = useStore((state: { tasks: any }) => state.tasks);
   const slug = useSearchParams();
   const boardName = slug.get("board");
-  const bId = slug.get("id");
+  const boardId = slug.get("id") as unknown as string;
   const loader = useStore((state: { loading: any }) => state.loading);
   const router = useRouter();
 
@@ -78,12 +76,12 @@ const KanbanGrid = ({
     newSubtasks: [] as Subtask[],
   });
 
-  const eventDateRef = useRef(new Date());
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
+    const timer = timerRef.current;
     return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
+      if (timer) clearTimeout(timer);
     };
   }, []);
 
@@ -91,21 +89,32 @@ const KanbanGrid = ({
     addSubTasks(subTasks);
 
     const getAllTasks = (boards: Board[]) => {
-      return boards.flatMap((board) =>
-        // @ts-ignore
-        board.columns.flatMap((column: { tasks: any }) => column.tasks)
-      );
+      const extractTasksFromColumn = (column: { tasks: any }) => column.tasks;
+      const extractTasksFromBoard = (board: Board) =>
+        board.columns.flatMap(extractTasksFromColumn);
+      return boards.flatMap(extractTasksFromBoard);
     };
 
-    const currentBoard = boards.find((board) => board.id === bId);
-    if (currentBoard) {
-      const allTasksFromBoard = getAllTasks([currentBoard]);
-      addBoards([currentBoard]);
-      // @ts-ignore
-      addColumns(currentBoard.columns);
+    const processBoard = (board: Board) => {
+      const allTasksFromBoard = getAllTasks([board]);
+      addBoards([board]);
+      addColumns(board.columns);
       addTasks(allTasksFromBoard);
-    }
-  }, [addBoards, addColumns, addSubTasks, addTasks, bId, boards, subTasks]);
+    };
+
+    const findCurrentBoard = (boards: Board[], boardId: string) => {
+      return boards.find((board) => board.id === boardId);
+    };
+
+    const handleBoardProcessing = (boards: Board[], boardId: string) => {
+      const currentBoard = findCurrentBoard(boards, boardId);
+      if (currentBoard) {
+        processBoard(currentBoard);
+      }
+    };
+
+    handleBoardProcessing(boards, boardId);
+  }, [addBoards, addColumns, addSubTasks, addTasks, boardId, boards, subTasks]);
 
   const getTasks = () => {
     return tasksStore.map((task: { id: any }) => ({
@@ -122,7 +131,7 @@ const KanbanGrid = ({
     }));
   };
 
-  const filteredColsbyBoard = getCols().filter((c) => c.boardId === bId);
+  const filteredColsbyBoard = getCols().filter((c) => c.boardId === boardId);
   const tasksByBoard = getTasks();
 
   const handleAddTask = async (e: FormEvent, s: string): Promise<void> => {
@@ -160,7 +169,7 @@ const KanbanGrid = ({
           addTaskMode: false,
         }));
 
-        router.push(`/kanban/board?board=${boardName}&id=${bId}`);
+        router.push(`/kanban/board?board=${boardName}&id=${boardId}`);
         addTasks([...tasksStore, result]);
         router.refresh();
       }
@@ -196,7 +205,7 @@ const KanbanGrid = ({
         </div>
         {state.addTaskMode && (
           <>
-            <div
+            <button
               className="absolute w-full left-0 m-0 p-0 h-[100%] bg-slate-700 bg-opacity-70"
               onClick={() =>
                 setState((prevState: any) => ({
@@ -204,20 +213,33 @@ const KanbanGrid = ({
                   addTaskMode: false,
                 }))
               }
-            ></div>
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  setState((prevState: any) => ({
+                    ...prevState,
+                    addTaskMode: false,
+                  }));
+                }
+              }}
+              onTouchStart={() =>
+                setState((prevState: any) => ({
+                  ...prevState,
+                  addTaskMode: false,
+                }))
+              }
+            ></button>
             <AddTask
               state={state}
               setState={setState}
               handleAddTask={handleAddTask}
               columnStatus={filteredColsbyBoard}
-              // @ts-ignore
-              boardId={bId}
+              boardId={boardId}
             />
           </>
         )}
         {state.openModul && (
           <>
-            <div
+            <button
               className="w-full h-full left-0 m-0 p-0  bg-slate-700 bg-opacity-70 fixed"
               onClick={() =>
                 setState((prevState: any) => ({
@@ -225,33 +247,58 @@ const KanbanGrid = ({
                   openModul: false,
                 }))
               }
-            ></div>
+            ></button>
+
+            <button
+              className="w-full h-full left-0 m-0 p-0 bg-slate-700 bg-opacity-70 fixed"
+              onClick={() =>
+                setState((prevState: any) => ({
+                  ...prevState,
+                  openModul: false,
+                }))
+              }
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  setState((prevState: any) => ({
+                    ...prevState,
+                    openModul: false,
+                  }));
+                }
+              }}
+              onTouchStart={() =>
+                setState((prevState: any) => ({
+                  ...prevState,
+                  openModul: false,
+                }))
+              }
+              style={{ cursor: "pointer" }} // Ensuring it looks interactive
+            ></button>
             <ViewTask
               state={state}
               setState={setState}
               tasks={tasksByBoard}
               router={router}
-              boardName={boardName || ""}
-              boardId={bId || ""}
+              boardName={boardName ?? ""}
+              boardId={boardId ?? ""}
               columnStatus={filteredColsbyBoard}
             />
           </>
         )}
         <div className="w-[full] h-full px-20 grid grid-cols-3 gap-6 pt-[100px] ">
-          {cols?.map((col, index) => {
-            if (col.boardId === bId) {
+          {cols?.map((col) => {
+            if (col.boardId === boardId) {
               return (
                 <div
-                  key={index}
+                  key={col.boardId}
                   className="bg-[#c8cdfa22] overflow-hidden rounded-xl px-4 py-1 h-auto border-2"
                 >
                   <div className="text-black my-4">
                     <ColumnText color={col.name}>{col.name}</ColumnText>
                   </div>
-                  {tasksStore?.map((task: Task, i: Key | null | undefined) => {
+                  {tasksStore?.map((task: Task) => {
                     if (task.status === col.name && col.id === task.columnId) {
                       return (
-                        <div key={i}>
+                        <div key={task.id}>
                           <KanbanCard
                             task={task}
                             setState={setState}
