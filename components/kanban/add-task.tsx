@@ -168,7 +168,7 @@ const AddTask = ({
               style={{
                 transition: "200ms ease-in",
               }}
-              disabled={!changed}
+              disabled={!changed || state.newTask?.title.length < 1}
               onClick={(e) => handleAddTask(e, updatedStatus)}
             >
               <div className="text-white text-xs font-bold  ">
@@ -187,11 +187,11 @@ const AddTask = ({
               </div>
             </button>
           </Form.Submit>
-          {!changed && (
-            <div className="text-[#e26666] border border-[#e26666] px-2 py-1 inline-block text-xs rounded w-[60%]">
-              * Please select a status to enable save{" "}
+          {!changed || state.newTask?.title.length < 1 ? (
+            <div className="text-[#6866e2] border border-[#4172cd65] border-1 px-2 py-1 inline-block text-[8px] rounded w-[60%] mt-4">
+              * Please add a title and status to enable save{" "}
             </div>
-          )}
+          ) : null}
         </div>
       </Form.Root>
     </div>

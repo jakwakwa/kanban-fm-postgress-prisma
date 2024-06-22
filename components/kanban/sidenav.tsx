@@ -42,9 +42,17 @@ export default function SideNav({ boards }: { boards: any[] }) {
             <Logo />
           </div>
         </Link>
+
         <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-0">
           <div className="px-0 pb-5 pl-4 uppercase tracking-widest text-sm font-medium text-kgray-text">
             All boards ({boards.length})
+          </div>
+          <div className="pl-3 mt-4 pb-6">
+            <div onClick={() => setAddBoardModul(true)}>
+              <Button href={"#"} isDisabled={false} variant="secondary">
+                + Add Board
+              </Button>
+            </div>
           </div>
           {boardLoading && currentBoardName === null ? (
             <div className="pl-4 flex flex-row gap-2">
@@ -126,13 +134,6 @@ export default function SideNav({ boards }: { boards: any[] }) {
                 </div>
               ))}
             </div>
-            <div className="pl-3 mt-4">
-              <div onClick={() => setAddBoardModul(true)}>
-                <Button href={"#"} isDisabled={false}>
-                  Add New Board
-                </Button>
-              </div>
-            </div>
           </div>
           <div className="hidden h-auto w-full grow rounded-md md:block"></div>
           <form>
@@ -152,7 +153,7 @@ export default function SideNav({ boards }: { boards: any[] }) {
             onClick={() => setAddBoardModul(false)}
           ></div>
           <div className="absolute top-[15%] left-0 w-screen mx-auto z-10">
-            <AddBoard setAddBoardModul={() => setAddBoardModul(true)} />
+            <AddBoard setAddBoardModul={setAddBoardModul} />
           </div>
         </>
       )}
