@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import StatusDropdown from "../ui/dropdown-components/status-dropdown";
 import * as Form from "@radix-ui/react-form";
-import { Task, Subtask as SubTask, Subtask } from "@/types/data-types";
+import { Subtask } from "@/types/data-types";
 import { SpinnerCircularSplit } from "spinners-react";
 import FormLabel from "./form-label";
 
@@ -40,31 +40,17 @@ const AddTask = ({
   columnStatus,
   boardId,
 }: AddTaskProps) => {
-  const [toggled, setToggled] = useState("closed");
   const [changed, setChanged] = useState(false);
-  const [selectStatus, setSelectStatus] = useState("ss");
 
   const [newStatus, setNewStatus] = useState<any>(
     '{"columnId":"","columnStatus":""}'
   );
-  const [updatedTitle, setUpdatedTitle] = useState("");
-  const [updatedDescription, setUpdatedDescription] = useState(
-    state.newTask?.description ? state.newTask?.description : "no description"
-  );
+
   const [updatedStatus, setUpdatedStatus] = useState(
     `{"columnId":"${state.newTask?.columnId}","columnStatus":"${
       state.newTask?.status ? state.newTask?.status : "Todo"
     }", "boardId":"${boardId}"}`
   );
-  const [updatedTask, setUpdatedTask] = useState({
-    title: updatedTitle,
-    description: updatedDescription,
-    status:
-      newStatus.columnStatus !== undefined ? newStatus.columnStatus : "Todo",
-    columnId: newStatus.columnId,
-  });
-
-  const [newColId, setNewColId] = useState("");
 
   useEffect(() => {
     setState((prevState: StateT) => ({
@@ -77,7 +63,6 @@ const AddTask = ({
         status: "",
       },
     }));
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -150,7 +135,6 @@ const AddTask = ({
               setNewStatus={setNewStatus}
               newStatus={newStatus}
               disabled={state.isDisabled}
-              setNewColId={setNewColId}
               inputStyle={""}
               changed={changed}
               setChanged={setChanged}

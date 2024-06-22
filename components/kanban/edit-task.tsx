@@ -1,11 +1,10 @@
 "use client";
-import { Dispatch, Key, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import StatusDropdown from "../ui/dropdown-components/status-dropdown";
 import * as Form from "@radix-ui/react-form";
 import { Task, Subtask as SubTask } from "@/types/data-types";
 import { SpinnerCircularSplit } from "spinners-react";
 import FormLabel from "./form-label";
-import useStore from "@/context/store";
 
 interface EditTaskProps {
   updatedTask: {
@@ -87,6 +86,7 @@ const EditTask = ({
   useEffect(() => {
     setSubtaskAdded(false);
     setSubtaskLoading(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function handleAddNewSubtask() {
@@ -111,8 +111,6 @@ const EditTask = ({
       isCompleted: false,
       taskId: task?.id,
     });
-
-    // addTasks(tasks);
   }
   // @ts-ignore
   function handleSaveNewSubtask(e) {
@@ -120,9 +118,6 @@ const EditTask = ({
     setSubtaskLoading(true);
     handleAddSubTask(e);
     setDisableAddBtn(true);
-    // setTimeout(() => {
-    //   // subtaskAdded(true);
-    // }, 4000);
   }
 
   useEffect(() => {
@@ -216,7 +211,7 @@ const EditTask = ({
                 <Form.Field
                   className="grid mb-[10px]"
                   name={`subtask-${subIndex}`}
-                  key={subIndex}
+                  key={sub.id ? sub.id : `subtask-${subIndex}`}
                 >
                   <div className="flex items-baseline justify-between"></div>
                   <Form.Control asChild>
@@ -243,6 +238,11 @@ const EditTask = ({
               <div
                 className="h-10 flex justify-center align-middle items-center text-center text-indigo-500 text-xs font-bold font-['Plus Jakarta Sans'] leading-snug"
                 onClick={handleAddNewSubtask}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    handleAddNewSubtask();
+                  }
+                }}
               >
                 + Add New Subtask
               </div>
@@ -270,7 +270,6 @@ const EditTask = ({
               setUpdatedStatus={setUpdatedStatus}
               columnStatus={columnStatus}
               setNewStatus={setNewStatus}
-              setNewColId={setNewColId}
               newStatus={newStatus}
               disabled={false}
               inputStyle={inputStyle}
@@ -290,7 +289,8 @@ const EditTask = ({
               }`}
               disabled={!changed || updatedTask?.title.length < 1}
               onClick={(e) => {
-                handleUpdateTitle(e), handleUpdateSubTask(e);
+                handleUpdateTitle(e);
+                handleUpdateSubTask(e);
               }}
             >
               <div className="text-white text-xs font-bold  ">

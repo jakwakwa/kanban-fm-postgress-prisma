@@ -1,6 +1,5 @@
 "use-client";
-import { SetStateAction, useEffect, useState } from "react";
-// import * as Radix from "@radix-ui/react-select";
+import { useEffect, useState } from "react";
 import * as Select from "@radix-ui/react-select";
 import ColumnText from "@/components/kanban/columns/column-text";
 const itemsInitial = ["Todo", "Doing", "Done"];
@@ -13,7 +12,7 @@ const StatusDropdown = ({
   setNewStatus,
   newStatus,
   disabled,
-  setNewColId,
+
   inputStyle,
   changed,
   setChanged,
@@ -25,7 +24,7 @@ const StatusDropdown = ({
   setNewStatus: any;
   newStatus: any;
   disabled: boolean;
-  setNewColId: any;
+
   inputStyle: string;
   changed: any;
   setChanged: any;
@@ -47,14 +46,7 @@ const StatusDropdown = ({
 
     // @ts-ignore
     setSelectStatus(parsed.columnStatus);
-  }, [
-    newStatus,
-    setChanged,
-    setNewColId,
-    setNewStatus,
-    toggled,
-    updatedStatus,
-  ]);
+  }, [newStatus, setChanged, setNewStatus, toggled, updatedStatus]);
 
   if (!disabled) {
     return (
@@ -83,17 +75,19 @@ const StatusDropdown = ({
             <Select.Content asChild>
               <div className="rounded-md bg-white p-[16px] text-sm shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),_0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)] will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade capitalize">
                 <Select.Viewport>
-                  {columnStatus.map((item, i) => {
-                    return (
-                      <Select.Item
-                        key={i}
-                        value={JSON.stringify(item)}
-                        className="p-2 hover:bg-violet5 capitalize"
-                      >
-                        <Select.ItemText> {item.columnStatus} </Select.ItemText>
-                      </Select.Item>
-                    );
-                  })}
+                  {columnStatus.map(
+                    (item: { columnStatus: string; columnId: string }, i) => {
+                      return (
+                        <Select.Item
+                          key={item.columnId}
+                          value={JSON.stringify(item)}
+                          className="p-2 hover:bg-violet5 capitalize"
+                        >
+                          <Select.ItemText>{item.columnStatus}</Select.ItemText>
+                        </Select.Item>
+                      );
+                    }
+                  )}
                 </Select.Viewport>
               </div>
             </Select.Content>
@@ -108,7 +102,6 @@ const StatusDropdown = ({
           <div className="text-left"></div>
           <div className="text-black my-0">
             <ColumnText color={status}>
-              {" "}
               {!changed ? status : selectStatus}
             </ColumnText>
           </div>
