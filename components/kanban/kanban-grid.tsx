@@ -1,17 +1,36 @@
 "use client";
-import KanbanCard from "@/components/kanban/kanban-card";
-import ColumnText from "@/components/kanban/columns/column-text";
-import useStore from "@/context/store";
-import { useSearchParams, useRouter } from "next/navigation";
-import { BoardsData, Column, Task, Subtask, Board } from "@/types/data-types";
-import { COLORS } from "@/constants/theme";
-import { useEffect, useRef, useState } from "react";
-import ViewTask from "./view-task";
 
-import { SpinnerRoundFilled } from "spinners-react";
-import Button from "../ui/buttons/button";
+import { FormEvent, Key, useEffect, useRef, useState } from "react";
+import ViewTask from "./view-task";
 import AddTask from "./add-task";
+import useStore from "@/context/store";
+import { Subtask, Column, Board } from "@prisma/client";
 import * as Toast from "@radix-ui/react-toast";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { SpinnerRoundFilled } from "spinners-react";
+import ColumnText from "./columns/column-text";
+import KanbanCard from "./kanban-card";
+
+interface StateT {
+  isDisabled: boolean;
+  openModul: boolean;
+  taskName: string;
+  taskId: string;
+  columnName: string;
+  columnId: string;
+  open: boolean;
+  openDeleteToast: boolean;
+  loading: boolean;
+  addTaskMode: boolean;
+  newTask: {
+    columnId: string;
+    title: string;
+    description: string;
+    status: string;
+  };
+  newSubtasks: Subtask[];
+}
 
 const KanbanGrid = ({
   cols,
@@ -22,180 +41,161 @@ const KanbanGrid = ({
   subTasks: Subtask[];
   boards: Board[];
 }): JSX.Element => {
-  const addColumns = useStore((state) => state.addColumns);
-  const addTasks = useStore((state) => state.addTasks);
-  const addSubTasks = useStore((state) => state.addSubTasks);
-  const addBoards = useStore((state) => state.addBoard);
-  const tasksStore = useStore((state) => state.tasks);
-  const [isDisabled] = useState(false);
-  const [openModul, setOpenModul] = useState<boolean>(false);
-  const [taskName, setTaskName] = useState<string>("");
-  const [taskId, setTaskId] = useState<string>("");
-  const [columnName, setColumnName] = useState<string>("");
-  const [columnId, setColumnId] = useState<string>("");
+  // const { cols, subTasks, boards } = initialData;
+  const addColumns = useStore((state: { addColumns: any }) => state.addColumns);
+  const addTasks = useStore((state: { addTasks: any }) => state.addTasks);
+  const addSubTasks = useStore(
+    (state: { addSubTasks: any }) => state.addSubTasks
+  );
+  const addBoards = useStore((state: { addBoard: any }) => state.addBoard);
+  const tasksStore = useStore((state: { tasks: any }) => state.tasks);
   const slug = useSearchParams();
   const boardName = slug.get("board");
   const bId = slug.get("id");
-  const [open, setOpen] = useState(false);
-  const [openDeleteToast, setOpenDeleteToast] = useState(false);
-  const eventDateRef = useRef(new Date());
-  const timerRef = useRef(0);
-  const loader = useStore((state) => state.loading);
+  const loader = useStore((state: { loading: any }) => state.loading);
   const router = useRouter();
 
-  const [loading, setLoading] = useState(false);
+  const [state, setState] = useState<StateT>({
+    isDisabled: false,
+    openModul: false,
+    taskName: "",
+    taskId: "",
+    columnName: "",
+    columnId: "",
+    open: false,
+    openDeleteToast: false,
+    loading: false,
+    addTaskMode: false,
+    newTask: {
+      columnId: "",
+      title: "",
+      description: "",
+      status: "",
+    },
+    newSubtasks: [] as Subtask[],
+  });
+
+  const eventDateRef = useRef(new Date());
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
   useEffect(() => {
-    const timerId = timerRef.current;
-    return () => clearTimeout(timerId);
+    return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
   }, []);
+
   useEffect(() => {
     addSubTasks(subTasks);
 
-    function getAllTasks(boards: any[]) {
-      const allTasks: any[] = [];
+    const getAllTasks = (boards: Board[]) => {
+      return boards.flatMap((board) =>
+        // @ts-ignore
+        board.columns.flatMap((column: { tasks: any }) => column.tasks)
+      );
+    };
 
-      boards.forEach((board) => {
-        board.columns.forEach((column: { tasks: any[] }) => {
-          column.tasks.forEach((task) => {
-            allTasks.push(task);
-          });
-        });
-      });
-
-      return allTasks;
+    const currentBoard = boards.find((board) => board.id === bId);
+    if (currentBoard) {
+      const allTasksFromBoard = getAllTasks([currentBoard]);
+      addBoards([currentBoard]);
+      // @ts-ignore
+      addColumns(currentBoard.columns);
+      addTasks(allTasksFromBoard);
     }
+  }, [addBoards, addColumns, addSubTasks, addTasks, bId, boards, subTasks]);
 
-    let currentColumns: Column[] = [];
-    const currentBoard = boards.filter((board) => board.id === bId);
-    const allTasksFromBoard = getAllTasks(currentBoard);
+  const getTasks = () => {
+    return tasksStore.map((task: { id: any }) => ({
+      ...task,
+      subtasks: subTasks.filter((subTask) => task.id === subTask.taskId),
+    }));
+  };
 
-    const currentCols = currentBoard.map((board) => {
-      currentColumns = [...board.columns];
-      return currentColumns;
-    });
-    addBoards(currentBoard);
-    addColumns(currentColumns);
-    addTasks(allTasksFromBoard);
-  }, [
-    addBoards,
-    addColumns,
-    addSubTasks,
-    addTasks,
-    bId,
-    boards,
-    cols,
-    subTasks,
-  ]);
+  const getCols = () => {
+    return cols.map((col) => ({
+      columnId: col.id,
+      columnStatus: col.name,
+      boardId: col.boardId,
+    }));
+  };
 
-  let tasksByBoard: any[] = [];
-  function getTasks(): void {
-    tasksStore?.map((task, i) => {
-      const ste = subTasks?.filter((subTask, i) => task.id === subTask.taskId);
-      tasksByBoard = [
-        ...tasksByBoard,
-        {
-          ...task,
-          subtasks: [...ste],
-        },
-      ];
-    });
-  }
+  const filteredColsbyBoard = getCols().filter((c) => c.boardId === bId);
+  const tasksByBoard = getTasks();
 
-  let columnDetes: any[] = [];
-  function getCols(): void {
-    cols?.map((col) => {
-      columnDetes = [
-        ...columnDetes,
-        {
-          columnId: col.id,
-          columnStatus: col.name,
-          boardId: col.boardId,
-        },
-      ];
-      return columnDetes;
-    });
-  }
-
-  getCols();
-  const filteredColsbyBoard = columnDetes.filter((c) => c.boardId === bId);
-
-  getTasks();
-  const [addTaskMode, setAddTaskmode] = useState(false);
-
-  const [newTask, setNewTask] = useState({
-    columnId: "",
-    title: "",
-    description: "",
-    status: "",
-  });
-
-  const [newSubtasks, setNewSubtasks] = useState();
-
-  const handleAddTask = async (
-    e: { preventDefault: () => void },
-    s: string
-  ): Promise<any> => {
+  const handleAddTask = async (e: FormEvent, s: string): Promise<void> => {
     e.preventDefault();
-    setLoading(true); // Start loading
+    setState((prevState: any) => ({ ...prevState, loading: true }));
 
-    // Parse the input string
-    const pars = JSON.parse(s);
-    console.log(pars);
-    // Create the new task object
+    const parsed = JSON.parse(s);
     const newT = {
-      ...newTask,
-      status:
-        pars.columnStatus === "undefined" ||
-        pars.columnStatus === undefined ||
-        pars.columnStatus === null
-          ? "Todo"
-          : pars.columnStatus,
-      columnId: pars.columnId,
+      ...state.newTask,
+      status: parsed.columnStatus || "Todo",
+      columnId: parsed.columnId,
     };
 
     try {
-      // Make the POST request to add the new task
       const res = await fetch(createURL("/api/addTask"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          title: newTask.title,
-          description: newTask.description,
-          status: newT.status,
-          columnId: newT.columnId,
-        }),
+        body: JSON.stringify(newT),
       });
 
-      if (!res.ok) {
-        throw new Error("Failed to add task");
-      }
+      if (!res.ok) throw new Error("Failed to add task");
 
       const result = await res.json();
       addTasks([...tasksStore, result]);
-      setAddTaskmode(false);
-      setTimeout(() => {
-        setOpen(true);
-      }, 1000);
-
-      // Update UI after adding a new task
-      getTasks();
-      router.refresh(); // Refresh the router to update the UI
+      setState((prevState: any) => ({
+        ...prevState,
+        addTaskMode: false,
+        open: true,
+        loading: false,
+      }));
+      setTimeout(
+        () => setState((prevState: any) => ({ ...prevState, open: true })),
+        1000
+      );
+      router.refresh();
     } catch (error) {
       console.error("Error adding task:", error);
-    } finally {
-      setLoading(false); // Stop loading
+      setState((prevState: any) => ({ ...prevState, loading: false }));
     }
   };
+
+  const renderToast = (
+    title: string,
+    openState: boolean,
+    setOpenState: (state: boolean) => void
+  ) => (
+    <Toast.Provider swipeDirection="right">
+      <Toast.Root
+        className="bg-kpurple-main rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] p-[15px] grid [grid-template-areas:_'title_action'_'description_action'] grid-cols-[auto_max-content] gap-x-[15px] items-center data-[state=open]:animate-slideIn data-[state=closed]:animate-hide data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=cancel]:translate-x-0 data-[swipe=cancel]:transition-[transform_200ms_ease-out] data-[swipe=end]:animate-swipeOut text-white"
+        open={openState}
+        onOpenChange={setOpenState}
+      >
+        <Toast.Title className="[grid-area:_title] mb-[5px] font-medium text-slate12 text-[15px]">
+          {title}
+        </Toast.Title>
+        <Toast.Description asChild>
+          <time
+            className="[grid-area:_description] m-0 text-slate11 text-[13px] leading-[1.3]"
+            dateTime={eventDateRef.current.toISOString()}
+          >
+            {prettyDate(eventDateRef.current)}
+          </time>
+        </Toast.Description>
+      </Toast.Root>
+      <Toast.Viewport className="[--viewport-padding:_25px] fixed bottom-0 right-0 flex flex-col p-[var(--viewport-padding)] gap-[10px] w-[390px] max-w-[100vw] m-0 list-none z-[2147483647] outline-none" />
+    </Toast.Provider>
+  );
 
   if (loader) {
     return (
       <div
         className="absolute w-full left-0 m-0 p-0 h-[100%]"
-        style={{
-          background: "rgba(72, 54, 113, 0.2)",
-        }}
+        style={{ background: "rgba(72, 54, 113, 0.2)" }}
       >
         <div className="absolute top-[40%] left-[50%] w-full mx-auto rounded-md p-[32px] pb-[48px] h-screen">
           <div className="flex items-center align-middle flex-row h-[50px] gap-0 animate-pulse">
@@ -220,66 +220,69 @@ const KanbanGrid = ({
         <div className="fixed right-12 top-4 z-0 w-[200px] flex justify-end">
           <button
             className={`${
-              isDisabled
+              state.isDisabled
                 ? "bg-kpurple-light cursor-not-allowed"
                 : "bg-kpurple-main hover:bg-slate-500"
             } px-5 py-3 rounded-3xl text-md text-white text-sm font-semibold `}
-            onClick={() => setAddTaskmode(true)}
+            onClick={() =>
+              setState((prevState: any) => ({
+                ...prevState,
+                addTaskMode: true,
+              }))
+            }
           >
             + Add New Task
           </button>
         </div>
 
-        {addTaskMode ? (
+        {state.addTaskMode && (
           <>
             <div
               className="absolute w-full left-0 m-0 p-0 h-[100%] bg-slate-700 bg-opacity-50"
-              onClick={() => setAddTaskmode(false)}
+              onClick={() =>
+                setState((prevState: any) => ({
+                  ...prevState,
+                  addTaskMode: false,
+                }))
+              }
             ></div>
             <AddTask
-              newTask={newTask}
-              loading={loading}
-              setNewTask={setNewTask}
-              setNewSubtasks={setNewSubtasks}
+              state={state}
+              setState={setState}
               handleAddTask={handleAddTask}
-              columnId={columnId}
               columnStatus={filteredColsbyBoard}
+              // @ts-ignore
               boardId={bId}
-              setOpen={setOpen}
-              open={open}
             />
           </>
-        ) : null}
+        )}
 
-        {openModul ? (
+        {state.openModul && (
           <>
             <div
               className="w-full h-full left-0 m-0 p-0  bg-slate-700 bg-opacity-50 fixed"
-              onClick={() => setOpenModul(false)}
+              onClick={() =>
+                setState((prevState: any) => ({
+                  ...prevState,
+                  openModul: false,
+                }))
+              }
             ></div>
             <ViewTask
-              taskName={taskName}
+              state={state}
+              setState={setState}
               tasks={tasksByBoard}
               router={router}
-              boardName={boardName ? boardName : ""}
-              boardId={bId ? bId : ""}
-              setOpenModul={setOpenModul}
+              boardName={boardName || ""}
+              boardId={bId || ""}
               columnStatus={filteredColsbyBoard}
-              columnId={columnId}
-              setOpen={setOpen}
-              open={open}
-              openDeletToast={openDeleteToast}
-              setOpenDeleteToast={setOpenDeleteToast}
             />
           </>
-        ) : null}
+        )}
 
         <div className="w-[full] h-full px-20 grid grid-cols-3 gap-6 pt-[100px] ">
           {cols?.map((col, index) => {
-            let inx = 0;
             if (col.boardId === bId) {
-              inx += inx + 1;
-
               return (
                 <div
                   key={index}
@@ -288,71 +291,54 @@ const KanbanGrid = ({
                   <div className="text-black my-4">
                     <ColumnText color={col.name}>{col.name}</ColumnText>
                   </div>
-                  {tasksStore?.map((task, i) => {
-                    if (task.status === col.name && col.id === task.columnId) {
-                      return (
-                        <div key={i}>
-                          <KanbanCard
-                            task={task}
-                            setOpenModul={setOpenModul}
-                            setTaskName={setTaskName}
-                            setTaskId={setTaskId}
-                            colName={task?.status}
-                            subTaskAmount={
-                              task?.subtasks ? task?.subtasks.length : 0
-                            }
-                            setColumnName={setColumnName}
-                            setColumnId={setColumnId}
-                          />
-                        </div>
-                      );
+                  {tasksStore?.map(
+                    (
+                      task: {
+                        id: string;
+                        title: string;
+                        description: string;
+                        status: string;
+                        columnId: string;
+                        subtasks: Array<any>;
+                      },
+                      i: Key | null | undefined
+                    ) => {
+                      if (
+                        task.status === col.name &&
+                        col.id === task.columnId
+                      ) {
+                        console.log(task);
+                        return (
+                          <div key={i}>
+                            <KanbanCard
+                              task={task}
+                              setState={setState}
+                              totalSubtasks={`${
+                                task?.subtasks !== undefined
+                                  ? task?.subtasks?.length
+                                  : "0"
+                              }`}
+                            />
+                            <div className="text-black"></div>
+                          </div>
+                        );
+                      }
                     }
-                  })}
+                  )}
                 </div>
               );
             }
           })}
         </div>
-        <Toast.Provider swipeDirection="right">
-          <Toast.Root
-            className="bg-kpurple-main rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] p-[15px] grid [grid-template-areas:_'title_action'_'description_action'] grid-cols-[auto_max-content] gap-x-[15px] items-center data-[state=open]:animate-slideIn data-[state=closed]:animate-hide data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=cancel]:translate-x-0 data-[swipe=cancel]:transition-[transform_200ms_ease-out] data-[swipe=end]:animate-swipeOut text-white"
-            open={open}
-            onOpenChange={setOpen}
-          >
-            <Toast.Title className="[grid-area:_title] mb-[5px] font-medium text-slate12 text-[15px]">
-              Successfully updated
-            </Toast.Title>
-            <Toast.Description asChild>
-              <time
-                className="[grid-area:_description] m-0 text-slate11 text-[13px] leading-[1.3]"
-                dateTime={eventDateRef.current.toISOString()}
-              >
-                {prettyDate(eventDateRef.current)}
-              </time>
-            </Toast.Description>
-          </Toast.Root>
-          <Toast.Viewport className="[--viewport-padding:_25px] fixed bottom-0 right-0 flex flex-col p-[var(--viewport-padding)] gap-[10px] w-[390px] max-w-[100vw] m-0 list-none z-[2147483647] outline-none" />
-        </Toast.Provider>
-        <Toast.Provider swipeDirection="right">
-          <Toast.Root
-            className="bg-[#2ba253] rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] p-[15px] grid [grid-template-areas:_'title_action'_'description_action'] grid-cols-[auto_max-content] gap-x-[15px] items-center data-[state=open]:animate-slideIn data-[state=closed]:animate-hide data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=cancel]:translate-x-0 data-[swipe=cancel]:transition-[transform_200ms_ease-out] data-[swipe=end]:animate-swipeOut text-white"
-            open={openDeleteToast}
-            onOpenChange={setOpenDeleteToast}
-          >
-            <Toast.Title className="[grid-area:_title] mb-[5px] font-medium text-slate12 text-[15px]">
-              Task Deleted Successfully
-            </Toast.Title>
-            <Toast.Description asChild>
-              <time
-                className="[grid-area:_description] m-0 text-slate11 text-[13px] leading-[1.3]"
-                dateTime={eventDateRef.current.toISOString()}
-              >
-                {prettyDate(eventDateRef.current)}
-              </time>
-            </Toast.Description>
-          </Toast.Root>
-          <Toast.Viewport className="[--viewport-padding:_25px] fixed bottom-0 right-0 flex flex-col p-[var(--viewport-padding)] gap-[10px] w-[390px] max-w-[100vw] m-0 list-none z-[2147483647] outline-none" />
-        </Toast.Provider>
+        {renderToast("Successfully updated", state.open, (open) =>
+          setState((prevState: any) => ({ ...prevState, open }))
+        )}
+        {renderToast(
+          "Task Deleted Successfully",
+          state.openDeleteToast,
+          (openDeleteToast) =>
+            setState((prevState: any) => ({ ...prevState, openDeleteToast }))
+        )}
       </>
     );
   }
@@ -361,12 +347,6 @@ const KanbanGrid = ({
 export default KanbanGrid;
 
 export const createURL = (path: string) => window.location.origin + path;
-
-function oneWeekAway(date: undefined) {
-  const now = new Date();
-  const inOneWeek = now.setDate(now.getDate() + 7);
-  return new Date(inOneWeek);
-}
 
 function prettyDate(date: number | Date | undefined) {
   return new Intl.DateTimeFormat("en-US", {

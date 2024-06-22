@@ -2,48 +2,46 @@
 import { useEffect, useState } from "react";
 import StatusDropdown from "../ui/dropdown-components/status-dropdown";
 import * as Form from "@radix-ui/react-form";
-import { Task, Subtask as SubTask } from "@/types/data-types";
+import { Task, Subtask as SubTask, Subtask } from "@/types/data-types";
 import { SpinnerCircularSplit } from "spinners-react";
 import FormLabel from "./form-label";
 
-interface TaskProp {
+interface StateT {
+  isDisabled: boolean;
+  openModul: boolean;
+  taskName: string;
+  taskId: string;
+  columnName: string;
   columnId: string;
-  title: string;
-  description: string;
-  status: string;
+  open: boolean;
+  openDeleteToast: boolean;
+  loading: boolean;
+  addTaskMode: boolean;
+  newTask: {
+    columnId: string;
+    title: string;
+    description: string;
+    status: string;
+  };
+  newSubtasks: Subtask[];
 }
 interface AddTaskProps {
-  newTask: TaskProp;
-  loading: boolean;
-  setNewTask: any;
-  setNewSubtasks: any;
-  handleAddTask: any;
+  state: StateT;
+  setState: (state: any) => void;
+  handleAddTask: (e: any, updatedStatus: any) => void;
   columnStatus: any;
-  columnId: any;
-  boardId: any;
-  setOpen: any;
+  boardId: string;
   open: any;
-  // updatedStatus: any;
-  // setUpdatedStatus: any;
-  // columnStatus: any;
-  // setNewStatus: any;
 }
+
 const AddTask = ({
-  newTask,
-  loading,
-  setNewTask,
-  setNewSubtasks,
+  state,
+  setState,
   handleAddTask,
   columnStatus,
-  columnId,
   boardId,
-  setOpen,
   open,
-}: // updatedStatus,
-// setUpdatedStatus,
-// columnStatus,
-// setNewStatus,
-AddTaskProps) => {
+}: AddTaskProps) => {
   const [toggled, setToggled] = useState("closed");
   const [changed, setChanged] = useState(false);
   const [selectStatus, setSelectStatus] = useState("ss");
@@ -53,11 +51,11 @@ AddTaskProps) => {
   );
   const [updatedTitle, setUpdatedTitle] = useState("");
   const [updatedDescription, setUpdatedDescription] = useState(
-    newTask?.description ? newTask?.description : "no description"
+    state.newTask?.description ? state.newTask?.description : "no description"
   );
   const [updatedStatus, setUpdatedStatus] = useState(
-    `{"columnId":"${columnId}","columnStatus":"${
-      newTask?.status ? newTask?.status : "Todo"
+    `{"columnId":"${state.newTask?.columnId}","columnStatus":"${
+      state.newTask?.status ? state.newTask?.status : "Todo"
     }", "boardId":"${boardId}"}`
   );
   const [updatedTask, setUpdatedTask] = useState({
@@ -71,12 +69,17 @@ AddTaskProps) => {
   const [newColId, setNewColId] = useState("");
 
   useEffect(() => {
-    setNewTask({
-      columnId: "",
-      title: "",
-      description: "",
-      status: "",
-    });
+    setState((prevState: StateT) => ({
+      ...prevState,
+      newTask: {
+        id: "",
+        columnId: "",
+        title: "",
+        description: "",
+        status: "",
+      },
+    }));
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -100,14 +103,13 @@ AddTaskProps) => {
               required
               type="text"
               placeholder={`e.g. Collect the Laundry.`}
-              value={newTask?.title}
+              value={state.newTask?.title}
               onChange={(e) => {
                 const newTaskTitle = e.target.value;
-
-                setNewTask({
-                  ...newTask,
-                  title: newTaskTitle,
-                });
+                setState((prevState: StateT) => ({
+                  ...prevState,
+                  newTask: { ...state.newTask, title: newTaskTitle },
+                }));
               }}
             />
           </Form.Control>
@@ -126,14 +128,14 @@ AddTaskProps) => {
             <textarea
               className="box-border w-full bg-slate-100 placeholder:text-xs placeholder:text-slate-400  placeholder:italic shadow-blackA6 inline-flex h-28 appearance-none items-center justify-center rounded-[4px] p-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black] selection:color-white selection:bg-blackA6"
               placeholder={`e.g. It’s always good to take a break. This 15 minute break will recharge the batteries a little.`}
-              value={newTask.description}
+              value={state.newTask.description}
               onChange={(e) => {
                 const newTaskDesc = e.target.value;
 
-                setNewTask({
-                  ...newTask,
-                  description: newTaskDesc,
-                });
+                setState((prevState: StateT) => ({
+                  ...prevState,
+                  newTask: { ...state.newTask, description: newTaskDesc },
+                }));
               }}
             />
           </Form.Control>
@@ -143,10 +145,9 @@ AddTaskProps) => {
           <div className="w-full h-16 relative mt-[16px]">
             <FormLabel isLabel={false}>Status</FormLabel>
             <StatusDropdown
-              status={newTask?.status ? newTask?.status : "Todo"}
+              status={state.newTask?.status ? state.newTask?.status : "Todo"}
               updatedStatus={updatedStatus}
               setUpdatedStatus={setUpdatedStatus}
-              // @ts-ignore
               columnStatus={columnStatus}
               setNewStatus={setNewStatus}
               setNewColId={setNewColId}
@@ -172,8 +173,8 @@ AddTaskProps) => {
             >
               <div className="text-white text-xs font-bold  ">
                 <div className="flex flex-row gap-2 align-middle items-center">
-                  {!loading ? "Save Changes" : "Saving"}
-                  {loading && (
+                  {!state.loading ? "Save Changes" : "Saving"}
+                  {state.loading && (
                     <SpinnerCircularSplit
                       size={20}
                       thickness={100}

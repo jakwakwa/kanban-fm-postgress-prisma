@@ -103,7 +103,7 @@ export default function SideNav({ boards }: { boards: any[] }) {
                       </div>
                     </Link>
                   ) : (
-                    <div
+                    <Link
                       className={`flex w-[90%] h-[48px] grow items-center justify-center gap-2 rounded-md  p-3 text-sm font-medium   md:flex-none md:justify-start md:p-0 md:px-0 transition-colors duration-75 ease-in-out ${
                         boardLoading && "cursor-not-allowed"
                       } rounded-r-full ${
@@ -111,6 +111,7 @@ export default function SideNav({ boards }: { boards: any[] }) {
                           ? "bg-violet-500 text-indigo-100 hover:bg-violet-500 hover:text-indigo-100 cursor-not-allowed"
                           : "bg-white hover:bg-violet-100 hover:text-indigo-700"
                       }`}
+                      href={""}
                     >
                       <ViewColumnsIcon className="w-6 ml-4" />
 
@@ -120,17 +121,17 @@ export default function SideNav({ boards }: { boards: any[] }) {
                           <div className="absolute right-[20px] rounded-full bg-violet-100 h-2 w-2 p-1"></div>
                         </div>
                       </div>
-                    </div>
+                    </Link>
                   )}
                 </div>
               ))}
             </div>
             <div className="pl-3 mt-4">
-              <button onClick={() => setAddBoardModul(true)}>
+              <div onClick={() => setAddBoardModul(true)}>
                 <Button href={"#"} isDisabled={false}>
                   Add New Board
                 </Button>
-              </button>
+              </div>
             </div>
           </div>
           <div className="hidden h-auto w-full grow rounded-md md:block"></div>
