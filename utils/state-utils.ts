@@ -1,4 +1,9 @@
-import { BoardState, ColumnState, TaskState } from "@/types/data-types";
+import {
+  BoardState,
+  ColumnState,
+  Subtask,
+  TaskState,
+} from "@/types/data-types";
 
 export const handleBoardProcessing = (
   boards: BoardState[],
@@ -31,4 +36,23 @@ export const getAllTasks = (boards: BoardState[]): TaskState[] => {
     board.columns.flatMap((column) => extractTasksFromColumn(column));
 
   return boards.flatMap((board) => extractTasksFromBoard(board));
+};
+export const INITIAL_STATE = {
+  isDisabled: false,
+  openModul: false,
+  taskName: "",
+  taskId: "",
+  columnName: "",
+  columnId: "",
+  open: false,
+  openDeleteToast: true,
+  loading: false,
+  addTaskMode: false,
+  newTask: {
+    columnId: "",
+    title: "",
+    description: "",
+    status: "",
+  },
+  newSubtasks: [] as Subtask[],
 };

@@ -1,46 +1,23 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+
 import ViewTask from "./view-task";
 import AddTask from "./add-task";
-import useStore from "@/context/store";
-
-import { useSearchParams, useRouter } from "next/navigation";
-import { SpinnerRoundFilled } from "spinners-react";
 import ColumnText from "./columns/column-text";
 import KanbanCard from "./kanban-card";
-
 import RenderToastMsg from "./render-toastmsg";
-import { Board, Column, Subtask } from "@prisma/client";
-import { BoardState, StateT, TaskState } from "@/types/data-types";
+import useStore from "@/context/store";
+import { BoardState, StateT, Subtask, TaskState } from "@/types/data-types";
 import {
-  findCurrentBoard,
+  INITIAL_STATE,
   getAllTasks,
   handleBoardProcessing,
 } from "@/utils/state-utils";
+import { BoardLoadSpinner } from "./board-loader";
+import OverlayButton from "./overlay-button";
 
-export const BoardLoadSpinner = (
-  <div
-    className="absolute w-full left-0 m-0 p-0 h-[100%]"
-    style={{ background: "rgba(72, 54, 113, 0.2)" }}
-  >
-    <div className="absolute top-[40%] left-[50%] w-full mx-auto rounded-md p-[32px] pb-[48px] h-screen">
-      <div className="flex items-center align-middle flex-row h-[50px] gap-0 animate-pulse">
-        <div className="h-[25px] w-[120px] p-0 m-0 text-sm leading-1 text-indigo-500">
-          Loading board...
-        </div>
-        <div className="h-[50px] w-[50px]">
-          <SpinnerRoundFilled
-            size={50}
-            thickness={100}
-            speed={100}
-            color="rgba(74, 57, 172, 0.71)"
-          />
-        </div>
-      </div>
-    </div>
-  </div>
-);
 const KanbanGrid = ({
   subTasks,
   boards,
@@ -48,43 +25,33 @@ const KanbanGrid = ({
   subTasks: Subtask[];
   boards: BoardState[];
 }): JSX.Element => {
-  const addColumns = useStore((state: { addColumns: any }) => state.addColumns);
-  const addTasks = useStore((state: { addTasks: any }) => state.addTasks);
-  const addSubTasks = useStore(
-    (state: { addSubTasks: any }) => state.addSubTasks
-  );
-  const addBoards = useStore((state) => state.addBoards);
+  const {
+    addColumns,
+    addTasks,
+    addSubTasks,
+    addBoards,
+    addCurrentBoard,
+    columns,
+    tasks: tasksStore,
+    loading: loader,
+  } = useStore((state) => ({
+    addColumns: state.addColumns,
+    addTasks: state.addTasks,
+    addSubTasks: state.addSubTasks,
+    addBoards: state.addBoards,
+    addCurrentBoard: state.addCurrentBoard,
+    columns: state.columns,
+    tasks: state.tasks,
+    loading: state.loading,
+  }));
 
-  const currentBoard = useStore((state) => state.currentBoard);
-  const addCurrentBoard = useStore((state) => state.addCurrentBoard);
-  const columns = useStore((state) => state.columns);
-
-  const tasksStore = useStore((state: { tasks: any }) => state.tasks);
   const slug = useSearchParams();
   const boardName = slug.get("board");
   const boardId = slug.get("id") as unknown as string;
-  const loader = useStore((state: { loading: any }) => state.loading);
+
   const router = useRouter();
 
-  const [state, setState] = useState<StateT>({
-    isDisabled: false,
-    openModul: false,
-    taskName: "",
-    taskId: "",
-    columnName: "",
-    columnId: "",
-    open: false,
-    openDeleteToast: true,
-    loading: false,
-    addTaskMode: false,
-    newTask: {
-      columnId: "",
-      title: "",
-      description: "",
-      status: "",
-    },
-    newSubtasks: [] as Subtask[],
-  });
+  const [state, setState] = useState<StateT>(INITIAL_STATE);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -107,32 +74,31 @@ const KanbanGrid = ({
     };
 
     handleBoardProcessing(boards, boardId, processBoard);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [boardId, boards, subTasks]);
+  }, [
+    addBoards,
+    addColumns,
+    addCurrentBoard,
+    addSubTasks,
+    addTasks,
+    boardId,
+    boards,
+    subTasks,
+  ]);
 
   const getTasks = () => {
-    return tasksStore.map((task: { id: any }) => ({
+    return tasksStore.map((task: TaskState) => ({
       ...task,
       subtasks: subTasks.filter((subTask) => task.id === subTask.taskId),
     }));
   };
 
-  // const getCols = () => {
-  //   return col.map((col) => ({
-  //     columnId: col.id,
-  //     columnStatus: col.name,
-  //     boardId: col.boardId,
-  //   }));
-  // };
-
-  // const filteredColsbyBoard = getCols().filter((c) => c.boardId === boardId);
-  const tasksByBoard = getTasks();
+  const tasksByBoard: TaskState[] = getTasks();
 
   const handleAddTask = async (
     e: FormEvent,
     newtask: any,
     colId: any,
-    status: any // JSON
+    status: any
   ): Promise<void> => {
     e.preventDefault();
     setState((prevState) => ({
@@ -148,30 +114,17 @@ const KanbanGrid = ({
     };
 
     try {
-      const res = await fetch(createURL("/api/addTask"), {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newT),
-      });
+      const result = await addTaskEntry(newT);
 
-      if (res.ok) {
-        const result = await res.json();
-
-        setState((prevState) => ({
-          ...prevState,
-          loading: false,
-          open: true,
-          addTaskMode: false,
-        }));
-        addTasks([...tasksStore, result]);
-        router.push(`/kanban/board?board=${boardName}&id=${boardId}`);
-
-        router.refresh();
-      }
-
-      if (!res.ok) throw new Error("Failed to add task");
+      setState((prevState) => ({
+        ...prevState,
+        loading: false,
+        open: true,
+        addTaskMode: false,
+      }));
+      addTasks([...tasksStore, result]);
+      router.push(`/kanban/board?board=${boardName}&id=${boardId}`);
+      router.refresh();
     } catch (error) {
       console.error("Error adding task:", error);
       setState((prevState: any) => ({ ...prevState, loading: false }));
@@ -200,40 +153,15 @@ const KanbanGrid = ({
             + Add New Task
           </button>
         </div>
-        {state.addTaskMode && (
-          <>
-            <button
-              className="absolute w-full left-0 m-0 p-0 h-[100%] bg-slate-700 bg-opacity-70"
-              onClick={() =>
-                setState((prevState: any) => ({
-                  ...prevState,
-                  addTaskMode: false,
-                }))
-              }
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  setState((prevState: any) => ({
-                    ...prevState,
-                    addTaskMode: false,
-                  }));
-                }
-              }}
-              onTouchStart={() =>
-                setState((prevState: any) => ({
-                  ...prevState,
-                  addTaskMode: false,
-                }))
-              }
-            ></button>
-            <AddTask
-              state={state}
-              setState={setState}
-              handleAddTask={handleAddTask}
-              columnStatus={columns}
-              boardId={boardId}
-            />
-          </>
-        )}
+        <OverlayButton setState={setState} />
+        <AddTask
+          state={state}
+          setState={setState}
+          handleAddTask={handleAddTask}
+          columnStatus={columns}
+          boardId={boardId}
+        />
+
         {state.openModul && (
           <>
             <button
@@ -246,30 +174,7 @@ const KanbanGrid = ({
               }
             ></button>
 
-            <button
-              className="w-full h-full left-0 m-0 p-0 bg-slate-700 bg-opacity-70 fixed"
-              onClick={() =>
-                setState((prevState: any) => ({
-                  ...prevState,
-                  openModul: false,
-                }))
-              }
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  setState((prevState: any) => ({
-                    ...prevState,
-                    openModul: false,
-                  }));
-                }
-              }}
-              onTouchStart={() =>
-                setState((prevState: any) => ({
-                  ...prevState,
-                  openModul: false,
-                }))
-              }
-              style={{ cursor: "pointer" }} // Ensuring it looks interactive
-            ></button>
+            <OverlayButton setState={setState} />
             <ViewTask
               state={state}
               setState={setState}
@@ -338,3 +243,23 @@ export function prettyDate(date: number | Date | undefined) {
     timeStyle: "short",
   }).format(date);
 }
+
+export const addTaskEntry = async (updates: Partial<TaskState>) => {
+  const url = createURL("/api/addTask"); // Ensure createURL is defined and used correctly
+  const res = await fetch(
+    new Request(url, {
+      method: "POST",
+      body: JSON.stringify(updates), // Directly stringify the updates object
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+  );
+
+  if (res.ok) {
+    return res.json();
+  } else {
+    const errorText = await res.text(); // Get error text for better debugging
+    throw new Error(`Something went wrong on API server: ${errorText}`);
+  }
+};
