@@ -1,4 +1,4 @@
-import { ClerkProvider, RedirectToSignIn, SignedOut } from "@clerk/nextjs";
+import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import { Plus_Jakarta_Sans } from "next/font/google";
 
@@ -17,9 +17,9 @@ const jakarta = Plus_Jakarta_Sans({
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <ClerkProvider>
       <html lang="en">
