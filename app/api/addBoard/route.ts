@@ -1,4 +1,3 @@
-import { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
 import { getUserByClerkId } from "@/utils/auth";
 import { NextResponse } from "next/server";
