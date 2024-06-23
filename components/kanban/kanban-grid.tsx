@@ -1,8 +1,6 @@
 "use client";
-
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-
 import ViewTask from "./view-task";
 import AddTask from "./add-task";
 import ColumnText from "./columns/column-text";
@@ -18,6 +16,13 @@ import {
 import { BoardLoadSpinner } from "./board-loader";
 import OverlayButton from "./overlay-button";
 
+/**
+ * KanbanGrid component renders the Kanban board with tasks and columns.
+ * @param {Object} props - The component props.
+ * @param {Subtask[]} props.subTasks - The list of subtasks.
+ * @param {BoardState[]} props.boards - The list of boards.
+ * @returns {JSX.Element} The KanbanGrid component.
+ */
 const KanbanGrid = ({
   subTasks,
   boards,
@@ -85,6 +90,10 @@ const KanbanGrid = ({
     subTasks,
   ]);
 
+  /**
+   * Retrieves tasks and associates them with their subtasks.
+   * @returns {TaskState[]} The list of tasks with associated subtasks.
+   */
   const getTasks = () => {
     return tasksStore.map((task: TaskState) => ({
       ...task,
@@ -94,6 +103,14 @@ const KanbanGrid = ({
 
   const tasksByBoard: TaskState[] = getTasks();
 
+  /**
+   * Handles the addition of a new task.
+   * @param {FormEvent} e - The form event.
+   * @param {any} newtask - The new task data.
+   * @param {any} colId - The column ID.
+   * @param {any} status - The task status.
+   * @returns {Promise<void>} A promise that resolves when the task is added.
+   */
   const handleAddTask = async (
     e: FormEvent,
     newtask: any,
@@ -235,8 +252,18 @@ const KanbanGrid = ({
 
 export default KanbanGrid;
 
+/**
+ * Creates a URL by appending the given path to the window's origin.
+ * @param {string} path - The path to append.
+ * @returns {string} The full URL.
+ */
 export const createURL = (path: string) => window.location.origin + path;
 
+/**
+ * Formats a date into a human-readable string.
+ * @param {number | Date | undefined} date - The date to format.
+ * @returns {string} The formatted date string.
+ */
 export function prettyDate(date: number | Date | undefined) {
   return new Intl.DateTimeFormat("en-US", {
     dateStyle: "full",
@@ -244,6 +271,12 @@ export function prettyDate(date: number | Date | undefined) {
   }).format(date);
 }
 
+/**
+ * Adds a new task entry by making a POST request to the API.
+ * @param {Partial<TaskState>} updates - The task data to add.
+ * @returns {Promise<any>} The response from the API.
+ * @throws Will throw an error if the API request fails.
+ */
 export const addTaskEntry = async (updates: Partial<TaskState>) => {
   const url = createURL("/api/addTask"); // Ensure createURL is defined and used correctly
   const res = await fetch(
