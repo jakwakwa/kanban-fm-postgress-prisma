@@ -18,7 +18,7 @@ const KanbanCard = ({ task, setState, totalSubtasks }: propType) => {
 
   return (
     <div className="flex flex-col gap-4 h-[auto] min-h-[140px] mb-4">
-      <div
+      <button
         onClick={() => handleViewTask(task.title, task.columnId)}
         className="bg-white hover:bg-slate-50 h-[auto] min-h-[140px] rounded-md shadow-md p-[16px] flex flex-col justify-between cursor-pointer capitalize"
       >
@@ -31,7 +31,7 @@ const KanbanCard = ({ task, setState, totalSubtasks }: propType) => {
         <h4 className="text-slate-600 mt-[4px] text-right">
           {totalSubtasks} subtasks
         </h4>
-      </div>
+      </button>
     </div>
   );
 };
