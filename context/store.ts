@@ -26,8 +26,7 @@ interface KanbanStore {
 }
 
 // Function to parse JSON data into Zustand store structure
-const useStore = create<KanbanStore>(
-  // @ts-ignore
+const useStore = create<KanbanStore>()(
   devtools((set) => ({
     boards: [],
     currentBoard: {},

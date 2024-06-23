@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { MouseEvent, useState } from "react";
+import { useState } from "react";
 import * as Form from "@radix-ui/react-form";
 import { SpinnerCircularSplit } from "spinners-react";
 
@@ -10,7 +10,9 @@ const AddBoard = ({ setAddBoardModul }: any) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  const handleCancel = (e: MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleCancel = (
+    e: React.MouseEvent<HTMLButtonElement, React.MouseEvent>
+  ) => {
     e.preventDefault();
     setAddBoardModul(false);
   };
@@ -18,7 +20,6 @@ const AddBoard = ({ setAddBoardModul }: any) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
     try {
       const res = await fetch("/api/addBoard", {
         method: "POST",
@@ -27,14 +28,11 @@ const AddBoard = ({ setAddBoardModul }: any) => {
         },
         body: JSON.stringify({ name, userId }),
       });
-
       if (res.ok) {
         const newBoard = await res.json();
-
         router.push(
           `/kanban/board?board=${newBoard.data.name}&id=${newBoard.data.id}`
         );
-
         setAddBoardModul(false);
         router.refresh();
       } else {
@@ -50,7 +48,7 @@ const AddBoard = ({ setAddBoardModul }: any) => {
   return (
     <div className="absolute w-[520px] mx-auto mt-[0%] bg-white rounded-xl p-[32px] pb-[48px] h-auto shadow-lg left-[35%]">
       <div className="text-xl font-bold mb-4">Add New Board</div>
-      <Form.Root className="w-full">
+      <Form.Root className="w-full" onSubmit={handleSubmit}>
         <Form.Field className="grid mb-[10px]" name="title">
           <div className="flex items-baseline justify-between">
             <Form.Label className="text-[15px] font-medium leading-[35px] text-slate-500">
@@ -76,20 +74,18 @@ const AddBoard = ({ setAddBoardModul }: any) => {
             />
           </Form.Control>
         </Form.Field>
-
         <div className="flex flex-row gap-2">
           <Form.Submit asChild>
             <button
-              className={`mt-6 flex justify-center text-center w-full h-10 bg-indigo-500 hover:bg-indigo-700 rounded-2xl align-middle items-center disabled:bg-indigo-200 disabled:cursor-not-allowed   ${
+              className={`mt-6 flex justify-center text-center w-full h-10 bg-indigo-500 hover:bg-indigo-700 rounded-2xl align-middle items-center disabled:bg-indigo-200 disabled:cursor-not-allowed ${
                 loading ? "cursor-not-allowed animate-pulse" : "cursor-pointer"
               }`}
-              onClick={handleSubmit}
               disabled={name.length === 0}
               style={{
                 transition: "200ms ease-in",
               }}
             >
-              <div className={`text-white text-xs font-bold`}>
+              <div className="text-white text-xs font-bold">
                 <div className="flex flex-row gap-2 align-middle items-center">
                   {!loading ? "Save Changes" : "Saving"}
                   {loading && (
@@ -105,7 +101,6 @@ const AddBoard = ({ setAddBoardModul }: any) => {
               </div>
             </button>
           </Form.Submit>
-
           <div
             className="mt-6 flex justify-center text-center h-10 rounded-2xl align-middle items-center cursor-pointer w-40 text-black"
             style={{
@@ -114,10 +109,8 @@ const AddBoard = ({ setAddBoardModul }: any) => {
           >
             <button
               className="text-black text-xs font-bold hover:text-gray hover:underline"
-              onClick={(e) => {
-                // @ts-ignore
-                handleCancel(e);
-              }}
+              // @ts-ignore
+              onClick={(e) => handleCancel(e)}
             >
               <div className="flex flex-row gap-2 align-middle items-center text-slate-500 text-xs uppercase tracking-widest">
                 Cancel

@@ -8,27 +8,24 @@ import KanbanCard from "./kanban-card";
 import RenderToastMsg from "./render-toastmsg";
 import useStore from "@/context/store";
 import { BoardState, StateT, Subtask, TaskState } from "@/types/data-types";
-import {
-  INITIAL_STATE,
-  getAllTasks,
-  handleBoardProcessing,
-} from "@/utils/state-utils";
+import { getAllTasks, handleBoardProcessing } from "@/utils/state-utils";
 import { BoardLoadSpinner } from "./board-loader";
 import OverlayButton from "./overlay-button";
+import { INITIAL_STATE } from "@/constants/initial-data";
 
 /**
  * KanbanGrid component renders the Kanban board with tasks and columns.
  * @param {Object} props - The component props.
- * @param {Subtask[]} props.subTasks - The list of subtasks.
- * @param {BoardState[]} props.boards - The list of boards.
+ * @param {Subtask[]} [props.subTasks=[]] - The list of subtasks.
+ * @param {BoardState[]} [props.boards=[]] - The list of boards.
  * @returns {JSX.Element} The KanbanGrid component.
  */
 const KanbanGrid = ({
-  subTasks,
-  boards,
+  subTasks = [],
+  boards = [],
 }: {
-  subTasks: Subtask[];
-  boards: BoardState[];
+  subTasks?: Subtask[];
+  boards?: BoardState[];
 }): JSX.Element => {
   const {
     addColumns,
@@ -53,11 +50,8 @@ const KanbanGrid = ({
   const slug = useSearchParams();
   const boardName = slug.get("board");
   const boardId = slug.get("id") as unknown as string;
-
   const router = useRouter();
-
   const [state, setState] = useState<StateT>(INITIAL_STATE);
-
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -170,14 +164,18 @@ const KanbanGrid = ({
             + Add New Task
           </button>
         </div>
-        <OverlayButton setState={setState} />
-        <AddTask
-          state={state}
-          setState={setState}
-          handleAddTask={handleAddTask}
-          columnStatus={columns}
-          boardId={boardId}
-        />
+        {state.addTaskMode && (
+          <>
+            <OverlayButton setState={setState} />
+            <AddTask
+              state={state}
+              setState={setState}
+              handleAddTask={handleAddTask}
+              columnStatus={columns}
+              boardId={boardId}
+            />
+          </>
+        )}
 
         {state.openModul && (
           <>
@@ -208,7 +206,7 @@ const KanbanGrid = ({
             if (col.boardId === boardId) {
               return (
                 <div
-                  key={col.boardId}
+                  key={col.id}
                   className="bg-[#c8cdfa22] overflow-hidden rounded-xl px-4 py-1 h-auto border-2"
                 >
                   <div className="text-black my-4">
@@ -258,18 +256,6 @@ export default KanbanGrid;
  * @returns {string} The full URL.
  */
 export const createURL = (path: string) => window.location.origin + path;
-
-/**
- * Formats a date into a human-readable string.
- * @param {number | Date | undefined} date - The date to format.
- * @returns {string} The formatted date string.
- */
-export function prettyDate(date: number | Date | undefined) {
-  return new Intl.DateTimeFormat("en-US", {
-    dateStyle: "full",
-    timeStyle: "short",
-  }).format(date);
-}
 
 /**
  * Adds a new task entry by making a POST request to the API.

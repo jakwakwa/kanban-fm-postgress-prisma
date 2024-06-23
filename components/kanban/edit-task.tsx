@@ -5,7 +5,8 @@ import * as Form from "@radix-ui/react-form";
 import { TaskState, Subtask as SubTask, TaskPayload } from "@/types/data-types";
 import { SpinnerCircularSplit } from "spinners-react";
 import FormLabel from "./form-label";
-import { Subtask } from "@prisma/client";
+import { SUBTASK_STYLE } from "@/constants/theme";
+import { addUpdatedSubtaskUtil } from "@/utils/state-utils";
 
 interface EditTaskProps {
   updatedTask: TaskPayload;
@@ -18,15 +19,12 @@ interface EditTaskProps {
   setNewStatus: Dispatch<SetStateAction<any>>;
   setNewColId: any;
   newStatus: any;
-  newColId: string;
   handleUpdateTitle: any;
   handleUpdateSubTask: any;
   handleAddSubTask: any;
   loading: boolean;
   updatedSubTasks: { subtasks: SubTask[] };
-  setNewSubTask: Dispatch<SetStateAction<any>>;
-  newSubTask: SubTask;
-  setEditMode: Dispatch<SetStateAction<boolean>>;
+  setNewSubtask: Dispatch<SetStateAction<any>>;
   subTaskLoading: boolean;
   setSubtaskLoading: Dispatch<SetStateAction<boolean>>;
   subtaskAdded: boolean;
@@ -46,15 +44,12 @@ const EditTask = ({
   setNewStatus,
   setNewColId,
   newStatus,
-  newColId,
   handleUpdateTitle,
   handleUpdateSubTask,
   loading,
   updatedSubTasks,
   handleAddSubTask,
-  setNewSubTask,
-  newSubTask,
-  setEditMode,
+  setNewSubtask,
   subTaskLoading,
   setSubtaskLoading,
   subtaskAdded,
@@ -81,7 +76,7 @@ const EditTask = ({
         },
       ],
     });
-    setNewSubTask({
+    setNewSubtask({
       id: "",
       title: "",
       isCompleted: false,
@@ -105,10 +100,10 @@ const EditTask = ({
       }
     );
 
-    setNewSubTask({
+    setNewSubtask({
       ...newSub,
     });
-  }, [setNewSubTask, updatedSubTasks]);
+  }, [setNewSubtask, updatedSubTasks]);
 
   const [changed, setChanged] = useState(false);
 
@@ -160,11 +155,10 @@ const EditTask = ({
               value={updatedTask.description}
               placeholder="eg. It's best to take a break every 15mins..."
               onChange={(e) => {
-                const des = e.target.value;
-
+                const updatedDescription = e.target.value;
                 setUpdatedTask({
                   ...updatedTask,
-                  description: des,
+                  description: updatedDescription,
                 });
               }}
             />
@@ -185,15 +179,13 @@ const EditTask = ({
                 <div className="flex items-baseline justify-between"></div>
                 <Form.Control asChild>
                   <input
-                    className="box-border w-full bg-slate-100 shadow-blackA6 inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_#9443f7]  selection:color-white selection:bg-blackA6"
+                    className={SUBTASK_STYLE}
                     required
                     type="text"
                     value={sub.title}
                     onChange={(e) => {
-                      const updatedSubtask = [...updatedSubTasks.subtasks];
-                      updatedSubtask[i].title = e.target.value;
                       setUpdatedSubTasks({
-                        subtasks: updatedSubtask,
+                        subtasks: addUpdatedSubtaskUtil(updatedSubTasks, i, e),
                       });
                     }}
                   />
