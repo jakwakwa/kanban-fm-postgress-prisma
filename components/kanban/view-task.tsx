@@ -1,23 +1,8 @@
 "use client";
 
-import {
-  ChangeEvent,
-  Dispatch,
-  Key,
-  ReactElement,
-  ReactEventHandler,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
+import { useEffect, useState } from "react";
 import useStore from "@/context/store";
-import {
-  TaskPayload,
-  TaskState,
-  Subtask as SubTask,
-  Subtask,
-  StateT,
-} from "@/types/data-types";
+import { TaskState, Subtask as SubTask, StateT } from "@/types/data-types";
 import ViewTaskInputs from "./view-task-inputs";
 import EditTask from "./edit-task";
 import { SpinnerRoundFilled } from "spinners-react";
@@ -40,12 +25,12 @@ function ViewTask({
   boardName,
   boardId,
   columnStatus,
-}: ViewTaskProps) {
+}: Readonly<ViewTaskProps>) {
   const task: TaskState | undefined = tasks.find(
     (t) => t.title === state.taskName
   );
   const [openOptions, setOpenOptions] = useState(false);
-  const [updatedTitle, setUpdatedTitle] = useState(state.taskName);
+  const [updatedTitle] = useState(state.taskName);
   const [loading, setLoading] = useState(false);
 
   const addTasks = useStore((state) => state.addTasks);
@@ -55,7 +40,7 @@ function ViewTask({
       task?.status ? task?.status : "Todo"
     }", "boardId":"${boardId}"}`
   );
-  const [updatedDescription, setUpdatedDescription] = useState(
+  const [updatedDescription] = useState(
     task?.description ? task?.description : "no description"
   );
 
@@ -63,7 +48,7 @@ function ViewTask({
     task ? { subtasks: task.subtasks } : { subtasks: [] }
   );
 
-  const [newSubtask, setNewSubTask] = useState<SubTask>({
+  const [newSubtask, setNewSubtask] = useState<SubTask>({
     id: "",
     title: "",
     taskId: "",
@@ -74,7 +59,7 @@ function ViewTask({
 
   const [newColId, setNewColId] = useState(task?.columnId);
   const [editMode, setEditMode] = useState(false);
-  const [addTaskMode, setAddTaskMode] = useState(false);
+  const [addTaskMode] = useState(false);
   const [updated, setUpdated] = useState(false);
   const [subtaskAdded, setSubtaskAdded] = useState(false);
   const [subtaskLoading, setSubtaskLoading] = useState(true);
@@ -138,7 +123,7 @@ function ViewTask({
     if (task) {
       try {
         for (let i = 0; i < task.subtasks.length; i++) {
-          await updateSubTaskEntry(task?.subtasks[i]!.id, {
+          await updateSubTaskEntry(task?.subtasks[i].id, {
             ...updatedSubTasks.subtasks[i],
           });
         }
@@ -271,7 +256,7 @@ function ViewTask({
       <EditTask
         updatedTask={updatedTask}
         setUpdatedTask={setUpdatedTask}
-        task={task !== undefined ? task : INITIAL_TASK}
+        task={task ?? INITIAL_TASK}
         setUpdatedSubTasks={setUpdatedSubTasks}
         updatedStatus={updatedStatus}
         setUpdatedStatus={setUpdatedStatus}
@@ -279,20 +264,16 @@ function ViewTask({
         setNewStatus={setNewStatus}
         setNewColId={setNewColId}
         newStatus={newStatus}
-        // @ts-ignore
-        newColId={newColId}
         handleUpdateTitle={handleUpdateTitle}
         handleUpdateSubTask={handleUpdateSubTask}
         handleAddSubTask={handleAddSubTask}
         loading={loading}
         updatedSubTasks={updatedSubTasks}
-        setNewSubTask={setNewSubTask}
-        newSubTask={newSubtask}
-        setEditMode={setEditMode}
         subTaskLoading={subtaskLoading}
         setSubtaskLoading={setSubtaskLoading}
         subtaskAdded={subtaskAdded}
         setSubtaskAdded={setSubtaskAdded}
+        setNewSubtask={setNewSubtask}
       />
     );
   }
@@ -302,12 +283,7 @@ export default ViewTask;
 
 export const createURL = (path: string) => window.location.origin + path;
 
-export const updateEntry = async (
-  id: string,
-  updates: Partial<TaskState>
-  // setToastSuccess: (arg0: boolean) => void
-) => {
-  // setToastSuccess(false);
+export const updateEntry = async (id: string, updates: Partial<TaskState>) => {
   const res = await fetch(
     new Request(createURL(`/api/task/${id}`), {
       method: "PATCH",
@@ -319,10 +295,6 @@ export const updateEntry = async (
   );
 
   if (res.ok) {
-    // setTimeout(() => {
-    //   setToastSuccess(true);
-    // }, 3500);
-
     return res.json();
   } else {
     throw new Error("Something went wrong on API server!");

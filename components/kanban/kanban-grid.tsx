@@ -8,13 +8,10 @@ import KanbanCard from "./kanban-card";
 import RenderToastMsg from "./render-toastmsg";
 import useStore from "@/context/store";
 import { BoardState, StateT, Subtask, TaskState } from "@/types/data-types";
-import {
-  INITIAL_STATE,
-  getAllTasks,
-  handleBoardProcessing,
-} from "@/utils/state-utils";
+import { getAllTasks, handleBoardProcessing } from "@/utils/state-utils";
 import { BoardLoadSpinner } from "./board-loader";
 import OverlayButton from "./overlay-button";
+import { INITIAL_STATE } from "@/constants/initial-data";
 
 /**
  * KanbanGrid component renders the Kanban board with tasks and columns.
