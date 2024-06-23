@@ -1,12 +1,12 @@
 import { TaskState } from "@/types/data-types";
 
-interface propType {
+interface KanbanCardProps {
   task: TaskState;
   setState: React.Dispatch<React.SetStateAction<any>>;
   totalSubtasks: string;
 }
 
-const KanbanCard = ({ task, setState, totalSubtasks }: propType) => {
+const KanbanCard = ({ task, setState, totalSubtasks }: KanbanCardProps) => {
   function handleViewTask(name: string, id: string) {
     setState((prevState: any) => ({
       ...prevState,
