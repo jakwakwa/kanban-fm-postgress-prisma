@@ -15,11 +15,10 @@ export default function SideNav({ boards }: { boards: any[] }) {
   const searchParams = useSearchParams();
   const currentBoardName = searchParams.get("board");
   const [boardLoading, setBoardLoading] = useState(false);
-  const [addBoardModul, setAddBoardModul] = useState(false); // Added useState for addBoardModul
+  const [addBoardModul, setAddBoardModul] = useState(false);
 
-  const addBoard = useStore((state) => state.addBoard);
   const addBoardId = useStore((state) => state.addBoardId);
-  addBoard(boards);
+
   const setLoader = useStore((state) => state.setLoader);
 
   async function handleBoardsStore(selectedBoardId: any) {

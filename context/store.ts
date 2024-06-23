@@ -1,46 +1,24 @@
+import {
+  BoardState,
+  ColumnState,
+  Subtask,
+  TaskState,
+} from "@/types/data-types";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-interface Subtask {
-  title: string;
-  isCompleted: boolean;
-  taskId: string;
-  id: string;
-}
-
-interface Task {
-  id: string;
-  title: string;
-  description?: string;
-  status: string;
-  columnId: string;
-  subtasks?: Subtask[];
-}
-
-interface Column {
-  id: string;
-  name: string;
-  boardId: string;
-}
-
-interface Board {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-  userId: string;
-  name: string;
-}
-
-interface Store {
-  boards: Board[];
-  columns: Column[];
-  tasks: Task[];
+interface KanbanStore {
+  boards: BoardState[];
+  currentBoard: any;
+  columns: ColumnState[];
+  tasks: TaskState[];
   subTasks: Subtask[];
   boardId: string;
   loading: boolean;
-  addBoard: (boards: Board[]) => void;
-  addColumns: (columns: Column[]) => void;
-  addTasks: (tasks: Task[]) => void;
+  addBoards: (boards: BoardState[]) => void;
+  addCurrentBoard: (board: BoardState) => void;
+  addColumns: (columns: ColumnState[]) => void;
+  addTasks: (tasks: TaskState[]) => void;
   addSubTasks: (subTasks: Subtask[]) => void;
   addBoardId: (boardId: string) => void;
   setLoader: (loading: boolean) => void;
@@ -48,21 +26,23 @@ interface Store {
 }
 
 // Function to parse JSON data into Zustand store structure
-const useStore = create<Store>(
+const useStore = create<KanbanStore>(
   // @ts-ignore
   devtools((set) => ({
     boards: [],
+    currentBoard: {},
     boardId: "",
     columns: [],
     tasks: [],
     subTasks: [],
     loading: false,
-    addBoard: (boards) => {
+    addBoards: (boards) => {
       set((state) => ({
         ...state,
         boards: [...boards],
       }));
     },
+    addCurrentBoard: (currentBoard) => set({ currentBoard: currentBoard }),
     addColumns: (columns) => {
       set((state) => ({
         ...state,

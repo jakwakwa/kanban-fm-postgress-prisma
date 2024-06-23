@@ -9,10 +9,17 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { SpinnerRoundFilled } from "spinners-react";
 import ColumnText from "./columns/column-text";
 import KanbanCard from "./kanban-card";
-import { Board, Column, StateT, Subtask, Task } from "@/types/data-types";
-import RenderToastMsg from "./render-toastmsg";
 
-const BoardLoadSpinner = (
+import RenderToastMsg from "./render-toastmsg";
+import { Board, Column, Subtask } from "@prisma/client";
+import { BoardState, StateT, TaskState } from "@/types/data-types";
+import {
+  findCurrentBoard,
+  getAllTasks,
+  handleBoardProcessing,
+} from "@/utils/state-utils";
+
+export const BoardLoadSpinner = (
   <div
     className="absolute w-full left-0 m-0 p-0 h-[100%]"
     style={{ background: "rgba(72, 54, 113, 0.2)" }}
@@ -35,20 +42,23 @@ const BoardLoadSpinner = (
   </div>
 );
 const KanbanGrid = ({
-  cols,
   subTasks,
   boards,
 }: {
-  cols: Column[];
   subTasks: Subtask[];
-  boards: Board[];
+  boards: BoardState[];
 }): JSX.Element => {
   const addColumns = useStore((state: { addColumns: any }) => state.addColumns);
   const addTasks = useStore((state: { addTasks: any }) => state.addTasks);
   const addSubTasks = useStore(
     (state: { addSubTasks: any }) => state.addSubTasks
   );
-  const addBoards = useStore((state: { addBoard: any }) => state.addBoard);
+  const addBoards = useStore((state) => state.addBoards);
+
+  const currentBoard = useStore((state) => state.currentBoard);
+  const addCurrentBoard = useStore((state) => state.addCurrentBoard);
+  const columns = useStore((state) => state.columns);
+
   const tasksStore = useStore((state: { tasks: any }) => state.tasks);
   const slug = useSearchParams();
   const boardName = slug.get("board");
@@ -87,34 +97,18 @@ const KanbanGrid = ({
 
   useEffect(() => {
     addSubTasks(subTasks);
+    addBoards(boards);
 
-    const getAllTasks = (boards: Board[]) => {
-      const extractTasksFromColumn = (column: { tasks: any }) => column.tasks;
-      const extractTasksFromBoard = (board: Board) =>
-        board.columns.flatMap(extractTasksFromColumn);
-      return boards.flatMap(extractTasksFromBoard);
-    };
-
-    const processBoard = (board: Board) => {
+    const processBoard = (board: BoardState) => {
       const allTasksFromBoard = getAllTasks([board]);
-      addBoards([board]);
+      addCurrentBoard(board);
       addColumns(board.columns);
       addTasks(allTasksFromBoard);
     };
 
-    const findCurrentBoard = (boards: Board[], boardId: string) => {
-      return boards.find((board) => board.id === boardId);
-    };
-
-    const handleBoardProcessing = (boards: Board[], boardId: string) => {
-      const currentBoard = findCurrentBoard(boards, boardId);
-      if (currentBoard) {
-        processBoard(currentBoard);
-      }
-    };
-
-    handleBoardProcessing(boards, boardId);
-  }, [addBoards, addColumns, addSubTasks, addTasks, boardId, boards, subTasks]);
+    handleBoardProcessing(boards, boardId, processBoard);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [boardId, boards, subTasks]);
 
   const getTasks = () => {
     return tasksStore.map((task: { id: any }) => ({
@@ -123,18 +117,23 @@ const KanbanGrid = ({
     }));
   };
 
-  const getCols = () => {
-    return cols.map((col) => ({
-      columnId: col.id,
-      columnStatus: col.name,
-      boardId: col.boardId,
-    }));
-  };
+  // const getCols = () => {
+  //   return col.map((col) => ({
+  //     columnId: col.id,
+  //     columnStatus: col.name,
+  //     boardId: col.boardId,
+  //   }));
+  // };
 
-  const filteredColsbyBoard = getCols().filter((c) => c.boardId === boardId);
+  // const filteredColsbyBoard = getCols().filter((c) => c.boardId === boardId);
   const tasksByBoard = getTasks();
 
-  const handleAddTask = async (e: FormEvent, s: string): Promise<void> => {
+  const handleAddTask = async (
+    e: FormEvent,
+    newtask: any,
+    colId: any,
+    status: any // JSON
+  ): Promise<void> => {
     e.preventDefault();
     setState((prevState) => ({
       ...prevState,
@@ -142,12 +141,10 @@ const KanbanGrid = ({
       open: false,
     }));
 
-    const parsed = JSON.parse(s);
-
     const newT = {
       ...state.newTask,
-      status: parsed.columnStatus || "todo",
-      columnId: parsed.columnId,
+      status: status,
+      columnId: colId,
     };
 
     try {
@@ -168,9 +165,9 @@ const KanbanGrid = ({
           open: true,
           addTaskMode: false,
         }));
-
-        router.push(`/kanban/board?board=${boardName}&id=${boardId}`);
         addTasks([...tasksStore, result]);
+        router.push(`/kanban/board?board=${boardName}&id=${boardId}`);
+
         router.refresh();
       }
 
@@ -232,7 +229,7 @@ const KanbanGrid = ({
               state={state}
               setState={setState}
               handleAddTask={handleAddTask}
-              columnStatus={filteredColsbyBoard}
+              columnStatus={columns}
               boardId={boardId}
             />
           </>
@@ -280,12 +277,12 @@ const KanbanGrid = ({
               router={router}
               boardName={boardName ?? ""}
               boardId={boardId ?? ""}
-              columnStatus={filteredColsbyBoard}
+              columnStatus={columns}
             />
           </>
         )}
         <div className="w-[full] h-full px-20 grid grid-cols-3 gap-6 pt-[100px] ">
-          {cols?.map((col) => {
+          {columns?.map((col) => {
             if (col.boardId === boardId) {
               return (
                 <div
@@ -295,7 +292,7 @@ const KanbanGrid = ({
                   <div className="text-black my-4">
                     <ColumnText color={col.name}>{col.name}</ColumnText>
                   </div>
-                  {tasksStore?.map((task: Task) => {
+                  {tasksStore?.map((task: TaskState) => {
                     if (task.status === col.name && col.id === task.columnId) {
                       return (
                         <div key={task.id}>

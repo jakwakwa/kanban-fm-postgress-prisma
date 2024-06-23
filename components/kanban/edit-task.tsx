@@ -2,53 +2,31 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import StatusDropdown from "../ui/dropdown-components/status-dropdown";
 import * as Form from "@radix-ui/react-form";
-import { Task, Subtask as SubTask } from "@/types/data-types";
+import { TaskState, Subtask as SubTask, TaskPayload } from "@/types/data-types";
 import { SpinnerCircularSplit } from "spinners-react";
 import FormLabel from "./form-label";
+import { Subtask } from "@prisma/client";
 
 interface EditTaskProps {
-  updatedTask: {
-    title: string;
-    description: string;
-    status: any;
-    columnId: any;
-  };
-  setUpdatedTask: {
-    (
-      value: SetStateAction<{
-        title: string;
-        description: string;
-        status: any;
-        columnId: any;
-      }>
-    ): void;
-    (arg0: {
-      title: string;
-      description: string;
-      status: any;
-      columnId: any;
-    }): void;
-  };
-  task: Task | undefined;
-  setUpdatedSubTasks: {
-    (value: SetStateAction<{ subtasks: SubTask[] }>): void;
-    (arg0: { subtasks: SubTask[] }): void;
-  };
-  updatedStatus: string;
-  setUpdatedStatus: Dispatch<SetStateAction<string>>;
+  updatedTask: TaskPayload;
+  setUpdatedTask: Dispatch<SetStateAction<any>>;
+  task: TaskState;
+  setUpdatedSubTasks: Dispatch<SetStateAction<any>>;
+  updatedStatus: any;
+  setUpdatedStatus: Dispatch<SetStateAction<any>>;
   columnStatus: any;
-  setNewStatus: Dispatch<any>;
-  setNewColId: Dispatch<SetStateAction<string>>;
+  setNewStatus: Dispatch<SetStateAction<any>>;
+  setNewColId: any;
   newStatus: any;
   newColId: string;
-  handleUpdateTitle: (e: { preventDefault: () => void }) => Promise<void>;
-  handleUpdateSubTask: (e: { preventDefault: () => void }) => Promise<void>;
-  handleAddSubTask: (e: { preventDefault: () => void }) => Promise<void>;
+  handleUpdateTitle: any;
+  handleUpdateSubTask: any;
+  handleAddSubTask: any;
   loading: boolean;
-  updatedSubTasks: any;
-  setNewSubTask: Dispatch<any>;
-  newSubTask: any;
-  setEditMode: any;
+  updatedSubTasks: { subtasks: SubTask[] };
+  setNewSubTask: Dispatch<SetStateAction<any>>;
+  newSubTask: SubTask;
+  setEditMode: Dispatch<SetStateAction<boolean>>;
   subTaskLoading: boolean;
   setSubtaskLoading: Dispatch<SetStateAction<boolean>>;
   subtaskAdded: boolean;
@@ -91,9 +69,7 @@ const EditTask = ({
 
   function handleAddNewSubtask() {
     setDisableAddBtn(true);
-
     const currentTasks = `${updatedSubTasks.subtasks.length}`;
-
     setUpdatedSubTasks({
       subtasks: [
         ...updatedSubTasks.subtasks,
@@ -112,12 +88,12 @@ const EditTask = ({
       taskId: task?.id,
     });
   }
-  // @ts-ignore
-  function handleSaveNewSubtask(e) {
+
+  function handleSaveNewSubtask(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     setSubtaskLoading(true);
-    handleAddSubTask(e);
     setDisableAddBtn(true);
+    handleAddSubTask(e);
   }
 
   useEffect(() => {
@@ -199,40 +175,32 @@ const EditTask = ({
           <FormLabel isLabel={false}>Subtasks</FormLabel>
         </div>
         <div className="flex flex-col gap-2 mb-2">
-          {updatedSubTasks?.subtasks?.map(
-            (
-              sub: {
-                id: undefined;
-                title: string | number | readonly string[] | undefined;
-              },
-              subIndex: number
-            ) => {
-              return (
-                <Form.Field
-                  className="grid mb-[10px]"
-                  name={`subtask-${subIndex}`}
-                  key={sub.id ? sub.id : `subtask-${subIndex}`}
-                >
-                  <div className="flex items-baseline justify-between"></div>
-                  <Form.Control asChild>
-                    <input
-                      className="box-border w-full bg-slate-100 shadow-blackA6 inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_#9443f7]  selection:color-white selection:bg-blackA6"
-                      required
-                      type="text"
-                      value={sub.title}
-                      onChange={(e) => {
-                        const updatedSubtask = [...updatedSubTasks.subtasks];
-                        updatedSubtask[subIndex].title = e.target.value;
-                        setUpdatedSubTasks({
-                          subtasks: updatedSubtask,
-                        });
-                      }}
-                    />
-                  </Form.Control>
-                </Form.Field>
-              );
-            }
-          )}
+          {updatedSubTasks?.subtasks?.map((sub: SubTask, i: number) => {
+            return (
+              <Form.Field
+                className="grid mb-[10px]"
+                name={`subtask-${i}`}
+                key={sub.id ? sub.id : `subtask-${i}`}
+              >
+                <div className="flex items-baseline justify-between"></div>
+                <Form.Control asChild>
+                  <input
+                    className="box-border w-full bg-slate-100 shadow-blackA6 inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_#9443f7]  selection:color-white selection:bg-blackA6"
+                    required
+                    type="text"
+                    value={sub.title}
+                    onChange={(e) => {
+                      const updatedSubtask = [...updatedSubTasks.subtasks];
+                      updatedSubtask[i].title = e.target.value;
+                      setUpdatedSubTasks({
+                        subtasks: updatedSubtask,
+                      });
+                    }}
+                  />
+                </Form.Control>
+              </Form.Field>
+            );
+          })}
           {!disableAddBtn && (
             <button className="h-10 relative w-full bg-indigo-500/10 rounded-2xl hover:bg-indigo-500/20 transition-colors ease-in delay-150 cursor-pointer">
               <div
@@ -272,12 +240,12 @@ const EditTask = ({
               setNewStatus={setNewStatus}
               newStatus={newStatus}
               disabled={false}
-              inputStyle={inputStyle}
+              setNewColId={setNewColId}
               changed={changed}
               setChanged={setChanged}
             />
           </div>
-          {!changed || updatedTask?.title.length < 1 ? (
+          {updatedTask?.title.length < 1 ? (
             <div className="text-indigo-400 border-[#7b81f2] border-[1.2px] px-2 py-1 inline-block text-[8px] rounded w-[70%] mt-4 shadow-md shadow-slate-200 bg-[#ffffff]">
               * Please add a title and status to enable save
             </div>
@@ -287,7 +255,7 @@ const EditTask = ({
               className={`mt-6 flex justify-center text-center w-full h-10 bg-indigo-500 hover:bg-indigo-700 rounded-2xl align-middle items-center cursor-pointer disabled:bg-indigo-200  disabled:cursor-not-allowed  ${
                 loading ? "cursor-wait animate-pulse" : "cursor-pointer"
               }`}
-              disabled={!changed || updatedTask?.title.length < 1}
+              disabled={updatedTask?.title.length < 1}
               onClick={(e) => {
                 handleUpdateTitle(e);
                 handleUpdateSubTask(e);

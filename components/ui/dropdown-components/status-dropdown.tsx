@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import * as Select from "@radix-ui/react-select";
 import ColumnText from "@/components/kanban/columns/column-text";
-const itemsInitial = ["Todo", "Doing", "Done"];
+import { ColumnPayload } from "@/types/data-types";
 
 const StatusDropdown = ({
   status,
@@ -12,8 +12,8 @@ const StatusDropdown = ({
   setNewStatus,
   newStatus,
   disabled,
+  setNewColId,
 
-  inputStyle,
   changed,
   setChanged,
 }: {
@@ -24,8 +24,7 @@ const StatusDropdown = ({
   setNewStatus: any;
   newStatus: any;
   disabled: boolean;
-
-  inputStyle: string;
+  setNewColId: any;
   changed: any;
   setChanged: any;
 }) => {
@@ -34,19 +33,34 @@ const StatusDropdown = ({
   const [selectStatus, setSelectStatus] = useState("ss");
 
   useEffect(() => {
-    const parsed: string = JSON.parse(updatedStatus);
-    // @ts-ignore
-    setNewStatus(parsed.columnStatus);
-    // @ts-ignore
-    setNewColId(parsed.columnId);
+    const parsed = JSON.parse(updatedStatus) as {
+      name: string;
+      id: string;
+      columnStatus: string;
+    };
 
     if (toggled == "open") {
       setChanged(true);
     }
 
-    // @ts-ignore
+    if (changed) {
+      setNewStatus(parsed.name);
+      setNewColId(parsed.id);
+    }
+
     setSelectStatus(parsed.columnStatus);
-  }, [newStatus, setChanged, setNewStatus, toggled, updatedStatus]);
+
+    // console.log("selectsta", parsed.name);
+  }, [
+    newStatus,
+    setChanged,
+    setNewColId,
+    setNewStatus,
+    toggled,
+    updatedStatus,
+    selectStatus,
+    changed,
+  ]);
 
   if (!disabled) {
     return (
@@ -63,7 +77,7 @@ const StatusDropdown = ({
             <Select.Trigger asChild data-state={toggled}>
               <button className=" rounded-md w-full h-10 justify-start text-black bg-[#f1f5f9] outline-none hover:bg-[#e8ebf9] focus:shadow-[0_0_0_1px_#252525] text-left px-[16px] border border-slate-400 text-xs capitalize relative">
                 <span>
-                  <Select.Value>{!changed ? "" : selectStatus}</Select.Value>
+                  <Select.Value>{selectStatus}</Select.Value>
                 </span>
                 <Select.Icon asChild>
                   <div className="absolute rotate-180 right-3 top-2 text-md bold text-slate-500">
@@ -75,19 +89,17 @@ const StatusDropdown = ({
             <Select.Content asChild>
               <div className="rounded-md bg-white p-[16px] text-sm shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),_0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)] will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade capitalize">
                 <Select.Viewport>
-                  {columnStatus.map(
-                    (item: { columnStatus: string; columnId: string }, i) => {
-                      return (
-                        <Select.Item
-                          key={item.columnId}
-                          value={JSON.stringify(item)}
-                          className="p-2 hover:bg-violet5 capitalize"
-                        >
-                          <Select.ItemText>{item.columnStatus}</Select.ItemText>
-                        </Select.Item>
-                      );
-                    }
-                  )}
+                  {columnStatus.map((item, i) => {
+                    return (
+                      <Select.Item
+                        key={i}
+                        value={JSON.stringify(item)}
+                        className="p-2 hover:bg-violet5 capitalize"
+                      >
+                        <Select.ItemText> {item.name} </Select.ItemText>
+                      </Select.Item>
+                    );
+                  })}
                 </Select.Viewport>
               </div>
             </Select.Content>
@@ -102,6 +114,7 @@ const StatusDropdown = ({
           <div className="text-left"></div>
           <div className="text-black my-0">
             <ColumnText color={status}>
+              {" "}
               {!changed ? status : selectStatus}
             </ColumnText>
           </div>

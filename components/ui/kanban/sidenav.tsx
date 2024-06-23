@@ -1,12 +1,11 @@
 "use client";
 import useStore from "@/context/store";
-import { BoardsData } from "@/types/data-types";
 import { SignOutButton } from "@clerk/nextjs";
 import { PowerIcon, ViewColumnsIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import Logo from "../logo";
 
-export default function SideNav({ boards }: { boards: any[] }) {
+export default function SideNav({ boards }: Readonly<{ boards: any[] }>) {
   // @ts-ignore
   const addBoard = useStore((state) => state.addBoard);
   // @ts-ignore
@@ -16,7 +15,7 @@ export default function SideNav({ boards }: { boards: any[] }) {
   const setLoader = useStore((state) => state.setLoader);
 
   async function handleBoardsStore(selectedBoardId: any) {
-    await addBoardId(selectedBoardId);
+    addBoardId(selectedBoardId);
     setTimeout(() => {
       setLoader(false);
     }, 5000);
@@ -37,7 +36,7 @@ export default function SideNav({ boards }: { boards: any[] }) {
         <div className="text-black">
           <div className="flex flex-col w-full">
             {boards?.map((board: { name: any; id: any }, i: number) => (
-              <div className="text-black" key={i}>
+              <div className="text-black" key={board.id}>
                 <Link
                   href={{
                     pathname: `/kanban/board/`,

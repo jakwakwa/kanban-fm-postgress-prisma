@@ -12,14 +12,9 @@ function Subtask({
   edit: boolean;
 }) {
   if (task.length > 0 && edit === false) {
-    return task?.map(
-      (
-        subtask: {
-          title: string;
-        },
-        index: Key
-      ) => <CheckboxDemo key={index} title={subtask.title} />
-    );
+    return task?.map((subtask) => (
+      <CheckboxDemo key={subtask.id} title={subtask.title} />
+    ));
   }
 }
 

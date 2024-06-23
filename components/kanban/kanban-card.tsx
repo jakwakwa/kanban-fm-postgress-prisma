@@ -1,7 +1,7 @@
-import { Task } from "@/types/data-types";
+import { TaskState } from "@/types/data-types";
 
 interface propType {
-  task: Task;
+  task: TaskState;
   setState: React.Dispatch<React.SetStateAction<any>>;
   totalSubtasks: string;
 }

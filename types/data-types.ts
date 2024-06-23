@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import { Column, User } from "@prisma/client";
 
 export interface Subtask {
   title: string;
@@ -27,39 +27,56 @@ export interface StateT {
   newSubtasks: Subtask[];
 }
 
-export interface Task {
+export interface TaskState {
   id: string;
   title: string;
   description?: string;
   status: string;
-  subtasks?: Subtask[];
+  subtasks: Subtask[] | [];
   columnId: string;
 }
 
-export interface Column {
+export interface TaskPayload {
+  title: string;
+  description?: string;
+  status: string;
+  columnId: string;
+}
+
+export interface ColumnState {
   id: string;
   boardId: string;
   name: string;
-  tasks: Task[];
+  tasks: TaskState[];
 }
 
-export interface ColumnData {
+export interface ColumnPayload {
   id: string;
   boardId: string;
-  tasks: Task[];
-  title: string;
+  name: string;
 }
 
-export interface Board {
+export interface BoardModel {
   createdAt: string;
   updatedAt: string;
   id: string;
   name: string;
   userId: string;
   user: User;
-  columns: Column[];
 }
 
-export interface BoardsData {
-  boardsStore: Board[];
+export interface BoardData {
+  createdAt: Date;
+  updatedAt: Date;
+  id: string;
+  name: string;
+  userId: string;
+}
+
+export interface BoardState extends BoardData {
+  columns: ColumnState[];
+}
+
+export interface BoardsStore {
+  boardsStore: BoardState[];
 }

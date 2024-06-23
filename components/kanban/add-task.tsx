@@ -28,7 +28,7 @@ interface StateT {
 interface AddTaskProps {
   state: StateT;
   setState: (state: any) => void;
-  handleAddTask: (e: any, updatedStatus: any) => void;
+  handleAddTask: any;
   columnStatus: any;
   boardId: string;
 }
@@ -45,6 +45,8 @@ const AddTask = ({
   const [newStatus, setNewStatus] = useState<any>(
     '{"columnId":"","columnStatus":""}'
   );
+
+  const [newColId, setNewColId] = useState("");
 
   const [updatedStatus, setUpdatedStatus] = useState(
     `{"columnId":"${state.newTask?.columnId}","columnStatus":"${
@@ -128,19 +130,21 @@ const AddTask = ({
           <div className="w-full h-16 relative mt-[16px]">
             <FormLabel isLabel={false}>Status</FormLabel>
             <StatusDropdown
-              status={state.newTask?.status ? state.newTask?.status : "Todo"}
+              status={state.newTask.status}
               updatedStatus={updatedStatus}
               setUpdatedStatus={setUpdatedStatus}
               columnStatus={columnStatus}
               setNewStatus={setNewStatus}
+              setNewColId={setNewColId}
               newStatus={newStatus}
               disabled={state.isDisabled}
-              inputStyle={""}
               changed={changed}
               setChanged={setChanged}
             />
           </div>
-          {!changed || state.newTask?.title.length < 1 ? (
+          {newStatus === undefined ||
+          !changed ||
+          state.newTask?.title.length < 1 ? (
             <div className="text-indigo-400 border-[#7b81f2] border-[1.2px] px-2 py-1 inline-block text-[8px] rounded w-[70%] mt-4 shadow-md shadow-slate-200 bg-[#ffffff]">
               * Please add a title and status to enable save{" "}
             </div>
@@ -151,8 +155,14 @@ const AddTask = ({
               style={{
                 transition: "200ms ease-in",
               }}
-              disabled={!changed || state.newTask?.title.length < 1}
-              onClick={(e) => handleAddTask(e, updatedStatus)}
+              disabled={
+                newStatus === undefined ||
+                !changed ||
+                state.newTask?.title.length < 1
+              }
+              onClick={(e) =>
+                handleAddTask(e, state.newTask, newColId, newStatus)
+              }
             >
               <div className="text-white text-xs font-bold  ">
                 <div className="flex flex-row gap-2 align-middle items-center">
