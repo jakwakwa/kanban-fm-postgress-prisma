@@ -28,7 +28,7 @@ const getBoards = async () => {
 
 const KanbanMainPage = async () => {
   const boards = await getBoards();
-  return <KanbanContainer boards={boards || []} />;
+  return <KanbanContainer boards={boards ?? []} />;
 };
 
 export default KanbanMainPage;
