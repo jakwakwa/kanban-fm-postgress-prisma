@@ -59,7 +59,7 @@ function ViewTask({
 
   const [newColId, setNewColId] = useState(task?.columnId);
   const [editMode, setEditMode] = useState(false);
-  const [addTaskMode] = useState(false);
+
   const [updated, setUpdated] = useState(false);
   const [subtaskAdded, setSubtaskAdded] = useState(false);
   const [subtaskLoading, setSubtaskLoading] = useState(true);
@@ -210,14 +210,13 @@ function ViewTask({
     setUpdatedTask({
       ...updatedTask,
       status: newStatus,
-      // @ts-ignore
-      columnId: newColId,
+      columnId: newColId ?? "",
     });
     //
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newColId, newStatus]);
 
-  if (!editMode && !addTaskMode) {
+  if (!editMode) {
     return (
       <>
         {loading && (

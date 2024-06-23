@@ -70,9 +70,19 @@ const ViewTaskInputs = ({
         </div>
       )}
       <div className="flex flex-col gap-2">
-        {task?.subtasks !== undefined && (
+        {task?.subtasks !== undefined ? (
           <Subtask task={task.subtasks} edit={false} />
+        ) : null}
+        {task?.subtasks === undefined && (
+          <>
+            <FormLabel isLabel={false}>Subtasks </FormLabel>
+            <div className="text-indgo-400 text-[9px]">
+              You have no subtasks yet. Click options and to edit task and add
+              subtasks
+            </div>
+          </>
         )}
+
         <hr className="mt-2" />
         <div className="w-full h-16 relative mt-[26px]">
           <FormLabel isLabel={false} spacing={true}>

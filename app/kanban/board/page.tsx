@@ -36,13 +36,9 @@ const Page = async () => {
   const subtasks = await getAllSubTasks();
   const isEmpty = false;
 
-  return (
-    <>
-      {/*
-      // @ts-ignore */}
-      {!isEmpty && <KanbanGrid subTasks={subtasks} boards={userKanbanData} />}
-    </>
-  );
+  if (!isEmpty) {
+    return <KanbanGrid subTasks={subtasks} boards={userKanbanData} />;
+  }
 };
 
 export default Page;

@@ -17,7 +17,7 @@ export const INITIAL_STATE: StateT = {
   columnName: "",
   columnId: "",
   open: false,
-  openDeleteToast: true,
+  openDeleteToast: false,
   loading: false,
   addTaskMode: false,
   newTask: {

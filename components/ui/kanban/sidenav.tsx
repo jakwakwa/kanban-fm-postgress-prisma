@@ -6,13 +6,13 @@ import Link from "next/link";
 import Logo from "../logo";
 
 export default function SideNav({ boards }: Readonly<{ boards: any[] }>) {
-  // @ts-ignore
-  const addBoard = useStore((state) => state.addBoard);
-  // @ts-ignore
-  const addBoardId = useStore((state) => state.addBoardId);
-  addBoard(boards);
-  // @ts-ignore
-  const setLoader = useStore((state) => state.setLoader);
+  const { addBoards, addBoardId, setLoader } = useStore((state) => ({
+    addBoards: state.addBoards,
+    addBoardId: state.addBoardId,
+    setLoader: state.setLoader,
+  }));
+
+  addBoards(boards);
 
   async function handleBoardsStore(selectedBoardId: any) {
     addBoardId(selectedBoardId);
@@ -55,12 +55,12 @@ export default function SideNav({ boards }: Readonly<{ boards: any[] }>) {
         </div>
         <div className="hidden h-auto w-full grow rounded-md md:block"></div>
         <form>
-          <button className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium md:flex-none md:justify-start md:p-2 md:px-3 bg-white hover:bg-indigo-100 hover:text-indigo-600">
+          <div className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium md:flex-none md:justify-start md:p-2 md:px-3 bg-white hover:bg-indigo-100 hover:text-indigo-600">
             <PowerIcon className="w-6" />
             <div className="hidden md:block">
               <SignOutButton />
             </div>
-          </button>
+          </div>
         </form>
       </div>
     </div>

@@ -59,7 +59,6 @@ export default function SideNav({ boards }: Readonly<SideNavProps>) {
               isDisabled={false}
               variant="secondary"
               onClick={() => setAddBoardModul(true)}
-              href={""}
               isClickEvent={true}
             >
               <div>+ Add Board</div>
@@ -83,7 +82,8 @@ export default function SideNav({ boards }: Readonly<SideNavProps>) {
           <div className="text-black">
             <div className="flex flex-col w-full">
               {boards?.map((board: BoardState) => {
-                const isActiveBoard = currentBoardName === board.name;
+                const isActiveBoard =
+                  currentBoardName === board.name && currentBoardName !== null;
                 const noActiveBoards =
                   currentBoardName !== board.name && currentBoardName === null;
 
@@ -91,7 +91,7 @@ export default function SideNav({ boards }: Readonly<SideNavProps>) {
                   currentBoardName !== board.name && currentBoardName !== null;
                 return (
                   <div className="text-black" key={board.id}>
-                    {isActiveBoard ? (
+                    {noActiveBoards || unselectedBoards ? (
                       <Link
                         href={{
                           pathname: `/kanban/board/`,
@@ -129,8 +129,10 @@ export default function SideNav({ boards }: Readonly<SideNavProps>) {
                           </div>
                         </div>
                       </Link>
-                    ) : (
-                      <Link
+                    ) : null}
+
+                    {isActiveBoard && (
+                      <button
                         className={`flex w-[90%] h-[48px] grow items-center justify-center gap-2 rounded-md  p-3 text-sm font-medium   md:flex-none md:justify-start md:p-0 md:px-0 transition-colors duration-75 ease-in-out ${
                           boardLoading && "cursor-not-allowed"
                         } rounded-r-full ${
@@ -138,7 +140,6 @@ export default function SideNav({ boards }: Readonly<SideNavProps>) {
                             ? "bg-indigo-500 text-indigo-100 hover:bg-indigo-500 hover:text-indigo-100 cursor-not-allowed"
                             : "bg-white hover:bg-indigo-100 hover:text-indigo-700"
                         }`}
-                        href={""}
                       >
                         <ViewColumnsIcon className="w-6 ml-4" />
 
@@ -148,7 +149,7 @@ export default function SideNav({ boards }: Readonly<SideNavProps>) {
                             <div className="absolute right-[20px] rounded-full bg-indigo-100 h-2 w-2 p-1"></div>
                           </div>
                         </div>
-                      </Link>
+                      </button>
                     )}
                   </div>
                 );
