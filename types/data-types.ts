@@ -74,7 +74,7 @@ export interface BoardData {
 }
 
 export interface BoardState extends BoardData {
-  columns: ColumnState[];
+  columns?: ColumnState[];
 }
 
 export interface BoardsStore {

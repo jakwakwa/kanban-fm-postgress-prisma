@@ -81,6 +81,7 @@ export default function SideNav({ boards }: Readonly<SideNavProps>) {
           ) : null}
           <div className="text-black">
             <div className="flex flex-col w-full">
+              {/* // @ts-ignore */}
               {boards?.map((board: BoardState) => {
                 const isActiveBoard =
                   currentBoardName === board.name && currentBoardName !== null;
