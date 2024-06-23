@@ -1,6 +1,5 @@
 "use client";
 import * as Toast from "@radix-ui/react-toast";
-import { TOAST_SUCCESS } from "@/constants/theme";
 
 interface ToastProps {
   message: {
@@ -11,7 +10,7 @@ interface ToastProps {
   setState: any;
 }
 
-function RenderToastMsg({ message, state, setState }: ToastProps) {
+function RenderToastMsg({ message, state, setState }: Readonly<ToastProps>) {
   return (
     <Toast.Provider swipeDirection="right">
       <Toast.Root
