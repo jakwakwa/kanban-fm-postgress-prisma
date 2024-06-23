@@ -37,6 +37,7 @@ const Page = async () => {
   const isEmpty = false;
 
   if (!isEmpty) {
+    // @ts-ignore
     return <KanbanGrid subTasks={subtasks} boards={userKanbanData} />;
   }
 };
