@@ -1,8 +1,11 @@
 import { prisma } from "@/utils/db";
-import KanbanGrid from "@/components/kanban/kanban-grid";
+
 import { getUserByClerkId } from "@/utils/auth";
 
-const getBoards = async () => {
+import { BoardState } from "@/types/data-types";
+import KanbanGrid from "@/components/kanban/kanban-grid";
+
+const getAllKanbanData = async () => {
   const user = await getUserByClerkId();
   const boards = await prisma.board.findMany({
     where: {
@@ -38,17 +41,15 @@ const getAllSubTasks = async () => {
 
 const Page = async () => {
   const cols = await getAllCols();
-
-  const boardData = await getBoards();
-
+  const userKanbanData = await getAllKanbanData();
   const subtasks = await getAllSubTasks();
   const isEmpty = false;
 
   return (
     <>
-      {!isEmpty && (
-        <KanbanGrid cols={cols} subTasks={subtasks} boards={boardData} />
-      )}
+      {/*
+      // @ts-ignore */}
+      {!isEmpty && <KanbanGrid subTasks={subtasks} boards={userKanbanData} />}
     </>
   );
 };

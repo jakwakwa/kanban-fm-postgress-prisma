@@ -1,35 +1,16 @@
 "use client";
 import { Dispatch, SetStateAction } from "react";
-import StatusDropdown from "../ui/dropdown-components/status-dropdown";
 import Subtask from "./subtask";
 import Image from "next/image";
-import { Task } from "@/types/data-types";
 import FormLabel from "./form-label";
+import ColumnText from "./columns/column-text";
 
 interface ViewTaskInpProps {
-  handleOptions: () => void;
-  openOptions: boolean;
-  setEditMode: {
-    (value: SetStateAction<boolean>): void;
-    (arg0: boolean): void;
-  };
-  taskName: string;
-  task: Task | undefined;
-  updatedStatus: string;
-  setUpdatedStatus: Dispatch<SetStateAction<string>>;
-  columnStatus: any;
-  setNewStatus: Dispatch<any>;
-
-  newStatus: any;
-  setNewColId: Dispatch<SetStateAction<string>>;
-  setUpdatedTask: Dispatch<
-    SetStateAction<{
-      title: string;
-      description: string;
-      status: any;
-      columnId: any;
-    }>
-  >;
+  handleOptions: any;
+  openOptions: any;
+  setEditMode: any;
+  taskName: any;
+  task: any;
   deleteTask: any;
 }
 const ViewTaskInputs = ({
@@ -38,13 +19,6 @@ const ViewTaskInputs = ({
   setEditMode,
   taskName,
   task,
-  updatedStatus,
-  setUpdatedStatus,
-  columnStatus,
-  setNewStatus,
-  newStatus,
-  setNewColId,
-  setUpdatedTask,
   deleteTask,
 }: ViewTaskInpProps) => {
   return (
@@ -81,14 +55,16 @@ const ViewTaskInputs = ({
           </div>
         </div>
       )}
-      <div className=" text-gray-950 text-lg capitalize font-bold">
+      <div className=" text-gray-950 text-lg capitalize font-bold pb-2">
         {taskName}
       </div>
-
-      <div className="my-[24px] w-96 text-gray-950  text-sm font-medium capitalize leading-snug">
+      <hr />
+      <div className="my-[24px] w-99 text-gray-950  text-[11px] font-bold capitalize leading-relaxed tracking-normal">
         <FormLabel isLabel={false}>Description</FormLabel>
         {task?.description}
+        <hr className="mt-4" />
       </div>
+
       {task?.subtasks && task?.subtasks.length > 0 && (
         <div className="text-kgray-text text-xs font-bold  mb-[16px]">
           Subtasks ({task?.subtasks.length} of {task?.subtasks.length})
@@ -98,24 +74,23 @@ const ViewTaskInputs = ({
         {task?.subtasks !== undefined && (
           <Subtask task={task.subtasks} edit={false} />
         )}
-
+        <hr className="mt-2" />
         <div className="w-full h-16 relative mt-[26px]">
           <FormLabel isLabel={false} spacing={true}>
             Status
           </FormLabel>
-          <StatusDropdown
-            status={task?.status ? task?.status : "Todo"}
-            updatedStatus={updatedStatus}
-            setUpdatedStatus={setUpdatedStatus}
-            // @ts-ignore
-            columnStatus={columnStatus as string}
-            setNewStatus={setNewStatus}
-            newStatus={newStatus}
-            disabled={true}
-            setNewColId={setNewColId}
-            setUpdatedTask={setUpdatedTask}
-          />
+          <div>
+            <div className="mt-4 rounded-md w-[100px] h-10 justify-start text-slate-700 outline-none focus:shadow-[0_0_0_1.5px] focus:shadow-black text-[10px] flex items-center capitalize font-bold text-left">
+              <div className="text-left"></div>
+              <div className="text-black my-0 pl-2">
+                <ColumnText color={task.status}>
+                  <div className="text-xs">{task.status}</div>
+                </ColumnText>
+              </div>
+            </div>
+          </div>
         </div>
+        <hr />
       </div>
     </div>
   );

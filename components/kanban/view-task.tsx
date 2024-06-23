@@ -4,40 +4,29 @@ import {
   ChangeEvent,
   Dispatch,
   Key,
+  ReactElement,
+  ReactEventHandler,
   SetStateAction,
   useEffect,
   useState,
 } from "react";
 import useStore from "@/context/store";
-import { Task, Subtask as SubTask, Subtask } from "@/types/data-types";
+import {
+  TaskPayload,
+  TaskState,
+  Subtask as SubTask,
+  Subtask,
+  StateT,
+} from "@/types/data-types";
 import ViewTaskInputs from "./view-task-inputs";
 import EditTask from "./edit-task";
 import { SpinnerRoundFilled } from "spinners-react";
-
-interface StateT {
-  isDisabled: boolean;
-  openModul: boolean;
-  taskName: string;
-  taskId: string;
-  columnName: string;
-  columnId: string;
-  open: boolean;
-  openDeleteToast: boolean;
-  loading: boolean;
-  addTaskMode: boolean;
-  newTask: {
-    columnId: string;
-    title: string;
-    description: string;
-    status: string;
-  };
-  newSubtasks: Subtask[];
-}
+import { INITIAL_TASK } from "@/constants/initial-data";
 
 interface ViewTaskProps {
-  state: any;
-  setState: Dispatch<SetStateAction<any>>;
-  tasks: Task[];
+  state: StateT;
+  setState: React.Dispatch<React.SetStateAction<StateT>>;
+  tasks: TaskState[];
   router: any;
   boardName: string;
   boardId: string;
@@ -52,26 +41,12 @@ function ViewTask({
   boardId,
   columnStatus,
 }: ViewTaskProps) {
-  const task: Task | undefined = tasks.find((t) => t.title === state.taskName);
+  const task: TaskState | undefined = tasks.find(
+    (t) => t.title === state.taskName
+  );
   const [openOptions, setOpenOptions] = useState(false);
   const [updatedTitle, setUpdatedTitle] = useState(state.taskName);
   const [loading, setLoading] = useState(false);
-
-  const [newTask, setNewTask] = useState({
-    id: "",
-    columnId: "",
-    title: "",
-    description: "",
-    status: "",
-    subtasks: [
-      {
-        id: "",
-        taskId: "",
-        title: "",
-        isCompleted: false,
-      },
-    ],
-  });
 
   const addTasks = useStore((state) => state.addTasks);
 
@@ -88,10 +63,6 @@ function ViewTask({
     task ? { subtasks: task.subtasks } : { subtasks: [] }
   );
 
-  const [newSubtasks, setNewSubtasks] = useState(
-    task ? { subtasks: task.subtasks } : { subtasks: [] }
-  );
-
   const [newSubtask, setNewSubTask] = useState<SubTask>({
     id: "",
     title: "",
@@ -99,12 +70,9 @@ function ViewTask({
     isCompleted: false,
   });
 
-  const [newStatus, setNewStatus] = useState<any>(
-    '{"columnId":"","columnStatus":""}'
-  );
+  const [newStatus, setNewStatus] = useState<any>(task?.status);
 
-  const [newColId, setNewColId] = useState("");
-
+  const [newColId, setNewColId] = useState(task?.columnId);
   const [editMode, setEditMode] = useState(false);
   const [addTaskMode, setAddTaskMode] = useState(false);
   const [updated, setUpdated] = useState(false);
@@ -113,8 +81,8 @@ function ViewTask({
   const [updatedTask, setUpdatedTask] = useState({
     title: updatedTitle,
     description: updatedDescription,
-    status: newStatus.columnStatus,
-    columnId: newStatus.columnId,
+    status: "Test",
+    columnId: state.columnId,
   });
 
   useEffect(() => {
@@ -139,20 +107,14 @@ function ViewTask({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updated, open]);
 
-  const handleUpdateTitle = async (e: {
-    preventDefault: () => void;
-  }): Promise<void> => {
+  const handleUpdateTitle = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      await updateEntry(
-        task!.id,
-        {
-          ...updatedTask,
-        }
-        // setOpen
-      );
+      await updateEntry(task!.id, {
+        ...updatedTask,
+      });
       setTimeout(() => {
         setUpdated(true);
       }, 2200);
@@ -166,24 +128,19 @@ function ViewTask({
     }
   };
 
-  const handleUpdateSubTask = async (e: {
-    preventDefault: () => void;
-  }): Promise<void> => {
+  const handleUpdateSubTask = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
     e.preventDefault();
 
     setLoading(true);
+
     if (task) {
       try {
-        // @ts-ignore
-        for (let i = 0; i < task?.subtasks.length; i++) {
-          await updateSubTaskEntry(
-            // @ts-ignore
-            task?.subtasks[i]!.id,
-            {
-              // @ts-ignore
-              ...updatedSubTasks.subtasks[i],
-            }
-          );
+        for (let i = 0; i < task.subtasks.length; i++) {
+          await updateSubTaskEntry(task?.subtasks[i]!.id, {
+            ...updatedSubTasks.subtasks[i],
+          });
         }
 
         setTimeout(() => {
@@ -192,6 +149,10 @@ function ViewTask({
 
         setTimeout(() => {
           setLoading(false);
+          setState((prevState: StateT) => ({
+            ...prevState,
+            openModul: false,
+          }));
         }, 2700);
         router.push(`/kanban/board?board=${boardName}&id=${boardId}`);
       } catch (error) {
@@ -200,11 +161,9 @@ function ViewTask({
     }
   };
 
-  const handleAddSubTask = async (e: {
-    preventDefault: () => void;
-  }): Promise<void> => {
+  const handleAddSubTask = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    // setLoading(true);
+
     const newSubtaskEnt = {
       title: newSubtask.title,
       isCompleted: newSubtask.isCompleted,
@@ -215,6 +174,7 @@ function ViewTask({
       await addSubTaskEntry(newSubtaskEnt);
 
       await router.push(`/kanban/board?board=${boardName}&id=${boardId}`);
+      router.refresh();
       setTimeout(() => {
         setSubtaskAdded(true);
       }, 2200);
@@ -265,6 +225,7 @@ function ViewTask({
     setUpdatedTask({
       ...updatedTask,
       status: newStatus,
+      // @ts-ignore
       columnId: newColId,
     });
     //
@@ -299,13 +260,6 @@ function ViewTask({
           setEditMode={setEditMode}
           taskName={state.taskName}
           task={task}
-          updatedStatus={updatedStatus}
-          setUpdatedStatus={setUpdatedStatus}
-          columnStatus={columnStatus}
-          setNewStatus={setNewStatus}
-          newStatus={newStatus}
-          setNewColId={setNewColId}
-          setUpdatedTask={setUpdatedTask}
           deleteTask={deleteTask}
         />
       </>
@@ -317,8 +271,7 @@ function ViewTask({
       <EditTask
         updatedTask={updatedTask}
         setUpdatedTask={setUpdatedTask}
-        task={task}
-        // @ts-ignore
+        task={task !== undefined ? task : INITIAL_TASK}
         setUpdatedSubTasks={setUpdatedSubTasks}
         updatedStatus={updatedStatus}
         setUpdatedStatus={setUpdatedStatus}
@@ -326,6 +279,7 @@ function ViewTask({
         setNewStatus={setNewStatus}
         setNewColId={setNewColId}
         newStatus={newStatus}
+        // @ts-ignore
         newColId={newColId}
         handleUpdateTitle={handleUpdateTitle}
         handleUpdateSubTask={handleUpdateSubTask}
@@ -350,7 +304,7 @@ export const createURL = (path: string) => window.location.origin + path;
 
 export const updateEntry = async (
   id: string,
-  updates: Partial<Task>
+  updates: Partial<TaskState>
   // setToastSuccess: (arg0: boolean) => void
 ) => {
   // setToastSuccess(false);

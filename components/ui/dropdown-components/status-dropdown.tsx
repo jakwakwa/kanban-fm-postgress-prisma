@@ -1,9 +1,8 @@
 "use-client";
-import { SetStateAction, useEffect, useState } from "react";
-// import * as Radix from "@radix-ui/react-select";
+import { useEffect, useState } from "react";
 import * as Select from "@radix-ui/react-select";
 import ColumnText from "@/components/kanban/columns/column-text";
-const itemsInitial = ["Todo", "Doing", "Done"];
+import { ColumnPayload } from "@/types/data-types";
 
 const StatusDropdown = ({
   status,
@@ -14,7 +13,7 @@ const StatusDropdown = ({
   newStatus,
   disabled,
   setNewColId,
-  inputStyle,
+
   changed,
   setChanged,
 }: {
@@ -26,7 +25,6 @@ const StatusDropdown = ({
   newStatus: any;
   disabled: boolean;
   setNewColId: any;
-  inputStyle: string;
   changed: any;
   setChanged: any;
 }) => {
@@ -35,18 +33,24 @@ const StatusDropdown = ({
   const [selectStatus, setSelectStatus] = useState("ss");
 
   useEffect(() => {
-    const parsed: string = JSON.parse(updatedStatus);
-    // @ts-ignore
-    setNewStatus(parsed.columnStatus);
-    // @ts-ignore
-    setNewColId(parsed.columnId);
+    const parsed = JSON.parse(updatedStatus) as {
+      name: string;
+      id: string;
+      columnStatus: string;
+    };
 
     if (toggled == "open") {
       setChanged(true);
     }
 
-    // @ts-ignore
+    if (changed) {
+      setNewStatus(parsed.name);
+      setNewColId(parsed.id);
+    }
+
     setSelectStatus(parsed.columnStatus);
+
+    // console.log("selectsta", parsed.name);
   }, [
     newStatus,
     setChanged,
@@ -54,6 +58,8 @@ const StatusDropdown = ({
     setNewStatus,
     toggled,
     updatedStatus,
+    selectStatus,
+    changed,
   ]);
 
   if (!disabled) {
@@ -69,9 +75,9 @@ const StatusDropdown = ({
             onValueChange={setUpdatedStatus}
           >
             <Select.Trigger asChild data-state={toggled}>
-              <button className=" rounded-md w-full h-10 justify-start text-black bg-white outline-none hover:bg-violet3  focus:shadow-[0_0_0_1.5px_#9443f7] text-left px-[16px] border border-slate-500 text-xs capitalize relative">
+              <button className=" rounded-md w-full h-10 justify-start text-black bg-[#f1f5f9] outline-none hover:bg-[#e8ebf9] focus:shadow-[0_0_0_1px_#252525] text-left px-[16px] border border-slate-400 text-xs capitalize relative">
                 <span>
-                  <Select.Value>{!changed ? "" : selectStatus}</Select.Value>
+                  <Select.Value>{selectStatus}</Select.Value>
                 </span>
                 <Select.Icon asChild>
                   <div className="absolute rotate-180 right-3 top-2 text-md bold text-slate-500">
@@ -90,7 +96,7 @@ const StatusDropdown = ({
                         value={JSON.stringify(item)}
                         className="p-2 hover:bg-violet5 capitalize"
                       >
-                        <Select.ItemText> {item.columnStatus} </Select.ItemText>
+                        <Select.ItemText> {item.name} </Select.ItemText>
                       </Select.Item>
                     );
                   })}
