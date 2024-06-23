@@ -1,6 +1,5 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import Button from "./buttons/button";
 
 const KanbanHeader = () => {
   const pathname = useSearchParams();
