@@ -194,8 +194,8 @@ const EditTask = ({
             );
           })}
           {!disableAddBtn && (
-            <button className="h-10 relative w-full bg-indigo-500/10 rounded-2xl hover:bg-indigo-500/20 transition-colors ease-in delay-150 cursor-pointer">
-              <div
+            <div className="h-10 relative w-full bg-indigo-500/10 rounded-2xl hover:bg-indigo-500/20 transition-colors ease-in delay-150 cursor-pointer">
+              <button
                 className="h-10 flex justify-center align-middle items-center text-center text-indigo-500 text-xs font-bold font-['Plus Jakarta Sans'] leading-snug"
                 onClick={handleAddNewSubtask}
                 onKeyDown={(e) => {
@@ -205,8 +205,8 @@ const EditTask = ({
                 }}
               >
                 + Add New Subtask
-              </div>
-            </button>
+              </button>
+            </div>
           )}
           {disableAddBtn && !subtaskAdded ? (
             <button
