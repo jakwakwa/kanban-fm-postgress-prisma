@@ -2,7 +2,11 @@
 import { useEffect, useState } from "react";
 import * as Select from "@radix-ui/react-select";
 import ColumnText from "@/components/kanban/columns/column-text";
-import { ColumnPayload } from "@/types/data-types";
+interface ParsedJson {
+  name: string;
+  id: string;
+  columnStatus: string;
+}
 
 const StatusDropdown = ({
   status,
@@ -33,24 +37,15 @@ const StatusDropdown = ({
   const [selectStatus, setSelectStatus] = useState("ss");
 
   useEffect(() => {
-    const parsed = JSON.parse(updatedStatus) as {
-      name: string;
-      id: string;
-      columnStatus: string;
-    };
-
+    const parsed = JSON.parse(updatedStatus) as ParsedJson;
     if (toggled == "open") {
       setChanged(true);
     }
-
     if (changed) {
       setNewStatus(parsed.name);
       setNewColId(parsed.id);
     }
-
     setSelectStatus(parsed.columnStatus);
-
-    // console.log("selectsta", parsed.name);
   }, [
     newStatus,
     setChanged,
@@ -92,7 +87,7 @@ const StatusDropdown = ({
                   {columnStatus.map((item, i) => {
                     return (
                       <Select.Item
-                        key={i}
+                        key={item.id}
                         value={JSON.stringify(item)}
                         className="p-2 hover:bg-violet5 capitalize"
                       >
@@ -114,7 +109,6 @@ const StatusDropdown = ({
           <div className="text-left"></div>
           <div className="text-black my-0">
             <ColumnText color={status}>
-              {" "}
               {!changed ? status : selectStatus}
             </ColumnText>
           </div>
