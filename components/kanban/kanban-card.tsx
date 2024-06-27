@@ -24,7 +24,7 @@ const KanbanCard = ({ task, setState, totalSubtasks }: KanbanCardProps) => {
       >
         <div>
           <h2 className="text-2md text-kblack-main text-left">{task?.title}</h2>
-          <h3 className="text-slate-500 font-normal italic text-xs text-ellipsis h-8 overflow-clip  line-clamp-1 pr-2 mt-2 text-left">
+          <h3 className="text-slate-500 font-normal italic text-xs line-clamp-1 pr-2 mt-2 text-left">
             {task.description}
           </h3>
         </div>

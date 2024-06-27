@@ -12,7 +12,10 @@ import { getAllTasks, handleBoardProcessing } from "@/utils/state-utils";
 import { BoardLoadSpinner } from "./board-loader";
 import OverlayButton from "./overlay-button";
 import { INITIAL_STATE } from "@/constants/initial-data";
-
+import Image from "next/image";
+import EditBoard from "./moduls/edit-board";
+import RenderBoardToastMsg from "./render-boardToastmsg";
+import RenderDeletedBoardToast from "./render-deletedboard-toast";
 /**
  * KanbanGrid component renders the Kanban board with tasks and columns.
  * @param {Object} props - The component props.
@@ -52,6 +55,15 @@ const KanbanGrid = ({
   const boardId = slug.get("id") as unknown as string;
   const router = useRouter();
   const [state, setState] = useState<StateT>(INITIAL_STATE);
+
+  const [openBoardOptions, setOpenBoardOptions] = useState<boolean>(false);
+
+  const [openEditBoardModul, setOpenEditBoardModul] = useState(false);
+  const [openBoardToaster, setOpenBoardToaster] = useState(false);
+  const [openDeletedBoardToaster, setOpenDeletedBoardToaster] = useState(false);
+
+  const [isDeletingBoard, setIsDeletingBoard] = useState(false);
+  const [boardSaving, setBoardSaving] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -142,6 +154,61 @@ const KanbanGrid = ({
     }
   };
 
+  const handleEditBoard = async (
+    e: FormEvent,
+    editedBoard: any,
+    boardId: any
+  ): Promise<void> => {
+    e.preventDefault();
+
+    setBoardSaving(true);
+
+    const newtitle = {
+      name: editedBoard,
+    };
+
+    const editedB = {
+      ...newtitle,
+      id: boardId,
+    };
+
+    try {
+      const result = await editBoardEntry(editedB);
+
+      addBoards([...boards, result]);
+      router.push(`/kanban/board?board=${editedBoard}&id=${boardId}`);
+      setOpenBoardToaster(true);
+      setBoardSaving(false);
+      setOpenBoardOptions(false);
+      setOpenEditBoardModul(false);
+      router.refresh();
+    } catch (error) {
+      console.error("Error editing board:", error);
+      setState((prevState: any) => ({ ...prevState, loading: false }));
+    }
+  };
+
+  const handleDeleteBoard = async (
+    e: { preventDefault: () => void },
+    boardId: string
+  ) => {
+    e.preventDefault();
+    setIsDeletingBoard(true);
+    try {
+      await addDeleteBoardEntry(boardId);
+      setOpenDeletedBoardToaster(true);
+      router.push(`/kanban`);
+
+      router.refresh();
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  };
+
+  function handleOptions() {
+    setOpenBoardOptions(!openBoardOptions);
+  }
+
   if (loader) {
     return BoardLoadSpinner;
   } else {
@@ -164,6 +231,19 @@ const KanbanGrid = ({
             + Add New Task
           </button>
         </div>
+        <div className="absolute right-[10px] flex flex-col items-end text-xs text-right top-6">
+          <button
+            onClick={handleOptions}
+            className="flex justify-center align-middle items-center w-6 h-6 hover:border  hover:border-slate-300 rounded-lg"
+          >
+            <Image
+              src={"/assets/icon-vertical-ellipsis.svg"}
+              width={4}
+              height={4}
+              alt={"Options Menu"}
+            />
+          </button>
+        </div>
         {state.addTaskMode && (
           <>
             <OverlayButton setState={setState} />
@@ -176,7 +256,6 @@ const KanbanGrid = ({
             />
           </>
         )}
-
         {state.openModul && (
           <>
             <button
@@ -200,6 +279,35 @@ const KanbanGrid = ({
               columnStatus={columns}
             />
           </>
+        )}
+        {openBoardOptions && (
+          <div className="bg-white rounded-lg shadow-lg absolute right-[32px] mt-[25px] p-4 border w-48 h-auto">
+            <div className="flex gap-3 flex-col text-left justify-start align-top items-start">
+              <button
+                className="text-slate-400 hover:text-slate-600 text-xs font-medium font-['Plus Jakarta Sans'] leading-snug"
+                onClick={() => setOpenEditBoardModul(true)}
+              >
+                Edit Board
+              </button>
+
+              <button
+                className="text-red-500  hover:text-red-600 text-xs font-medium font-['Plus Jakarta Sans'] leading-snug "
+                onClick={(e) => handleDeleteBoard(e, boardId)}
+                disabled={isDeletingBoard}
+              >
+                {isDeletingBoard ? "Deleting Board..." : "Delete Board"}
+              </button>
+            </div>
+          </div>
+        )}
+        {openEditBoardModul && (
+          <EditBoard
+            currentBoard={boardName}
+            currentBoardId={boardId}
+            setOpenEditBoardModul={setOpenEditBoardModul}
+            handleEditBoard={handleEditBoard}
+            boardLoading={boardSaving}
+          />
         )}
         <div className="w-[full] h-full px-20 grid grid-cols-3 gap-6 pt-[100px] ">
           {columns?.map((col) => {
@@ -243,6 +351,22 @@ const KanbanGrid = ({
           state={state}
           setState={setState}
         />
+        <RenderBoardToastMsg
+          message={{
+            title: "Success",
+            description: `${boardName} updated successfully`,
+          }}
+          state={openBoardToaster}
+          setState={setOpenBoardToaster}
+        />
+        <RenderDeletedBoardToast
+          message={{
+            title: "Success",
+            description: `Selected Board ${boardName} deleted successfully`,
+          }}
+          state={openDeletedBoardToaster}
+          setState={setOpenDeletedBoardToaster}
+        />
       </>
     );
   }
@@ -279,6 +403,45 @@ export const addTaskEntry = async (updates: Partial<TaskState>) => {
     return res.json();
   } else {
     const errorText = await res.text(); // Get error text for better debugging
+    throw new Error(`Something went wrong on API server: ${errorText}`);
+  }
+};
+
+export const editBoardEntry = async (updates: Partial<BoardState>) => {
+  const url = createURL("/api/boards");
+  const res = await fetch(
+    new Request(url, {
+      method: "POST",
+      body: JSON.stringify(updates),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+  );
+
+  if (res.ok) {
+    return res.json();
+  } else {
+    const errorText = await res.text();
+    throw new Error(`Something went wrong on API server: ${errorText}`);
+  }
+};
+
+/**
+ * Deletes a board entry by making a DELETE request to the API.
+ * @param {string} id - The ID of the board to delete.
+ * @returns {Promise<any>} The response from the API.
+ * @throws Will throw an error if the API request fails.
+ */
+export const addDeleteBoardEntry = async (id: string) => {
+  const res = await fetch(`/api/boards/${id}`, {
+    method: "DELETE",
+  });
+
+  if (res.ok) {
+    return res.json();
+  } else {
+    const errorText = await res.text();
     throw new Error(`Something went wrong on API server: ${errorText}`);
   }
 };
