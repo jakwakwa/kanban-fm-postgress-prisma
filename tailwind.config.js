@@ -16,6 +16,7 @@ export const theme = {
       "kpurple-main": "#635fc7",
       "kgreen-main": "#67e2ae",
       "kgray-text": "#828fa3",
+      "kgray-label": "#000112",
       "kblue-todo": "#E7A75B",
       "indigo-500": "#635FC7",
       "medium-gray": "#89898f",

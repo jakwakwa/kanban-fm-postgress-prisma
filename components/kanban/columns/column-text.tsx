@@ -1,8 +1,10 @@
 const ColumnText = ({
   color,
+  alignRight,
   children,
 }: {
   color: string;
+  alignRight: boolean;
   children: React.ReactNode;
 }) => {
   let bgColorClass;
@@ -21,13 +23,22 @@ const ColumnText = ({
       bgColorClass = "bg-kgreen-main";
       break;
   }
-
-  return (
-    <div className="uppercase text-sm flex items-center gap-2 tracking-[2px] text-slate-700">
-      <div className={`rounded-xl w-[10px] h-[10px] ${bgColorClass}`}></div>
-      {children}
-    </div>
-  );
+  if (!alignRight) {
+    return (
+      <div className="uppercase text-sm flex items-center gap-2 tracking-[2px] text-slate-700">
+        <div className={`rounded-xl w-[10px] h-[10px] ${bgColorClass}`}></div>
+        {children}
+      </div>
+    );
+  }
+  if (alignRight) {
+    return (
+      <div className="absolute w-full text-right uppercase text-xs flex items-center gap-2 justify-end tracking-[2px] text-slate-700">
+        <div className={`rounded-xl w-[10px] h-[10px] ${bgColorClass}`}></div>
+        {children}
+      </div>
+    );
+  }
 };
 
 export default ColumnText;

@@ -224,6 +224,13 @@ const KanbanGrid = ({
             onClick={() =>
               setState((prevState: any) => ({
                 ...prevState,
+                newTask: {
+                  id: "",
+                  columnId: "",
+                  title: "",
+                  description: "",
+                  status: "",
+                },
                 addTaskMode: true,
               }))
             }
@@ -310,18 +317,20 @@ const KanbanGrid = ({
           />
         )}
         <div className="w-[full] h-full px-20 grid grid-cols-3 gap-6 pt-[100px] ">
-          {columns?.map((col) => {
+          {columns?.map((col, i) => {
             if (col.boardId === boardId) {
               return (
                 <div
-                  key={col.id}
+                  key={i}
                   className="bg-[#c8cdfa22] overflow-hidden rounded-xl px-4 py-1 h-auto border-2"
                 >
                   <div className="text-black my-4">
-                    <ColumnText color={col.name}>{col.name}</ColumnText>
+                    <ColumnText color={col.name} alignRight={false}>
+                      {col.name}
+                    </ColumnText>
                   </div>
                   {tasksStore?.map((task: TaskState) => {
-                    if (task.status === col.name && col.id === task.columnId) {
+                    if (task.status === col.name) {
                       return (
                         <div key={task.id}>
                           <KanbanCard

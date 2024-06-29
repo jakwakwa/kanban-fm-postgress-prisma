@@ -7,11 +7,12 @@ interface KanbanCardProps {
 }
 
 const KanbanCard = ({ task, setState, totalSubtasks }: KanbanCardProps) => {
-  function handleViewTask(name: string, id: string) {
+  function handleViewTask(name: string, id: string, description: string) {
     setState((prevState: any) => ({
       ...prevState,
       openModul: true,
       taskName: name,
+      taskDescription: description,
       taskId: id,
     }));
   }
@@ -19,7 +20,9 @@ const KanbanCard = ({ task, setState, totalSubtasks }: KanbanCardProps) => {
   return (
     <div className="flex flex-col gap-4 h-[auto] min-h-[140px] mb-4">
       <button
-        onClick={() => handleViewTask(task.title, task.columnId)}
+        onClick={() =>
+          handleViewTask(task.title, task.id, task.description ?? "")
+        }
         className="bg-white hover:bg-slate-50 h-[auto] min-h-[140px] rounded-md shadow-md p-[16px] flex flex-col justify-between cursor-pointer capitalize"
       >
         <div>

@@ -54,20 +54,6 @@ const AddTask = ({
     }", "boardId":"${boardId}"}`
   );
 
-  useEffect(() => {
-    setState((prevState: StateT) => ({
-      ...prevState,
-      newTask: {
-        id: "",
-        columnId: "",
-        title: "",
-        description: "",
-        status: "",
-      },
-    }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   return (
     <div className="absolute w-[480px] mx-auto mt-[6%] bg-white rounded-md p-[32px] pb-[48px] h-auto shadow-lg left-[35%]">
       <div className="text-xl font-bold mb-4">Add New Task</div>

@@ -21,11 +21,15 @@ const ViewTaskInputs = ({
   deleteTask,
 }: ViewTaskInpProps) => {
   return (
-    <div className="absolute w-[480px] h-auto mx-auto mt-[10%] bg-white rounded-md p-[32px] pb-[48px] shadow-lg left-[35%]">
-      <div className="absolute right-[32px] flex flex-col items-end text-xs text-right">
+    <div className="absolute w-[480px] h-auto mx-auto mt-[10%] bg-white rounded-md p-[32px] pt-[28px] pb-[28px] shadow-lg left-[35%]">
+      <div className="absolute right-[15px] flex flex-col items-end text-xs text-right top-[20px]">
         <button
           onClick={handleOptions}
-          className="flex justify-center align-middle items-center w-6 h-6 hover:border  hover:border-slate-300 rounded-lg"
+          className={`${
+            openOptions
+              ? "bg-indigo-100 shadow-md z-30"
+              : "bg-white border-1 border-white"
+          }  flex justify-center align-middle items-center w-7 h-7 hover:opacity-80 hover:bg-slate-100 hover:border-2 hover:border-slate-300 rounded-lg`}
         >
           <Image
             src={"/assets/icon-vertical-ellipsis.svg"}
@@ -36,7 +40,7 @@ const ViewTaskInputs = ({
         </button>
       </div>
       {openOptions && (
-        <div className="bg-white rounded-lg shadow-lg absolute right-[32px] mt-[25px] p-4 border w-48 h-auto">
+        <div className="bg-white rounded-lg shadow-lg absolute right-[15px] mt-[22px] p-4 border w-48 h-auto z-20">
           <div className="flex gap-3 flex-col text-left justify-start align-top items-start">
             <button
               className="text-slate-400 hover:text-slate-600 text-xs font-medium font-['Plus Jakarta Sans'] leading-snug"
@@ -54,28 +58,32 @@ const ViewTaskInputs = ({
           </div>
         </div>
       )}
-      <div className=" text-gray-950 text-lg capitalize font-bold pb-2">
+      <div className="text-gray-950 font-bold pb-2 w-full max-w-[88%] leading-tight mb-2 text-[18px]">
         {taskName}
       </div>
-      <hr />
-      <div className="my-[24px] w-99 text-gray-950  text-[11px] font-bold capitalize leading-relaxed tracking-normal">
-        <FormLabel isLabel={false}>Description</FormLabel>
-        {task?.description}
-        <hr className="mt-4" />
+
+      <div className="mb-[34px] mt-[18px] px-4 pb-8 pt-3 rounded-md border w-99 text-kgray-text text-[13px] font-normal capitalize leading-normal tracking-tight shadow-sm">
+        <FormLabel isLabel={false} spacing={true}>
+          Description:
+        </FormLabel>
+        {task?.description ? task?.description : ""}
       </div>
 
       {task?.subtasks && task?.subtasks.length > 0 && (
-        <div className="text-kgray-text text-xs font-bold  mb-[16px]">
+        <FormLabel isLabel={false} spacing={false} alignRight={false}>
           Subtasks ({task?.subtasks.length} of {task?.subtasks.length})
-        </div>
+        </FormLabel>
       )}
-      <div className="flex flex-col gap-2">
+
+      <div className="flex pl-1 flex-col gap-2">
         {task?.subtasks !== undefined ? (
           <Subtask task={task.subtasks} edit={false} />
         ) : null}
         {task?.subtasks === undefined && (
           <>
-            <FormLabel isLabel={false}>Subtasks </FormLabel>
+            <FormLabel isLabel={false} spacing={false} alignRight={true}>
+              Subtasks
+            </FormLabel>
             <div className="text-indgo-400 text-[9px]">
               You have no subtasks yet. Click options and to edit task and add
               subtasks
@@ -83,23 +91,28 @@ const ViewTaskInputs = ({
           </>
         )}
 
-        <hr className="mt-2" />
-        <div className="w-full h-16 relative mt-[26px]">
-          <FormLabel isLabel={false} spacing={true}>
-            Status
-          </FormLabel>
-          <div>
-            <div className="mt-4 rounded-md w-[100px] h-10 justify-start text-slate-700 outline-none focus:shadow-[0_0_0_1.5px] focus:shadow-black text-[10px] flex items-center capitalize font-bold text-left">
-              <div className="text-left"></div>
-              <div className="text-black my-0 pl-2">
-                <ColumnText color={task.status}>
-                  <div className="text-xs">{task.status}</div>
-                </ColumnText>
+        {task?.subtasks === undefined && (
+          <hr className="mt-4 border-dashed border border-slate-300" />
+        )}
+        <div
+          className={`w-full flex justify-end h-16 relative ${
+            task?.subtasks === undefined ? "mt-[26px]" : "mt-[6px]"
+          } `}
+        >
+          <div className="w-20">
+            <FormLabel isLabel={false} spacing={false} alignRight={true}>
+              Status
+              <div>
+                <div className="mt-4 rounded-md w-[100px] justify-start text-slate-700 outline-none focus:shadow-[0_0_0_1.5px] focus:shadow-black text-[10px] flex items-center capitalize font-bold text-left">
+                  <ColumnText color={task.status} alignRight={true}>
+                    {task.status}
+                  </ColumnText>
+                </div>
               </div>
-            </div>
+            </FormLabel>
           </div>
         </div>
-        <hr />
+        {/* <hr className="mt-4 border-dashed border border-slate-300" /> */}
       </div>
     </div>
   );

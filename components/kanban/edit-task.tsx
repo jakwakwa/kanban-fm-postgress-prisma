@@ -165,14 +165,15 @@ const EditTask = ({
           </Form.Control>
         </Form.Field>
 
-        <div className="mt-6">
+        <div className="mt-8">
           <FormLabel isLabel={false}>Subtasks</FormLabel>
         </div>
-        <div className="flex flex-col gap-2 mb-2">
+
+        <div className="flex flex-col gap-2 mb-0">
           {updatedSubTasks?.subtasks?.map((sub: SubTask, i: number) => {
             return (
               <Form.Field
-                className="grid mb-[10px]"
+                className="grid "
                 name={`subtask-${i}`}
                 key={sub.id ? sub.id : `subtask-${i}`}
               >
@@ -183,6 +184,7 @@ const EditTask = ({
                     required
                     type="text"
                     value={sub.title}
+                    placeholder="Add a subtask"
                     onChange={(e) => {
                       setUpdatedSubTasks({
                         subtasks: addUpdatedSubtaskUtil(updatedSubTasks, i, e),
@@ -193,10 +195,11 @@ const EditTask = ({
               </Form.Field>
             );
           })}
+
           {!disableAddBtn && (
-            <div className="h-10 relative w-full bg-indigo-500/10 rounded-2xl hover:bg-indigo-500/20 transition-colors ease-in delay-150 cursor-pointer">
+            <div className="h-10 mt-2 relative w-[170px]  bg-kpurple-main/20 rounded-2xl hover:bg-indigo-700/10  pl-4 transition-colors ease-in delay-150 cursor-pointer mb-2 shadow-sm shadow-indigo-600/30">
               <button
-                className="h-10 flex justify-center align-middle items-center text-center text-indigo-500 text-xs font-bold font-['Plus Jakarta Sans'] leading-snug"
+                className="h-10 flex justify-center align-middle items-center text-center text-kpurple-main/80 text-xs font-bold leading-snug"
                 onClick={handleAddNewSubtask}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
@@ -208,9 +211,10 @@ const EditTask = ({
               </button>
             </div>
           )}
+
           {disableAddBtn && !subtaskAdded ? (
             <button
-              className={`h-10 relative w-full rounded-2xl bg-indigo-500  hover:bg-indigo-700 transition-colors ease-in delay-150 cursor-pointer ${
+              className={`h-10 relative w-[300px] rounded-2xl bg-indigo-500  hover:bg-indigo-700 transition-colors ease-in delay-150 cursor-pointer ${
                 subTaskLoading && "animate-pulse bg-indigo-300"
               }`}
               onClick={(e) => handleSaveNewSubtask(e)}
@@ -222,7 +226,8 @@ const EditTask = ({
               </div>
             </button>
           ) : null}
-          <div className="w-full h-16 relative mt-[16px]">
+
+          <div className="w-full h-16 relative mt-[20px]">
             <FormLabel isLabel={false}>Status</FormLabel>
             <StatusDropdown
               status={task?.status ? task?.status : "Todo"}
@@ -237,11 +242,7 @@ const EditTask = ({
               setChanged={setChanged}
             />
           </div>
-          {updatedTask?.title.length < 1 ? (
-            <div className="text-indigo-400 border-[#7b81f2] border-[1.2px] px-2 py-1 inline-block text-[8px] rounded w-[70%] mt-4 shadow-md shadow-slate-200 bg-[#ffffff]">
-              * Please add a title and status to enable save
-            </div>
-          ) : null}
+
           <Form.Submit asChild>
             <button
               className={`mt-6 flex justify-center text-center w-full h-10 bg-indigo-500 hover:bg-indigo-700 rounded-2xl align-middle items-center cursor-pointer disabled:bg-indigo-200  disabled:cursor-not-allowed  ${
@@ -269,6 +270,11 @@ const EditTask = ({
               </div>
             </button>
           </Form.Submit>
+          {updatedTask?.title.length < 1 ? (
+            <div className="text-indigo-400 border-[#7b81f2] border-[1.2px] px-2 py-1 inline-block text-[10px] rounded w-[70%] mt-1 shadow-md shadow-slate-200 bg-[#ffffff]">
+              * Please add a title and status to enable save
+            </div>
+          ) : null}
         </div>
       </Form.Root>
     </div>
