@@ -20,6 +20,10 @@ export const INITIAL_STATE: StateT = {
   openDeleteToast: false,
   loading: false,
   addTaskMode: false,
+  toastMsg: {
+    title: "Success",
+    description: "The item has been successfully updated.",
+  },
   newTask: {
     columnId: "",
     title: "",

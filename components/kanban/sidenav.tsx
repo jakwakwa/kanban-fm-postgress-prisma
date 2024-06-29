@@ -120,7 +120,7 @@ export default function SideNav({ boards }: Readonly<SideNavProps>) {
                         <ViewColumnsIcon className="w-6 ml-4" />
 
                         <div className="flex relative flex-row md:block ml-4 w-full">
-                          <div className="w-[80%]">
+                          <div className="w-[80%] line-clamp-1 text-left">
                             {board?.name}
                             <div className="absolute top-0 right-[20px] w-[10px]">
                               {isActiveBoard ? (
@@ -144,10 +144,9 @@ export default function SideNav({ boards }: Readonly<SideNavProps>) {
                       >
                         <ViewColumnsIcon className="w-6 ml-4" />
 
-                        <div className="flex relative flex-row md:block ml-4 w-full">
-                          <div className="flex items-center w-[80%]">
+                        <div className="flex flex-row items-center relative md:block ml-4 w-full">
+                          <div className="line-clamp-1 text-left w-full max-w-[80%]">
                             {board?.name}
-                            <div className="absolute right-[20px] rounded-full bg-indigo-100 h-2 w-2 p-1"></div>
                           </div>
                         </div>
                       </button>

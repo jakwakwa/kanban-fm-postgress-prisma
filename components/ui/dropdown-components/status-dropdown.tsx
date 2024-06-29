@@ -108,7 +108,7 @@ const StatusDropdown = ({
         <div className="mt-4 rounded-md w-[100px] h-10 justify-start text-slate-700   outline-none focus:shadow-[0_0_0_1.5px] focus:shadow-black text-[13px] flex items-center capitalize font-bold text-left">
           <div className="text-left"></div>
           <div className="text-black my-0">
-            <ColumnText color={status}>
+            <ColumnText color={status} alignRight={false}>
               {!changed ? status : selectStatus}
             </ColumnText>
           </div>

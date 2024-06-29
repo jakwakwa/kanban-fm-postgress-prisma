@@ -26,11 +26,10 @@ function ViewTask({
   boardId,
   columnStatus,
 }: Readonly<ViewTaskProps>) {
-  const task: TaskState | undefined = tasks.find(
-    (t) => t.title === state.taskName
-  );
+  const task: TaskState | undefined = tasks.find((t) => t.id === state.taskId);
+
   const [openOptions, setOpenOptions] = useState(false);
-  const [updatedTitle] = useState(state.taskName);
+
   const [loading, setLoading] = useState(false);
 
   const addTasks = useStore((state) => state.addTasks);
@@ -39,9 +38,6 @@ function ViewTask({
     `{"columnId":"${state.columnId}","columnStatus":"${
       task?.status ? task?.status : "Todo"
     }", "boardId":"${boardId}"}`
-  );
-  const [updatedDescription] = useState(
-    task?.description ? task?.description : "no description"
   );
 
   const [updatedSubTasks, setUpdatedSubTasks] = useState(
@@ -59,15 +55,18 @@ function ViewTask({
 
   const [newColId, setNewColId] = useState(task?.columnId);
   const [editMode, setEditMode] = useState(false);
-
+  const [updatedTitle] = useState(task?.title);
   const [updated, setUpdated] = useState(false);
   const [subtaskAdded, setSubtaskAdded] = useState(false);
+  const [updatedDescription] = useState(
+    task?.description ? task?.description : ""
+  );
   const [subtaskLoading, setSubtaskLoading] = useState(true);
   const [updatedTask, setUpdatedTask] = useState({
-    title: updatedTitle,
-    description: updatedDescription,
-    status: "Test",
-    columnId: state.columnId,
+    title: updatedTitle ?? "",
+    description: updatedDescription ?? "",
+    status: "",
+    columnId: state.columnId ?? "",
   });
 
   useEffect(() => {

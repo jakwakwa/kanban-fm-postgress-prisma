@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import StatusDropdown from "../ui/dropdown-components/status-dropdown";
 import * as Form from "@radix-ui/react-form";
 import { Subtask } from "@/types/data-types";
@@ -53,20 +53,6 @@ const AddTask = ({
       state.newTask?.status ? state.newTask?.status : "Todo"
     }", "boardId":"${boardId}"}`
   );
-
-  useEffect(() => {
-    setState((prevState: StateT) => ({
-      ...prevState,
-      newTask: {
-        id: "",
-        columnId: "",
-        title: "",
-        description: "",
-        status: "",
-      },
-    }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <div className="absolute w-[480px] mx-auto mt-[6%] bg-white rounded-md p-[32px] pb-[48px] h-auto shadow-lg left-[35%]">
