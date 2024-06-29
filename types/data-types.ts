@@ -18,6 +18,7 @@ export interface StateT {
   openDeleteToast: boolean;
   loading: boolean;
   addTaskMode: boolean;
+  toastMsg: { title: string; description: string };
   newTask: {
     columnId: string;
     title: string;

@@ -143,6 +143,10 @@ const KanbanGrid = ({
         ...prevState,
         loading: false,
         open: true,
+        toastMsg: {
+          title: "Success",
+          description: "The task has been successfully added.",
+        },
         addTaskMode: false,
       }));
       addTasks([...tasksStore, result]);
@@ -317,11 +321,11 @@ const KanbanGrid = ({
           />
         )}
         <div className="w-[full] h-full px-20 grid grid-cols-3 gap-6 pt-[100px] ">
-          {columns?.map((col, i) => {
+          {columns?.map((col) => {
             if (col.boardId === boardId) {
               return (
                 <div
-                  key={i}
+                  key={col.id}
                   className="bg-[#c8cdfa22] overflow-hidden rounded-xl px-4 py-1 h-auto border-2"
                 >
                   <div className="text-black my-4">
@@ -353,28 +357,9 @@ const KanbanGrid = ({
           })}
         </div>
         <RenderToastMsg
-          message={{
-            title: "Success",
-            description: "The item has been successfully updated",
-          }}
+          message={state.toastMsg}
           state={state}
           setState={setState}
-        />
-        <RenderBoardToastMsg
-          message={{
-            title: "Success",
-            description: `${boardName} updated successfully`,
-          }}
-          state={openBoardToaster}
-          setState={setOpenBoardToaster}
-        />
-        <RenderDeletedBoardToast
-          message={{
-            title: "Success",
-            description: `Selected Board ${boardName} deleted successfully`,
-          }}
-          state={openDeletedBoardToaster}
-          setState={setOpenDeletedBoardToaster}
         />
       </>
     );
