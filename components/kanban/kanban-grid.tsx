@@ -14,8 +14,7 @@ import OverlayButton from "./overlay-button";
 import { INITIAL_STATE } from "@/constants/initial-data";
 import Image from "next/image";
 import EditBoard from "./moduls/edit-board";
-import RenderBoardToastMsg from "./render-boardToastmsg";
-import RenderDeletedBoardToast from "./render-deletedboard-toast";
+
 /**
  * KanbanGrid component renders the Kanban board with tasks and columns.
  * @param {Object} props - The component props.
@@ -59,8 +58,6 @@ const KanbanGrid = ({
   const [openBoardOptions, setOpenBoardOptions] = useState<boolean>(false);
 
   const [openEditBoardModul, setOpenEditBoardModul] = useState(false);
-  const [openBoardToaster, setOpenBoardToaster] = useState(false);
-  const [openDeletedBoardToaster, setOpenDeletedBoardToaster] = useState(false);
 
   const [isDeletingBoard, setIsDeletingBoard] = useState(false);
   const [boardSaving, setBoardSaving] = useState(false);
@@ -181,7 +178,16 @@ const KanbanGrid = ({
 
       addBoards([...boards, result]);
       router.push(`/kanban/board?board=${editedBoard}&id=${boardId}`);
-      setOpenBoardToaster(true);
+      setState((prevState) => ({
+        ...prevState,
+        loading: false,
+        open: true,
+        openModul: false,
+        toastMsg: {
+          title: "Task Edited",
+          description: "The task has been successfully edited.",
+        },
+      }));
       setBoardSaving(false);
       setOpenBoardOptions(false);
       setOpenEditBoardModul(false);
@@ -200,7 +206,7 @@ const KanbanGrid = ({
     setIsDeletingBoard(true);
     try {
       await addDeleteBoardEntry(boardId);
-      setOpenDeletedBoardToaster(true);
+
       router.push(`/kanban`);
 
       router.refresh();

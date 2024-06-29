@@ -55,15 +55,18 @@ function ViewTask({
 
   const [newColId, setNewColId] = useState(task?.columnId);
   const [editMode, setEditMode] = useState(false);
-
+  const [updatedTitle] = useState(task?.title);
   const [updated, setUpdated] = useState(false);
   const [subtaskAdded, setSubtaskAdded] = useState(false);
+  const [updatedDescription] = useState(
+    task?.description ? task?.description : ""
+  );
   const [subtaskLoading, setSubtaskLoading] = useState(true);
   const [updatedTask, setUpdatedTask] = useState({
-    title: "",
-    description: "",
+    title: updatedTitle ?? "",
+    description: updatedDescription ?? "",
     status: "",
-    columnId: state.columnId,
+    columnId: state.columnId ?? "",
   });
 
   useEffect(() => {
