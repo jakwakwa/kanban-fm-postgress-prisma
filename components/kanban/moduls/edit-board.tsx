@@ -1,10 +1,10 @@
 "use client";
-import { MouseEvent, SetStateAction, useState } from "react";
+import { useState } from "react";
 import * as Form from "@radix-ui/react-form";
-import { SpinnerCircularSplit } from "spinners-react";
 import EditTitleInputField from "./edit-title-inputfield";
-import { TaskPayload } from "@/types/data-types";
+
 import EditSubmitBtn from "./edit-submit-btn";
+import ValidationMsg from "./validation-msg";
 
 interface EditBoardProps {
   currentBoard: any;
@@ -47,11 +47,7 @@ const EditBoard = ({
             handleCancel={handleCancel}
           />
         </div>
-        {!name && (
-          <div className="text-[#6866e2] border border-[#4172cd65] border-1 px-2 py-1 inline-block text-[8px] rounded w-[70%] mt-4">
-            * Please enter a board title to enable save{" "}
-          </div>
-        )}
+        {!name && <ValidationMsg variant="Board" />}
       </Form.Root>
     </div>
   );

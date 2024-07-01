@@ -8,6 +8,7 @@ import FormLabel from "./form-label";
 import { SUBTASK_STYLE } from "@/constants/theme";
 import { addUpdatedSubtaskUtil } from "@/utils/state-utils";
 import EditTitleInputField from "./moduls/edit-title-inputfield";
+import ValidationMsg from "./moduls/validation-msg";
 
 interface EditTaskProps {
   updatedTask: TaskPayload;
@@ -115,7 +116,8 @@ const EditTask = ({
         <EditTitleInputField
           name={updatedTask.title}
           setName={setUpdatedTask}
-          variant="Task"
+          variant={"Task"}
+          fullObj={updatedTask}
         />
         <Form.Field className="grid mb-[10px]" name="description">
           <div className="flex items-baseline justify-between">
@@ -249,9 +251,7 @@ const EditTask = ({
             </button>
           </Form.Submit>
           {updatedTask?.title.length < 1 ? (
-            <div className="text-indigo-400 border-[#7b81f2] border-[1.2px] px-2 py-1 inline-block text-[10px] rounded w-[70%] mt-1 shadow-md shadow-slate-200 bg-[#ffffff]">
-              * Please add a title and status to enable save
-            </div>
+            <ValidationMsg variant="Task" />
           ) : null}
         </div>
       </Form.Root>
