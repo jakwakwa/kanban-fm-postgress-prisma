@@ -2,6 +2,10 @@ import {
   BoardState,
   ColumnState,
   Subtask,
+  Subtask,
+  Subtask,
+  TaskState,
+  TaskState,
   TaskState,
 } from "@/types/data-types";
 import { ChangeEvent } from "react";
@@ -70,4 +74,23 @@ export function addUpdatedSubtaskUtil(
   const updatedSubtask = [...updatedSubTasks.subtasks];
   updatedSubtask[i].title = e.target.value;
   return updatedSubtask;
+}
+
+/**
+ * Creates a function that, when called, will map through a list of tasks and associate each task with its corresponding subtasks.
+ *
+ * @param {TaskState[]} tasksStore - An array of tasks, each containing task details.
+ * @param {Subtask[]} subTasks - An array of subtasks, each containing subtask details and a parent task ID.
+ * @returns {Function} A function that returns an array of tasks, where each task includes a 'subtasks' property containing its associated subtasks.
+ */
+export function getTasksFromBoard(
+  tasksStore: TaskState[],
+  subTasks: Subtask[]
+) {
+  return () => {
+    return tasksStore.map((task: TaskState) => ({
+      ...task,
+      subtasks: subTasks.filter((subTask) => task.id === subTask.taskId),
+    }));
+  };
 }

@@ -14,6 +14,7 @@ import OverlayButton from "./overlay-button";
 import { INITIAL_STATE } from "@/constants/initial-data";
 import Image from "next/image";
 import EditBoard from "./moduls/edit-board";
+import { getTasksFromBoard } from "@/utils/state-utils";
 
 /**
  * KanbanGrid component renders the Kanban board with tasks and columns.
@@ -97,12 +98,7 @@ const KanbanGrid = ({
    * Retrieves tasks and associates them with their subtasks.
    * @returns {TaskState[]} The list of tasks with associated subtasks.
    */
-  const getTasks = () => {
-    return tasksStore.map((task: TaskState) => ({
-      ...task,
-      subtasks: subTasks.filter((subTask) => task.id === subTask.taskId),
-    }));
-  };
+  const getTasks = getTasksFromBoard(tasksStore, subTasks);
 
   const tasksByBoard: TaskState[] = getTasks();
 
@@ -184,8 +180,8 @@ const KanbanGrid = ({
         open: true,
         openModul: false,
         toastMsg: {
-          title: "Task Edited",
-          description: "The task has been successfully edited.",
+          title: "Board Edited",
+          description: "The board has been successfully edited.",
         },
       }));
       setBoardSaving(false);
