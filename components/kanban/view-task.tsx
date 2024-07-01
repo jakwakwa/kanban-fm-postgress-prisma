@@ -99,6 +99,16 @@ function ViewTask({
       await updateEntry(task!.id, {
         ...updatedTask,
       });
+      setState((prevState: any) => ({
+        ...prevState,
+        loading: false,
+        open: true,
+        toastMsg: {
+          title: "Success",
+          description: "The task has been successfully updated.",
+        },
+        addTaskMode: false,
+      }));
       setTimeout(() => {
         setUpdated(true);
       }, 2200);
@@ -145,15 +155,17 @@ function ViewTask({
     }
   };
 
-  const handleAddSubTask = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleAddSubTask = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    savedSubtask: any
+  ) => {
     e.preventDefault();
 
     const newSubtaskEnt = {
-      title: newSubtask.title,
-      isCompleted: newSubtask.isCompleted,
-      taskId: newSubtask.taskId,
+      title: savedSubtask.title,
+      isCompleted: savedSubtask.isCompleted,
+      taskId: savedSubtask.taskId,
     };
-
     try {
       await addSubTaskEntry(newSubtaskEnt);
 
