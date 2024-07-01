@@ -66,12 +66,11 @@ const EditTask = ({
 
   function handleAddNewSubtask() {
     setDisableAddBtn(true);
-    const currentTasks = `${updatedSubTasks.subtasks.length}`;
+
     setUpdatedSubTasks({
       subtasks: [
         ...updatedSubTasks.subtasks,
         {
-          id: currentTasks,
           title: "",
           isCompleted: false,
           taskId: task?.id,
@@ -79,7 +78,6 @@ const EditTask = ({
       ],
     });
     setNewSubtask({
-      id: "",
       title: "",
       isCompleted: false,
       taskId: task?.id,
@@ -90,7 +88,9 @@ const EditTask = ({
     e.preventDefault();
     setSubtaskLoading(true);
     setDisableAddBtn(true);
-    handleAddSubTask(e);
+    const newSub =
+      updatedSubTasks.subtasks[updatedSubTasks.subtasks.length - 1];
+    handleAddSubTask(e, newSub);
   }
 
   useEffect(() => {
@@ -150,7 +150,7 @@ const EditTask = ({
         </div>
 
         <div className="flex flex-col gap-2 mb-0">
-          {updatedSubTasks?.subtasks?.map((sub: SubTask, i: number) => {
+          {updatedSubTasks?.subtasks?.map((sub: SubTask, i: any) => {
             return (
               <Form.Field
                 className="grid "
@@ -160,11 +160,23 @@ const EditTask = ({
                 <div className="flex items-baseline justify-between"></div>
                 <Form.Control asChild>
                   <input
-                    className={SUBTASK_STYLE}
+                    className={
+                      SUBTASK_STYLE +
+                      `${
+                        i === updatedSubTasks.subtasks.length - 1 &&
+                        disableAddBtn === true
+                          ? "shadow-[#9c6aff] shadow-[0_0_0_2px] cursor-default bg-[#d1baff4c]"
+                          : "disabled:bg-slate-100 disabled:opacity-50 disabled:shadow-[0_0_0_1px_black] disabled:cursor-not-allowed disabled:hover:bg-slate-100 hover:shadow-blackA6"
+                      } `
+                    }
                     required
                     type="text"
                     value={sub.title}
                     placeholder="Add a subtask"
+                    disabled={
+                      i < updatedSubTasks.subtasks.length - 1 &&
+                      disableAddBtn === true
+                    }
                     onChange={(e) => {
                       setUpdatedSubTasks({
                         subtasks: addUpdatedSubtaskUtil(updatedSubTasks, i, e),
