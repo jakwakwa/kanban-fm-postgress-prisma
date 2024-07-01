@@ -2,10 +2,6 @@ import {
   BoardState,
   ColumnState,
   Subtask,
-  Subtask,
-  Subtask,
-  TaskState,
-  TaskState,
   TaskState,
 } from "@/types/data-types";
 import { ChangeEvent } from "react";
