@@ -40,8 +40,8 @@ export interface TaskState {
 export interface TaskPayload {
   title: string;
   description?: string;
-  status: string;
-  columnId: string;
+  status?: string;
+  columnId?: string;
 }
 
 export interface ColumnState {

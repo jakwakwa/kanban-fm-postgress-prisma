@@ -7,6 +7,8 @@ import { SpinnerCircularSplit } from "spinners-react";
 import FormLabel from "./form-label";
 import { SUBTASK_STYLE } from "@/constants/theme";
 import { addUpdatedSubtaskUtil } from "@/utils/state-utils";
+import EditTitleInputField from "./moduls/edit-title-inputfield";
+import ValidationMsg from "./moduls/validation-msg";
 
 interface EditTaskProps {
   updatedTask: TaskPayload;
@@ -111,34 +113,12 @@ const EditTask = ({
     <div className="absolute w-[480px] mx-auto mt-[6%] bg-white rounded-md p-[32px] pb-[48px] h-auto shadow-lg left-[35%]">
       <div className="text-xl font-bold mb-4">Edit Task</div>
       <Form.Root className="w-full">
-        <Form.Field className="grid mb-[10px]" name="title">
-          <div className="flex items-baseline justify-between">
-            <FormLabel>Title</FormLabel>
-            <Form.Message
-              className="text-[13px] text-white opacity-[0.8]"
-              match="valueMissing"
-            >
-              Please enter your email
-            </Form.Message>
-          </div>
-          <Form.Control asChild>
-            <input
-              className={`${inputStyle} h-10`}
-              required
-              placeholder={`e.g. Shopping List`}
-              type="text"
-              value={updatedTask.title}
-              onChange={(e) => {
-                const tit = e.target.value;
-
-                setUpdatedTask({
-                  ...updatedTask,
-                  title: tit,
-                });
-              }}
-            />
-          </Form.Control>
-        </Form.Field>
+        <EditTitleInputField
+          name={updatedTask.title}
+          setName={setUpdatedTask}
+          variant={"Task"}
+          fullObj={updatedTask}
+        />
         <Form.Field className="grid mb-[10px]" name="description">
           <div className="flex items-baseline justify-between">
             <FormLabel>Description</FormLabel>
@@ -271,9 +251,7 @@ const EditTask = ({
             </button>
           </Form.Submit>
           {updatedTask?.title.length < 1 ? (
-            <div className="text-indigo-400 border-[#7b81f2] border-[1.2px] px-2 py-1 inline-block text-[10px] rounded w-[70%] mt-1 shadow-md shadow-slate-200 bg-[#ffffff]">
-              * Please add a title and status to enable save
-            </div>
+            <ValidationMsg variant="Task" />
           ) : null}
         </div>
       </Form.Root>
