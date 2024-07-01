@@ -1,5 +1,5 @@
 "use client";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import ViewTask from "./view-task";
 import AddTask from "./add-task";
@@ -8,20 +8,28 @@ import KanbanCard from "./kanban-card";
 import RenderToastMsg from "./render-toastmsg";
 import useStore from "@/context/store";
 import { BoardState, StateT, Subtask, TaskState } from "@/types/data-types";
-import { getAllTasks, handleBoardProcessing } from "@/utils/state-utils";
+import {
+  getAllTasks,
+  handleBoardProcessing,
+  getTasksFromBoard,
+  addTaskFn,
+  editBoardFn,
+  deleteBoardFn,
+} from "@/utils/state-utils";
 import { BoardLoadSpinner } from "./board-loader";
 import OverlayButton from "./overlay-button";
 import { INITIAL_STATE } from "@/constants/initial-data";
 import Image from "next/image";
 import EditBoard from "./moduls/edit-board";
-import { getTasksFromBoard } from "@/utils/state-utils";
 
 /**
- * KanbanGrid component renders the Kanban board with tasks and columns.
- * @param {Object} props - The component props.
- * @param {Subtask[]} [props.subTasks=[]] - The list of subtasks.
- * @param {BoardState[]} [props.boards=[]] - The list of boards.
- * @returns {JSX.Element} The KanbanGrid component.
+ * KanbanGrid component represents a Kanban board with multiple columns and tasks.
+ * It allows adding, editing, and deleting tasks and boards.
+ *
+ * @param {Object} props - Component props.
+ * @param {Subtask[]} [props.subTasks=[]] - Initial subtasks.
+ * @param {BoardState[]} [props.boards=[]] - Initial boards.
+ * @returns {JSX.Element} The rendered component.
  */
 const KanbanGrid = ({
   subTasks = [],
@@ -65,23 +73,32 @@ const KanbanGrid = ({
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
+    // Access the current timer reference
     const timer = timerRef.current;
     return () => {
+      // Clear the timer if it exists
       if (timer) clearTimeout(timer);
     };
   }, []);
 
   useEffect(() => {
+    // Add subtasks to the state
     addSubTasks(subTasks);
+    // Add boards to the state
     addBoards(boards);
-
+    // Function to process each board
     const processBoard = (board: BoardState) => {
+      // Retrieve all tasks from the board
       const allTasksFromBoard = getAllTasks([board]);
+      // Set the current board in the state
       addCurrentBoard(board);
+      // Add columns of the board to the state
       addColumns(board.columns);
+      // Add tasks to the state
       addTasks(allTasksFromBoard);
     };
 
+    // Handle the processing of boards based on the board ID
     handleBoardProcessing(boards, boardId, processBoard);
   }, [
     addBoards,
@@ -94,122 +111,59 @@ const KanbanGrid = ({
     subTasks,
   ]);
 
-  /**
-   * Retrieves tasks and associates them with their subtasks.
-   * @returns {TaskState[]} The list of tasks with associated subtasks.
-   */
+  // Retrieve tasks from the specified board using the tasksStore and subTasks.
   const getTasks = getTasksFromBoard(tasksStore, subTasks);
 
+  // Execute the getTasks function to obtain an array of tasks grouped by board.
   const tasksByBoard: TaskState[] = getTasks();
 
   /**
-   * Handles the addition of a new task.
-   * @param {FormEvent} e - The form event.
-   * @param {any} newtask - The new task data.
-   * @param {any} colId - The column ID.
-   * @param {any} status - The task status.
-   * @returns {Promise<void>} A promise that resolves when the task is added.
+   * Handles the addition of a new task to a specific column on a Kanban board.
+   *
+   * @param e - The form event that triggers this function.
+   * @param newtask - The payload for the new task to be added.
+   * @param colId - The ID of the column where the new task will be added.
+   * @param status - The initial status of the new task.
+   * @returns A promise that resolves to void.
    */
-  const handleAddTask = async (
-    e: FormEvent,
-    newtask: any,
-    colId: any,
-    status: any
-  ): Promise<void> => {
-    e.preventDefault();
-    setState((prevState) => ({
-      ...prevState,
-      loading: true,
-      open: false,
-    }));
+  const handleAddTask = addTaskFn(
+    setState,
+    state,
+    addTasks,
+    tasksStore,
+    router,
+    boardName,
+    boardId
+  );
 
-    const newT = {
-      ...state.newTask,
-      status: status,
-      columnId: colId,
-    };
+  /**
+   * Handles the editing of a board.
+   *
+   * @param e - The form event.
+   * @param editedBoard - The new title of the board.
+   * @param boardId - The unique identifier for the board.
+   * @returns A promise that resolves when the board has been edited.
+   */
+  const handleEditBoard = editBoardFn(
+    setBoardSaving,
+    addBoards,
+    boards,
+    router,
+    setState,
+    setOpenBoardOptions,
+    setOpenEditBoardModul
+  );
 
-    try {
-      const result = await addTaskEntry(newT);
-
-      setState((prevState) => ({
-        ...prevState,
-        loading: false,
-        open: true,
-        toastMsg: {
-          title: "Success",
-          description: "The task has been successfully added.",
-        },
-        addTaskMode: false,
-      }));
-      addTasks([...tasksStore, result]);
-      router.push(`/kanban/board?board=${boardName}&id=${boardId}`);
-      router.refresh();
-    } catch (error) {
-      console.error("Error adding task:", error);
-      setState((prevState: any) => ({ ...prevState, loading: false }));
-    }
-  };
-
-  const handleEditBoard = async (
-    e: FormEvent,
-    editedBoard: any,
-    boardId: any
-  ): Promise<void> => {
-    e.preventDefault();
-
-    setBoardSaving(true);
-
-    const newtitle = {
-      name: editedBoard,
-    };
-
-    const editedB = {
-      ...newtitle,
-      id: boardId,
-    };
-
-    try {
-      const result = await editBoardEntry(editedB);
-
-      addBoards([...boards, result]);
-      router.push(`/kanban/board?board=${editedBoard}&id=${boardId}`);
-      setState((prevState) => ({
-        ...prevState,
-        loading: false,
-        open: true,
-        openModul: false,
-        toastMsg: {
-          title: "Board Edited",
-          description: "The board has been successfully edited.",
-        },
-      }));
-      setBoardSaving(false);
-      setOpenBoardOptions(false);
-      setOpenEditBoardModul(false);
-      router.refresh();
-    } catch (error) {
-      console.error("Error editing board:", error);
-      setState((prevState: any) => ({ ...prevState, loading: false }));
-    }
-  };
-
-  const handleDeleteBoard = async (
-    e: { preventDefault: () => void },
-    boardId: string
-  ) => {
-    e.preventDefault();
-    setIsDeletingBoard(true);
-    try {
-      await addDeleteBoardEntry(boardId);
-
-      router.push(`/kanban`);
-
-      router.refresh();
-    } catch (error) {
-      console.error("An error occurred:", error);
-    }
-  };
+  /**
+   * Handles the deletion of a board by preventing the default form submission behavior,
+   * setting a state to indicate deletion is in progress, and attempting to delete the board.
+   * Upon successful deletion, navigates to the Kanban main page and refreshes the page.
+   * Logs an error if the deletion fails.
+   *
+   * @param e - The event object with a method to prevent default behavior.
+   * @param boardId - The unique identifier of the board to be deleted.
+   */
+  const handleDeleteBoard = deleteBoardFn(setIsDeletingBoard, router);
 
   function handleOptions() {
     setOpenBoardOptions(!openBoardOptions);
@@ -369,75 +323,3 @@ const KanbanGrid = ({
 };
 
 export default KanbanGrid;
-
-/**
- * Creates a URL by appending the given path to the window's origin.
- * @param {string} path - The path to append.
- * @returns {string} The full URL.
- */
-export const createURL = (path: string) => window.location.origin + path;
-
-/**
- * Adds a new task entry by making a POST request to the API.
- * @param {Partial<TaskState>} updates - The task data to add.
- * @returns {Promise<any>} The response from the API.
- * @throws Will throw an error if the API request fails.
- */
-export const addTaskEntry = async (updates: Partial<TaskState>) => {
-  const url = createURL("/api/addTask"); // Ensure createURL is defined and used correctly
-  const res = await fetch(
-    new Request(url, {
-      method: "POST",
-      body: JSON.stringify(updates), // Directly stringify the updates object
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-  );
-
-  if (res.ok) {
-    return res.json();
-  } else {
-    const errorText = await res.text(); // Get error text for better debugging
-    throw new Error(`Something went wrong on API server: ${errorText}`);
-  }
-};
-
-export const editBoardEntry = async (updates: Partial<BoardState>) => {
-  const url = createURL("/api/boards");
-  const res = await fetch(
-    new Request(url, {
-      method: "POST",
-      body: JSON.stringify(updates),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-  );
-
-  if (res.ok) {
-    return res.json();
-  } else {
-    const errorText = await res.text();
-    throw new Error(`Something went wrong on API server: ${errorText}`);
-  }
-};
-
-/**
- * Deletes a board entry by making a DELETE request to the API.
- * @param {string} id - The ID of the board to delete.
- * @returns {Promise<any>} The response from the API.
- * @throws Will throw an error if the API request fails.
- */
-export const addDeleteBoardEntry = async (id: string) => {
-  const res = await fetch(`/api/boards/${id}`, {
-    method: "DELETE",
-  });
-
-  if (res.ok) {
-    return res.json();
-  } else {
-    const errorText = await res.text();
-    throw new Error(`Something went wrong on API server: ${errorText}`);
-  }
-};
