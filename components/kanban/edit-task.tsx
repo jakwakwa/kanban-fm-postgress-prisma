@@ -234,8 +234,8 @@ const EditTask = ({
                 onClick={() => {
                   const updateReset = [...updatedSubTasks.subtasks];
                   updateReset.pop();
-                  setDisableAddBtn(false),
-                    setUpdatedSubTasks({ subtasks: updateReset });
+                  setDisableAddBtn(false);
+                  setUpdatedSubTasks({ subtasks: updateReset });
                 }}
               >
                 Cancel
