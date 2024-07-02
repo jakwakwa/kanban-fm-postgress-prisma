@@ -21,6 +21,8 @@ import OverlayButton from "./overlay-button";
 import { INITIAL_STATE } from "@/constants/initial-data";
 import Image from "next/image";
 import EditBoard from "./moduls/edit-board";
+import { SpinnerCircular } from "spinners-react";
+import { ProcessingLoader } from "./processing-loader";
 
 /**
  * KanbanGrid component represents a Kanban board with multiple columns and tasks.
@@ -63,6 +65,7 @@ const KanbanGrid = ({
   const boardId = slug.get("id") as unknown as string;
   const router = useRouter();
   const [state, setState] = useState<StateT>(INITIAL_STATE);
+  const { isBoardAdding, setIsBoardAdding } = useStore((state) => state);
 
   const [openBoardOptions, setOpenBoardOptions] = useState<boolean>(false);
 
@@ -75,6 +78,7 @@ const KanbanGrid = ({
   useEffect(() => {
     // Access the current timer reference
     const timer = timerRef.current;
+
     return () => {
       // Clear the timer if it exists
       if (timer) clearTimeout(timer);
@@ -163,7 +167,12 @@ const KanbanGrid = ({
    * @param e - The event object with a method to prevent default behavior.
    * @param boardId - The unique identifier of the board to be deleted.
    */
-  const handleDeleteBoard = deleteBoardFn(setIsDeletingBoard, router);
+  const handleDeleteBoard = deleteBoardFn(
+    setIsDeletingBoard,
+    router,
+    state,
+    setState
+  );
 
   function handleOptions() {
     setOpenBoardOptions(!openBoardOptions);
@@ -266,6 +275,13 @@ const KanbanGrid = ({
               </button>
             </div>
           </div>
+        )}
+
+        {isDeletingBoard && (
+          <ProcessingLoader action={"Deleting"} variant={"Board"} />
+        )}
+        {isBoardAdding && (
+          <ProcessingLoader action={"Adding"} variant={"Board"} />
         )}
         {openEditBoardModul && (
           <EditBoard

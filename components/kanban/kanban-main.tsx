@@ -16,7 +16,15 @@ const KanbanContainer = ({ boards }: { boards: any[] }) => {
         </>
       )}
       <div className="h-full flex flex-col items-center justify-center align-middle">
-        <div className="mb-4">Pick a board in the sidenav to get started</div>
+        {boards.length === 0 ? (
+          <div className="mb-4">
+            Add a board from the side panel to get started
+          </div>
+        ) : (
+          <div className="mb-4">
+            Select an existing board or add a new board from the side panel
+          </div>
+        )}
       </div>
     </>
   );

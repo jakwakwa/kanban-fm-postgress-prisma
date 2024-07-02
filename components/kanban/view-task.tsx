@@ -7,6 +7,7 @@ import ViewTaskInputs from "./view-task-inputs";
 import EditTask from "./edit-task";
 import { SpinnerRoundFilled } from "spinners-react";
 import { INITIAL_TASK } from "@/constants/initial-data";
+import { ProcessingLoader } from "./processing-loader";
 
 interface ViewTaskProps {
   state: StateT;
@@ -190,6 +191,7 @@ function ViewTask({
     taskId: string
   ) => {
     e.preventDefault();
+    setOpenOptions(false);
     setLoading(true);
     try {
       await addDeleteTaskEntry(taskId);
@@ -197,6 +199,13 @@ function ViewTask({
 
       setTimeout(() => {
         setUpdated(true);
+        setState((prevState: any) => ({
+          ...prevState,
+          toastMsg: {
+            title: "Success",
+            description: "The task was deleted succesfully",
+          },
+        }));
       }, 2200);
 
       setTimeout(() => {
@@ -230,25 +239,7 @@ function ViewTask({
   if (!editMode) {
     return (
       <>
-        {loading && (
-          <div className="absolute bg-[#475ca77c] w-screen h-screen top-0 left-0 z-10 spinner text-black">
-            <div className="absolute mx-auto top-[20%] left-0 z-10 spinner w-screen text-black">
-              <div className="bg-white px-12 py-14 w-[400px] mx-auto flex flex-col justify-center rounded-3xl shadow-2xl">
-                <div className="h-[25px] w-full p-0 m-0 text-sm leading-1 text-indigo-500 text-center animate-pulse ">
-                  Please wait while deleting the task...
-                </div>
-                <div className="h-[50px] w-[20%] mx-auto ">
-                  <SpinnerRoundFilled
-                    size={50}
-                    thickness={100}
-                    speed={100}
-                    color="rgba(74, 57, 172, 0.71)"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        {loading && <ProcessingLoader action={"Deleting"} variant={"Task"} />}
         <ViewTaskInputs
           handleOptions={handleOptions}
           openOptions={openOptions}
@@ -264,6 +255,8 @@ function ViewTask({
   if (editMode) {
     return (
       <EditTask
+        state={state}
+        setState={setState}
         updatedTask={updatedTask}
         setUpdatedTask={setUpdatedTask}
         task={task ?? INITIAL_TASK}
