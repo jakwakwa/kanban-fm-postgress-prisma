@@ -5,7 +5,6 @@ import useStore from "@/context/store";
 import { TaskState, Subtask as SubTask, StateT } from "@/types/data-types";
 import ViewTaskInputs from "./view-task-inputs";
 import EditTask from "./edit-task";
-import { SpinnerRoundFilled } from "spinners-react";
 import { INITIAL_TASK } from "@/constants/initial-data";
 import { ProcessingLoader } from "./processing-loader";
 
@@ -277,6 +276,7 @@ function ViewTask({
         subtaskAdded={subtaskAdded}
         setSubtaskAdded={setSubtaskAdded}
         setNewSubtask={setNewSubtask}
+        newSubTask={newSubtask}
       />
     );
   }

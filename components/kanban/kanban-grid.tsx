@@ -21,7 +21,6 @@ import OverlayButton from "./overlay-button";
 import { INITIAL_STATE } from "@/constants/initial-data";
 import Image from "next/image";
 import EditBoard from "./moduls/edit-board";
-import { SpinnerCircular } from "spinners-react";
 import { ProcessingLoader } from "./processing-loader";
 
 /**
@@ -65,7 +64,7 @@ const KanbanGrid = ({
   const boardId = slug.get("id") as unknown as string;
   const router = useRouter();
   const [state, setState] = useState<StateT>(INITIAL_STATE);
-  const { isBoardAdding, setIsBoardAdding } = useStore((state) => state);
+  const { isBoardAdding } = useStore((state) => state);
 
   const [openBoardOptions, setOpenBoardOptions] = useState<boolean>(false);
 

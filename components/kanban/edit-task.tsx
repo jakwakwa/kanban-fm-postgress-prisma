@@ -38,6 +38,7 @@ interface EditTaskProps {
   setSubtaskLoading: Dispatch<SetStateAction<boolean>>;
   subtaskAdded: boolean;
   setSubtaskAdded: Dispatch<SetStateAction<boolean>>;
+  newSubTask: any;
 }
 const inputStyle =
   "box-border w-full bg-slate-100 placeholder:text-xs placeholder:text-slate-400  placeholder:italic shadow-blackA6 inline-flex appearance-none items-center justify-center rounded-[4px] p-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_1.3px_#252525]  selection:color-white selection:bg-blackA6 hover:bg-[#e8ebf9]";
@@ -65,6 +66,7 @@ const EditTask = ({
   setSubtaskLoading,
   subtaskAdded,
   setSubtaskAdded,
+  newSubTask,
 }: EditTaskProps) => {
   const [disableAddBtn, setDisableAddBtn] = useState(false);
   useEffect(() => {
