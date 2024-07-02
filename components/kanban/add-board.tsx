@@ -3,12 +3,15 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import * as Form from "@radix-ui/react-form";
 import { SpinnerCircularSplit } from "spinners-react";
+import useStore from "@/context/store";
+import { setTimeout } from "timers";
 
 const AddBoard = ({ setAddBoardModul }: any) => {
   const [name, setName] = useState("");
   const [userId] = useState("");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const setIsBoardAdding = useStore((state) => state.setIsBoardAdding);
 
   const handleCancel = (
     e: React.MouseEvent<HTMLButtonElement, React.MouseEvent>
@@ -19,6 +22,8 @@ const AddBoard = ({ setAddBoardModul }: any) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsBoardAdding(true);
+
     setLoading(true);
     try {
       const res = await fetch("/api/addBoard", {
@@ -34,6 +39,10 @@ const AddBoard = ({ setAddBoardModul }: any) => {
           `/kanban/board?board=${newBoard.data.name}&id=${newBoard.data.id}`
         );
         setAddBoardModul(false);
+        setTimeout(() => {
+          setIsBoardAdding(false);
+        }, 4000);
+        setIsBoardAdding(false);
         router.refresh();
       } else {
         console.error("Failed to add board");

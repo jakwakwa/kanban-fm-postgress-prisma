@@ -12,18 +12,24 @@ function FormLabel({
   alignRight,
   children,
 }: Readonly<FormLabelProps>) {
-  const defaultStyle = `text-slate-700/70 text-[10px] font-extrabold pl-0 mb-1.5 mt-4 `;
+  const defaultStyle = `text-slate-700/70 text-[10px] font-extrabold pl-0 mb-1.5 `;
 
   function styleSelector() {
     if (spacing && !alignRight) {
-      return `${defaultStyle} mt-0 mb-1.5 `;
+      return `${defaultStyle} mt-2 mb-1.5 `;
     } else if (alignRight && !spacing) {
       return `${defaultStyle} absolute right-0 text-right bottom-0 mt-4 mb-0`;
     } else return `${defaultStyle} mt-[-8px] `;
   }
 
   if (isLabel) {
-    return <Form.Label className={` ${defaultStyle}`}>{children}</Form.Label>;
+    return (
+      <Form.Label
+        className={` ${spacing ? defaultStyle + "mt-3" : defaultStyle}`}
+      >
+        {children}
+      </Form.Label>
+    );
   } else {
     return <div className={styleSelector()}>{children}</div>;
   }

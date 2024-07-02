@@ -136,7 +136,7 @@ export function addTaskFn(
         open: true,
         toastMsg: {
           title: "Success",
-          description: "The task has been successfully added.",
+          description: "The task has been successfully created.",
         },
         addTaskMode: false,
       }));
@@ -154,14 +154,30 @@ export function deleteBoardFn(
     (value: SetStateAction<boolean>): void;
     (arg0: boolean): void;
   },
-  router: any
+  router: any,
+  state: StateT,
+  setState: {
+    (value: SetStateAction<StateT>): void;
+    (arg0: {
+      (prevState: any): any;
+      (prevState: any): any;
+      (prevState: any): any;
+    }): void;
+  }
 ) {
   return async (e: { preventDefault: () => void }, boardId: string) => {
     e.preventDefault();
     setIsDeletingBoard(true);
     try {
       await addDeleteBoardEntry(boardId);
-
+      setState((prevState: any) => ({
+        ...prevState,
+        open: true,
+        toastMsg: {
+          title: "Success",
+          description: "The board was successfully deleted",
+        },
+      }));
       router.push(`/kanban`);
 
       router.refresh();

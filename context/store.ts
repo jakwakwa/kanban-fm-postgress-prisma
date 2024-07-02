@@ -14,6 +14,7 @@ interface KanbanStore {
   tasks: TaskState[];
   subTasks: Subtask[];
   boardId: string;
+  isBoardAdding: boolean;
   loading: boolean;
   addBoards: (boards: BoardState[]) => void;
   addCurrentBoard: (board: BoardState) => void;
@@ -21,6 +22,7 @@ interface KanbanStore {
   addTasks: (tasks: TaskState[]) => void;
   addSubTasks: (subTasks: Subtask[]) => void;
   addBoardId: (boardId: string) => void;
+  setIsBoardAdding: (isBoardAdding: boolean) => void;
   setLoader: (loading: boolean) => void;
   reset: () => void;
 }
@@ -34,6 +36,7 @@ const useStore = create<KanbanStore>()(
     columns: [],
     tasks: [],
     subTasks: [],
+    isBoardAdding: false,
     loading: false,
     addBoards: (boards) => {
       set((state) => ({
@@ -67,6 +70,12 @@ const useStore = create<KanbanStore>()(
         loading: true,
       }));
     },
+    setIsBoardAdding: (isBoardAdding) => {
+      set((state) => ({
+        ...state,
+        isBoardAdding: isBoardAdding,
+      }));
+    },
     setLoader: (loading) => {
       set((state) => ({
         ...state,
@@ -80,6 +89,7 @@ const useStore = create<KanbanStore>()(
         columns: [],
         tasks: [],
         subTasks: [],
+        isBoardAdding: false,
         loading: false,
       });
     },
