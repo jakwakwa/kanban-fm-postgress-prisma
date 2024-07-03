@@ -55,7 +55,7 @@ const AddBoard = ({ setAddBoardModul }: any) => {
   };
 
   return (
-    <div className="absolute w-[520px] mx-auto mt-[0%] bg-white rounded-xl p-[32px] pb-[48px] h-auto shadow-lg left-[35%]">
+    <div className="absolute w-[520px] mx-auto mt-[0%] bg-white rounded-xl p-[32px] pb-[48px] h-auto shadow-lg left-[35%] z-40">
       <div className="text-xl font-bold mb-4">Add New Board</div>
       <Form.Root className="w-full" onSubmit={handleSubmit}>
         <Form.Field className="grid mb-[10px]" name="title">

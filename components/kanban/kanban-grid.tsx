@@ -22,6 +22,7 @@ import { INITIAL_STATE } from "@/constants/initial-data";
 import Image from "next/image";
 import EditBoard from "./moduls/edit-board";
 import { ProcessingLoader } from "./processing-loader";
+import KanbanHeader from "../ui/header";
 
 /**
  * KanbanGrid component represents a Kanban board with multiple columns and tasks.
@@ -182,7 +183,7 @@ const KanbanGrid = ({
   } else {
     return (
       <>
-        <div className="fixed right-12 top-4 z-0 w-[200px] flex justify-end">
+        <div className="fixed right-12 top-4 w-[200px] flex justify-end z-20">
           <button
             className={`${
               state.isDisabled
@@ -206,7 +207,7 @@ const KanbanGrid = ({
             + Add New Task
           </button>
         </div>
-        <div className="absolute right-[10px] flex flex-col items-end text-xs text-right top-6">
+        <div className="absolute right-[10px] flex flex-col items-end text-xs text-right top-6 z-20">
           <button
             onClick={handleOptions}
             className="flex justify-center align-middle items-center w-6 h-6 hover:border  hover:border-slate-300 rounded-lg"
@@ -233,16 +234,6 @@ const KanbanGrid = ({
         )}
         {state.openModul && (
           <>
-            <button
-              className="w-full h-full left-0 m-0 p-0  bg-slate-700 bg-opacity-70 fixed"
-              onClick={() =>
-                setState((prevState: any) => ({
-                  ...prevState,
-                  openModul: false,
-                }))
-              }
-            ></button>
-
             <OverlayButton setState={setState} />
             <ViewTask
               state={state}
@@ -291,13 +282,16 @@ const KanbanGrid = ({
             boardLoading={boardSaving}
           />
         )}
-        <div className="w-[full] h-full px-20 grid grid-cols-3 gap-6 pt-[100px] ">
+        <KanbanHeader />
+        <div
+          className={`w-full h-fit px-12 grid grid-flow-col auto-cols-max gap-6 mt-[100px]`}
+        >
           {columns?.map((col) => {
             if (col.boardId === boardId) {
               return (
                 <div
                   key={col.id}
-                  className="bg-[#c8cdfa22] overflow-hidden rounded-xl px-4 py-1 h-auto border-2"
+                  className="bg-[#c8cdfa22] overflow-hidden rounded-xl px-4 py-1 h-auto border-2 w-[300px]"
                 >
                   <div className="text-black my-4">
                     <ColumnText color={col.name} alignRight={false}>

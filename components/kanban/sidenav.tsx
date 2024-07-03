@@ -3,8 +3,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import useStore from "@/context/store";
 import { ViewColumnsIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import Image from "next/image";
 import Logo from "../ui/logo";
-import { useState, useEffect } from "react";
+import { useState, useEffect, ReactNode } from "react";
 import { SpinnerCircular, SpinnerRoundOutlined } from "spinners-react";
 import Button from "../ui/buttons/button";
 import { BoardState } from "@/types/data-types";
@@ -13,13 +14,15 @@ import SideNavAddBtn from "./sidenav-add-btn";
 
 interface SideNavProps {
   boards: BoardState[];
+  kanban: ReactNode;
 }
-export default function SideNav({ boards }: Readonly<SideNavProps>) {
+export default function SideNav({ boards, kanban }: Readonly<SideNavProps>) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentBoardName = searchParams.get("board");
   const [boardLoading, setBoardLoading] = useState(false);
   const [addBoardModul, setAddBoardModul] = useState(false);
+  const [hideSidenav, setHideSidenav] = useState(false);
   const addBoardId = useStore((state) => state.addBoardId);
   const setLoader = useStore((state) => state.setLoader);
 
@@ -38,9 +41,34 @@ export default function SideNav({ boards }: Readonly<SideNavProps>) {
     }
   }, [boardLoading, router]);
 
+  if (hideSidenav) {
+    return (
+      <>
+        <button
+          onClick={() => setHideSidenav(false)}
+          className="w-12 h-12 absolute bottom-0 left-0"
+        >
+          <div className="w-full h-12 left-0 bottom-0 absolute bg-indigo-500 rounded-tr-full rounded-br-full">
+            <Image
+              alt=""
+              width={16}
+              height={10}
+              className="w-[16] h-[10.5px] left-[12px] top-[19px] absolute text-white"
+              src={"/assets/icon-show-sidebar.svg"}
+            />
+          </div>
+        </button>
+        {kanban}
+      </>
+    );
+  }
+
   return (
-    <>
-      <div className="fixed w-[300px] z-1 flex h-full flex-col  py-0 md:px-0 bg-white border-r">
+    <div className="w-screen flex flex-row">
+      <div
+        className="
+    w-[300px] z-1 flex h-full flex-col  py-0 md:px-0 bg-white border-r"
+      >
         <Link
           className="mb-2 flex h-28 items-start justify-start rounded-md bg-white p-4 md:pt-8 md:h-28"
           href="/"
@@ -157,12 +185,29 @@ export default function SideNav({ boards }: Readonly<SideNavProps>) {
             </div>
           </div>
           <div className="hidden h-auto w-full grow rounded-md md:block"></div>
-          <form>
+          <div>
+            <button
+              onClick={() => setHideSidenav(true)}
+              className="w-full relative px-7 py-6"
+            >
+              <div className="flex justify-start align-middle items-center gap-4 ">
+                <Image
+                  alt=""
+                  width={10}
+                  height={10}
+                  className="w-4 h-4"
+                  src={"/assets/icon-hide-sidebar.svg"}
+                />
+                <div className=" text-slate-400 text-sm">Hide Sidebar</div>
+              </div>
+            </button>
+
             <SideNavSignOutBtn />
-          </form>
+          </div>
         </div>
       </div>
       {addBoardModul && <SideNavAddBtn setAddBoardModul={setAddBoardModul} />}
-    </>
+      {kanban}
+    </div>
   );
 }

@@ -15,10 +15,10 @@ const SideNavAddBtn = ({ setAddBoardModul }: SideNavAddProps): JSX.Element => {
   return (
     <>
       <button
-        className="absolute w-screen h-screen bg-black/50"
-        onClick={handleAddBoard}
+        className="absolute w-screen h-screen bg-black/50 z-30"
+        onClick={() => setAddBoardModul(false)}
       ></button>
-      <div className="absolute top-[15%] left-0 w-screen mx-auto z-10">
+      <div className="absolute top-[15%] left-0 w-screen mx-auto z-30">
         <AddBoard setAddBoardModul={setAddBoardModul} />
       </div>
     </>

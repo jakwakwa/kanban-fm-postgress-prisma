@@ -55,7 +55,7 @@ const AddTask = ({
   );
 
   return (
-    <div className="absolute w-[480px] mx-auto mt-[6%] bg-white rounded-md p-[32px] pb-[48px] h-auto shadow-lg left-[35%]">
+    <div className="absolute z-50 w-[480px] mx-auto mt-[6%] bg-white rounded-md p-[32px] pb-[48px] h-auto shadow-lg left-[35%]">
       <div className="text-xl font-bold mb-4">Add New Task</div>
       <Form.Root className="w-full">
         <Form.Field className="grid mb-[10px]" name="title">

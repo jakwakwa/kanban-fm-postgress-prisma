@@ -10,12 +10,12 @@ const KanbanContainer = ({ boards }: { boards: any[] }) => {
       {addBoardModul && (
         <>
           <button onClick={() => setAddBoardModul(false)}></button>
-          <div className="absolute top-[15%] left-0 w-screen mx-auto z-10">
+          <div className="absolute top-[15%] left-0 w-screen mx-auto z-30">
             <AddBoard setAddBoardModul={setAddBoardModul} />
           </div>
         </>
       )}
-      <div className="h-full flex flex-col items-center justify-center align-middle">
+      <div className="w-full h-full flex flex-col items-center justify-center align-middle">
         {boards.length === 0 ? (
           <div className="mb-4">
             Add a board from the side panel to get started

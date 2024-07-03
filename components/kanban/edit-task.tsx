@@ -123,7 +123,7 @@ const EditTask = ({
   const [changed, setChanged] = useState(false);
 
   return (
-    <div className="absolute w-[480px] mx-auto mt-[6%] bg-white rounded-md p-[32px] pb-[48px] h-auto shadow-lg left-[35%]">
+    <div className="absolute w-[480px] mx-auto mt-[6%] z-40 bg-white rounded-md p-[32px] pb-[48px] h-auto shadow-lg left-[35%] z-30">
       <div className="text-xl font-bold mb-4">Edit Task</div>
       <Form.Root className="w-full">
         <EditTitleInputField

@@ -8,7 +8,7 @@ interface OverlayBtnProp {
 const OverlayButton = ({ setState }: OverlayBtnProp): JSX.Element => {
   return (
     <button
-      className="w-full h-full left-0 m-0 p-0 bg-slate-700 bg-opacity-70 fixed"
+      className="w-full h-full left-0 m-0 p-0 bg-slate-700 bg-opacity-70 absolute z-20"
       onClick={() =>
         setState((prevState: any) => ({
           ...prevState,

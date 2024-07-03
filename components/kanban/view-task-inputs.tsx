@@ -36,7 +36,7 @@ const ViewTaskInputs = ({
   };
 
   return (
-    <div className="absolute w-[480px] h-auto mx-auto mt-[10%] bg-white rounded-md p-[32px] pt-[28px] pb-[28px] shadow-lg left-[35%]">
+    <div className="absolute w-[480px] h-auto mx-auto mt-[10%] bg-white rounded-md p-[32px] pt-[28px] pb-[28px] shadow-lg left-[35%] z-20">
       <div className="absolute right-[15px] flex flex-col items-end text-xs text-right top-[20px]">
         <button
           onClick={handleOptions}
