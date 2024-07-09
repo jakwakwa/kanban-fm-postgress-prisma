@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { SetStateAction, useEffect, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import ViewTask from "./view-task";
 import AddTask from "./add-task";
@@ -177,6 +177,10 @@ const KanbanGrid = ({
   function handleOptions() {
     setOpenBoardOptions(!openBoardOptions);
   }
+  function handleEditOptions() {
+    setOpenBoardOptions(!openBoardOptions);
+    setOpenEditBoardModul(true);
+  }
 
   if (loader) {
     return BoardLoadSpinner;
@@ -247,11 +251,11 @@ const KanbanGrid = ({
           </>
         )}
         {openBoardOptions && (
-          <div className="bg-white rounded-lg shadow-lg absolute right-[32px] mt-[25px] p-4 border w-48 h-auto">
+          <div className="bg-white rounded-lg shadow-lg absolute right-[32px] mt-[25px] p-4 border w-48 h-auto z-20">
             <div className="flex gap-3 flex-col text-left justify-start align-top items-start">
               <button
                 className="text-slate-400 hover:text-slate-600 text-xs font-medium font-['Plus Jakarta Sans'] leading-snug"
-                onClick={() => setOpenEditBoardModul(true)}
+                onClick={handleEditOptions}
               >
                 Edit Board
               </button>
@@ -274,13 +278,17 @@ const KanbanGrid = ({
           <ProcessingLoader action={"Adding"} variant={"Board"} />
         )}
         {openEditBoardModul && (
-          <EditBoard
-            currentBoard={boardName}
-            currentBoardId={boardId}
-            setOpenEditBoardModul={setOpenEditBoardModul}
-            handleEditBoard={handleEditBoard}
-            boardLoading={boardSaving}
-          />
+          <>
+            <OverlayButton setState={setOpenEditBoardModul} isEditBoard />
+            <EditBoard
+              currentBoard={boardName}
+              currentBoardId={boardId}
+              setOpenEditBoardModul={setOpenEditBoardModul}
+              handleEditBoard={handleEditBoard}
+              boardLoading={boardSaving}
+              setOpenBoardOptions={setOpenBoardOptions}
+            />
+          </>
         )}
         <KanbanHeader />
         <div

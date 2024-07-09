@@ -12,6 +12,7 @@ interface EditBoardProps {
   setOpenEditBoardModul: any;
   handleEditBoard: any;
   boardLoading: boolean;
+  setOpenBoardOptions: any;
 }
 
 const EditBoard = ({
@@ -20,6 +21,7 @@ const EditBoard = ({
   setOpenEditBoardModul,
   handleEditBoard,
   boardLoading,
+  setOpenBoardOptions,
 }: EditBoardProps) => {
   const [name, setName] = useState(currentBoard);
 
@@ -28,6 +30,7 @@ const EditBoard = ({
   ) => {
     e.preventDefault();
     setOpenEditBoardModul(false);
+    setOpenBoardOptions(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,7 +39,7 @@ const EditBoard = ({
   };
 
   return (
-    <div className="absolute w-[520px] mx-auto mt-[0%] bg-white rounded-xl p-[32px] pb-[48px] h-auto shadow-lg left-[35%]">
+    <div className="absolute w-[520px] mx-auto mt-[10%] bg-white rounded-xl p-[32px] pb-[48px] h-auto shadow-lg left-[35%] z-30">
       <div className="text-xl font-bold mb-4">Edit Board</div>
       <Form.Root className="w-full" onSubmit={handleSubmit}>
         <EditTitleInputField name={name} setName={setName} variant={"Board"} />

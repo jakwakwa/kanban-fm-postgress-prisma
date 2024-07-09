@@ -1,36 +1,47 @@
 "use client";
 
-import { StateT } from "@/types/data-types";
 import { Dispatch, SetStateAction } from "react";
 interface OverlayBtnProp {
-  setState: Dispatch<SetStateAction<StateT>>;
+  setState: Dispatch<SetStateAction<any>>;
+  isEditBoard?: boolean;
 }
-const OverlayButton = ({ setState }: OverlayBtnProp): JSX.Element => {
+const OverlayButton = ({
+  setState,
+  isEditBoard,
+}: OverlayBtnProp): JSX.Element => {
   return (
     <button
       className="w-full h-full left-0 m-0 p-0 bg-slate-700 bg-opacity-70 absolute z-20"
       onClick={() =>
-        setState((prevState: any) => ({
-          ...prevState,
-          openModul: false,
-          addTaskMode: false,
-        }))
+        isEditBoard === false || isEditBoard === undefined
+          ? setState((prevState: any) => ({
+              ...prevState,
+              openModul: false,
+              addTaskMode: false,
+            }))
+          : setState(false)
       }
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
-          setState((prevState: any) => ({
-            ...prevState,
-            openModul: false,
-            addTaskMode: false,
-          }));
+          if (isEditBoard === false || isEditBoard === undefined) {
+            setState((prevState: any) => ({
+              ...prevState,
+              openModul: false,
+              addTaskMode: false,
+            }));
+          } else {
+            setState(false);
+          }
         }
       }}
       onTouchStart={() =>
-        setState((prevState: any) => ({
-          ...prevState,
-          openModul: false,
-          addTaskMode: false,
-        }))
+        isEditBoard === false || isEditBoard === undefined
+          ? setState((prevState: any) => ({
+              ...prevState,
+              openModul: false,
+              addTaskMode: false,
+            }))
+          : setState(false)
       }
       style={{ cursor: "pointer" }}
     ></button>
