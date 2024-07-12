@@ -1,12 +1,17 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { Dispatch, MouseEvent, SetStateAction, useState } from "react";
 import * as Form from "@radix-ui/react-form";
 import { SpinnerCircularSplit } from "spinners-react";
 import useStore from "@/context/store";
 import { setTimeout } from "timers";
 
-const AddBoard = ({ setAddBoardModal }: any) => {
+interface AddBoardProps {
+  handleAddBoard: any;
+  setAddBoardModul: any;
+}
+
+const AddBoard = ({ setAddBoardModul }: AddBoardProps) => {
   const [name, setName] = useState("");
 
   const [newColumns, setNewColumns] = useState([{ name: "" }]);
@@ -15,9 +20,8 @@ const AddBoard = ({ setAddBoardModal }: any) => {
   const [loading, setLoading] = useState(false);
   const setIsBoardAdding = useStore((state) => state.setIsBoardAdding);
 
-  const handleCancel = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault();
-    setAddBoardModal(false);
+  const handleCancel = () => {
+    setAddBoardModul(false);
   };
 
   const handleAddColumn = () => {
@@ -57,7 +61,7 @@ const AddBoard = ({ setAddBoardModal }: any) => {
         router.push(
           `/kanban/board?board=${newBoard.data.name}&id=${newBoard.data.id}`
         );
-        setAddBoardModal(false);
+        setAddBoardModul(false);
 
         setIsBoardAdding(false);
         router.refresh();
@@ -172,7 +176,7 @@ const AddBoard = ({ setAddBoardModal }: any) => {
           >
             <button
               className="text-black text-xs font-bold hover:text-gray hover:underline"
-              onClick={(e) => handleCancel(e)}
+              onClick={handleCancel}
             >
               <div className="flex flex-row gap-2 align-middle items-center text-slate-500 text-xs uppercase tracking-widest">
                 Cancel
