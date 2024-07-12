@@ -1,5 +1,5 @@
 "use client";
-import { SetStateAction, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import ViewTask from "./view-task";
 import AddTask from "./add-task";
@@ -74,7 +74,20 @@ const KanbanGrid = ({
   const [isDeletingBoard, setIsDeletingBoard] = useState(false);
   const [boardSaving, setBoardSaving] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-
+  useEffect(() => {
+    // ... existing code
+    setState((prevState) => ({
+      ...prevState,
+      columnOrder: columns.map((col) => col.id), // Extract column IDs
+    }));
+    console.log(state.columnOrder);
+  }, [columns]);
+  const reorderColumns = (sourceIndex: number, destinationIndex: number) => {
+    const newOrder = [...state.columnOrder]; // Copy the column order array
+    const [removed] = newOrder.splice(sourceIndex, 1); // Remove the column at sourceIndex
+    newOrder.splice(destinationIndex, 0, removed); // Insert the removed column at destinationIndex
+    setState((prevState) => ({ ...prevState, columnOrder: newOrder })); // Update state with new order
+  };
   useEffect(() => {
     // Access the current timer reference
     const timer = timerRef.current;
@@ -281,12 +294,14 @@ const KanbanGrid = ({
           <>
             <OverlayButton setState={setOpenEditBoardModul} isEditBoard />
             <EditBoard
-              currentBoard={boardName}
+              currentBoard={boardName ?? ""}
               currentBoardId={boardId}
               setOpenEditBoardModul={setOpenEditBoardModul}
               handleEditBoard={handleEditBoard}
               boardLoading={boardSaving}
               setOpenBoardOptions={setOpenBoardOptions}
+              currentColumns={columns}
+              tasks={tasksByBoard}
             />
           </>
         )}
@@ -295,7 +310,10 @@ const KanbanGrid = ({
           className={`w-full h-fit px-12 grid grid-flow-col auto-cols-max gap-6 mt-[100px]`}
         >
           {columns?.map((col) => {
-            if (col.boardId === boardId) {
+            const colIndex = state.columnOrder.indexOf(col.id);
+            if (colIndex !== -1 && col.boardId === boardId) {
+              // Only render columns present in the order
+
               return (
                 <div
                   key={col.id}

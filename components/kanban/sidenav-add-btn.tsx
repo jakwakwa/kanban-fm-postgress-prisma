@@ -9,7 +9,8 @@ const SideNavAddBtn = ({ setAddBoardModul }: SideNavAddProps): JSX.Element => {
   const setIsBoardAdding = useStore((state) => state.setIsBoardAdding);
 
   function handleAddBoard() {
-    setIsBoardAdding(true);
+    console.log("AAAA");
+    setIsBoardAdding(false);
     setAddBoardModul(false);
   }
   return (
@@ -19,7 +20,10 @@ const SideNavAddBtn = ({ setAddBoardModul }: SideNavAddProps): JSX.Element => {
         onClick={() => setAddBoardModul(false)}
       ></button>
       <div className="absolute top-[15%] left-0 w-screen mx-auto z-30">
-        <AddBoard setAddBoardModul={setAddBoardModul} />
+        <AddBoard
+          handleAddBoard={handleAddBoard}
+          setAddBoardModul={setAddBoardModul}
+        />
       </div>
     </>
   );

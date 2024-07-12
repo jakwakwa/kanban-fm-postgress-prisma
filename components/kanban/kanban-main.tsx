@@ -2,16 +2,25 @@
 
 import { useState } from "react";
 import AddBoard from "./add-board";
+import useStore from "@/context/store";
 
 const KanbanContainer = ({ boards }: { boards: any[] }) => {
+  const setIsBoardAdding = useStore((state) => state.setIsBoardAdding);
   const [addBoardModul, setAddBoardModul] = useState(false);
+  function handleAddBoard() {
+    setIsBoardAdding(true);
+    setAddBoardModul(false);
+  }
   return (
     <>
       {addBoardModul && (
         <>
           <button onClick={() => setAddBoardModul(false)}></button>
           <div className="absolute top-[15%] left-0 w-screen mx-auto z-30">
-            <AddBoard setAddBoardModul={setAddBoardModul} />
+            <AddBoard
+              setAddBoardModul={handleAddBoard}
+              handleAddBoard={handleAddBoard}
+            />
           </div>
         </>
       )}

@@ -210,26 +210,36 @@ export function editBoardFn(
   return async (
     e: FormEvent,
     editedBoard: string,
-    boardId: string
+    boardId: string,
+    newColumns: {
+      name: string;
+      id: string;
+      tasks: TaskState[] | [];
+    }[]
   ): Promise<void> => {
     e.preventDefault();
 
     setBoardSaving(true);
-
+    console.log("newColumns", newColumns);
     const newtitle = {
       name: editedBoard,
     };
 
     const editedB = {
       ...newtitle,
+      columns: newColumns,
       id: boardId,
     };
 
+    console.log("c t:", newColumns);
+
     try {
+      // @ts-ignore
       const result = await editBoardEntry(editedB);
 
       addBoards([...boards, result]);
       router.push(`/kanban/board?board=${editedBoard}&id=${boardId}`);
+
       setState((prevState: any) => ({
         ...prevState,
         loading: false,

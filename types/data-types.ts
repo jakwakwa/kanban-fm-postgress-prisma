@@ -14,6 +14,7 @@ export interface StateT {
   taskId: string;
   columnName: string;
   columnId: string;
+  columnOrder: any[];
   open: boolean;
   openDeleteToast: boolean;
   loading: boolean;

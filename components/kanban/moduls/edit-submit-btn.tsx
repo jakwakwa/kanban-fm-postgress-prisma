@@ -4,15 +4,13 @@ import { SpinnerCircularSplit } from "spinners-react";
 
 interface EditSubmitBtnProps {
   boardLoading: boolean;
-  name: string;
-  handleCancel: (
-    e: React.MouseEvent<HTMLButtonElement, React.MouseEvent>
-  ) => void;
+  name?: string; // Make name optional
+  handleCancel: any;
 }
 
 function EditSubmitBtn({
   boardLoading,
-  name,
+  name = "", // Provide a default value for name
   handleCancel,
 }: Readonly<EditSubmitBtnProps>) {
   return (
@@ -51,7 +49,6 @@ function EditSubmitBtn({
       >
         <button
           className="text-black text-xs font-bold hover:text-gray hover:underline"
-          // @ts-ignore
           onClick={(e) => handleCancel(e)}
         >
           <div className="flex flex-row gap-2 align-middle items-center text-slate-500 text-xs uppercase tracking-widest">
