@@ -2,10 +2,11 @@
 
 import { TaskPayload } from "@/types/data-types";
 import * as Form from "@radix-ui/react-form";
+import { Dispatch, SetStateAction } from "react";
 
 interface EditInputFieldProps {
   name: string;
-  setName: React.Dispatch<React.SetStateAction<string | TaskPayload>>;
+  setName: Dispatch<SetStateAction<string | TaskPayload>>;
   variant: "Board" | "Task";
   fullObj?: TaskPayload;
 }

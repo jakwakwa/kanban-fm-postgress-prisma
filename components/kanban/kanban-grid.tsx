@@ -1,5 +1,5 @@
 "use client";
-import { SetStateAction, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import ViewTask from "./view-task";
 import AddTask from "./add-task";
@@ -281,12 +281,13 @@ const KanbanGrid = ({
           <>
             <OverlayButton setState={setOpenEditBoardModul} isEditBoard />
             <EditBoard
-              currentBoard={boardName}
+              currentBoard={boardName ?? ""}
               currentBoardId={boardId}
               setOpenEditBoardModul={setOpenEditBoardModul}
               handleEditBoard={handleEditBoard}
               boardLoading={boardSaving}
               setOpenBoardOptions={setOpenBoardOptions}
+              currentColumns={columns}
             />
           </>
         )}
