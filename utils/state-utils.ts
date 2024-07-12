@@ -225,7 +225,12 @@ export function editBoardFn(
 
     const editedB = {
       ...newtitle,
-      columns: newColumns,
+      columns: newColumns.map((column, index) => ({
+        id: `column-${index}`,
+        boardId: boardId,
+        name: column.name,
+        tasks: [],
+      })),
       id: boardId,
     };
 
