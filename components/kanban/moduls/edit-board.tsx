@@ -5,7 +5,7 @@ import EditTitleInputField from "./edit-title-inputfield";
 
 import EditSubmitBtn from "./edit-submit-btn";
 import ValidationMsg from "./validation-msg";
-import { ColumnState } from "@/types/data-types";
+import { ColumnState, TaskState } from "@/types/data-types";
 
 interface EditBoardProps {
   currentBoard: any;
@@ -15,6 +15,7 @@ interface EditBoardProps {
   boardLoading: boolean;
   setOpenBoardOptions: any;
   currentColumns: ColumnState[];
+  tasks: TaskState[];
 }
 
 const EditBoard = ({
@@ -25,26 +26,26 @@ const EditBoard = ({
   boardLoading,
   setOpenBoardOptions,
   currentColumns,
+  tasks,
 }: EditBoardProps) => {
   const [name, setName] = useState(currentBoard);
-  const getColumnNames = () => {
-    // Get Column names from currentColumns and return an array of Objects with {name: string}
-    return currentColumns.map((column) => ({
-      name: column.name,
-      id: column.id,
-    }));
-  };
-  const existingCols = getColumnNames();
-  const [newColumns, setNewColumns] = useState(existingCols);
 
-  const handleAddColumn = () => {
-    setNewColumns([...newColumns, { name: "", id: "" }]);
-  };
+  const [newColumns, setNewColumns] = useState(currentColumns);
 
-  const handleColumnChange = (index: number, value: string) => {
-    const updatedColumns = newColumns.map((column, i) => {
+  // const handleAddColumn = () => {
+  //   setNewColumns([...newColumns, { name: "", id: "" }]);
+  // };
+
+  const handleColumnChange = (index: number, value: string, id: string) => {
+    const updatedColumns = currentColumns.map((column, i) => {
       if (i === index) {
-        return { ...column, name: value };
+        return {
+          ...column,
+          name: value, // Update tasks with matching status
+          tasks: column.tasks.map((task) =>
+            task.status === column.name ? { ...task, status: value } : task
+          ),
+        };
       }
       return column;
     });
@@ -60,7 +61,7 @@ const EditBoard = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    // console.log(newColumns);
     handleEditBoard(e, name, currentBoardId, newColumns);
   };
 
@@ -92,17 +93,14 @@ const EditBoard = ({
                 required
                 type="text"
                 value={column.name}
-                onChange={(e) => handleColumnChange(index, e.target.value)}
+                onChange={(e) =>
+                  handleColumnChange(index, e.target.value, column.id)
+                }
               />
             </Form.Control>
           </Form.Field>
         ))}
-        <button
-          onClick={handleAddColumn}
-          className="mb-4 text-sm text-blue-500 hover:underline"
-        >
-          Add another column
-        </button>
+
         <div className="flex flex-row gap-2">
           <EditSubmitBtn
             boardLoading={boardLoading}

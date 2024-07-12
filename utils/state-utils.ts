@@ -213,6 +213,8 @@ export function editBoardFn(
     boardId: string,
     newColumns: {
       name: string;
+      id: string;
+      tasks: TaskState[] | [];
     }[]
   ): Promise<void> => {
     e.preventDefault();
@@ -225,18 +227,14 @@ export function editBoardFn(
 
     const editedB = {
       ...newtitle,
-      columns: newColumns.map((column, index) => ({
-        id: `column-${index}`,
-        boardId: boardId,
-        name: column.name,
-        tasks: [],
-      })),
+      columns: newColumns,
       id: boardId,
     };
 
-    console.log("editedB:", editedB);
+    console.log("c t:", newColumns);
 
     try {
+      // @ts-ignore
       const result = await editBoardEntry(editedB);
 
       addBoards([...boards, result]);
