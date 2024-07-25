@@ -18,7 +18,7 @@ const KanbanCard = ({ task, setState, totalSubtasks }: KanbanCardProps) => {
   }
 
   return (
-    <div className="flex flex-col gap-4 h-[auto] min-h-[140px] mb-4">
+    <div className="flex flex-col gap-4 mb-4">
       <button
         onClick={() =>
           handleViewTask(task.title, task.id, task.description ?? "")

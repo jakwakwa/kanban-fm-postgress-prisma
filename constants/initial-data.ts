@@ -14,6 +14,7 @@ export const INITIAL_STATE: StateT = {
   openModul: false,
   taskName: "",
   taskId: "",
+  columns: [],
   columnName: "",
   columnId: "",
   columnOrder: [],

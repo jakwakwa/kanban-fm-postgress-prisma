@@ -12,6 +12,7 @@ export interface StateT {
   openModul: boolean;
   taskName: string;
   taskId: string;
+  columns: ColumnState[];
   columnName: string;
   columnId: string;
   columnOrder: any[];

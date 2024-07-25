@@ -23,6 +23,7 @@ import Image from "next/image";
 import EditBoard from "./moduls/edit-board";
 import { ProcessingLoader } from "./processing-loader";
 import KanbanHeader from "../ui/header";
+import { SpinnerCircular } from "spinners-react";
 
 /**
  * KanbanGrid component represents a Kanban board with multiple columns and tasks.
@@ -73,6 +74,42 @@ const KanbanGrid = ({
 
   const [isDeletingBoard, setIsDeletingBoard] = useState(false);
   const [boardSaving, setBoardSaving] = useState(false);
+  const [addColumnIsLoading, setAddColumnIsLoading] = useState(false);
+  const [newColumnName, setNewColumnName] = useState("");
+
+  const handleAddColumn = async () => {
+    try {
+      setAddColumnIsLoading(true);
+      const response = await fetch("/api/addColumn", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: newColumnName, boardId: boardId }),
+      });
+      const data = await response.json();
+      console.log("data", response);
+      if (response.ok) {
+        setState((prevState) => ({
+          ...prevState,
+          columns: [
+            ...prevState.columns,
+            {
+              id: data.data.id,
+              boardId: boardId,
+              name: newColumnName,
+              tasks: [],
+            },
+          ],
+        }));
+        setAddColumnIsLoading(false);
+        setNewColumnName("");
+        router.refresh();
+      }
+    } catch (error) {
+      console.error("Error adding column:", error);
+    }
+  };
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   useEffect(() => {
     // ... existing code
@@ -80,14 +117,8 @@ const KanbanGrid = ({
       ...prevState,
       columnOrder: columns.map((col) => col.id), // Extract column IDs
     }));
-    console.log(state.columnOrder);
   }, [columns]);
-  const reorderColumns = (sourceIndex: number, destinationIndex: number) => {
-    const newOrder = [...state.columnOrder]; // Copy the column order array
-    const [removed] = newOrder.splice(sourceIndex, 1); // Remove the column at sourceIndex
-    newOrder.splice(destinationIndex, 0, removed); // Insert the removed column at destinationIndex
-    setState((prevState) => ({ ...prevState, columnOrder: newOrder })); // Update state with new order
-  };
+
   useEffect(() => {
     // Access the current timer reference
     const timer = timerRef.current;
@@ -307,7 +338,7 @@ const KanbanGrid = ({
         )}
         <KanbanHeader />
         <div
-          className={`w-full h-fit px-12 grid grid-flow-col auto-cols-max gap-6 mt-[100px]`}
+          className={`w-full px-12 grid grid-flow-col auto-cols-max gap-6 mt-[100px] overflow-scroll mb-[50px]`}
         >
           {columns?.map((col) => {
             const colIndex = state.columnOrder.indexOf(col.id);
@@ -317,7 +348,7 @@ const KanbanGrid = ({
               return (
                 <div
                   key={col.id}
-                  className="bg-[#c8cdfa22] overflow-hidden rounded-xl px-4 py-1 h-auto border-2 w-[300px]"
+                  className="bg-[#c8cdfa22] overflow-hidden rounded-xl px-4 py-1 border-2 w-[300px]"
                 >
                   <div className="text-black my-4">
                     <ColumnText color={col.name} alignRight={false}>
@@ -346,6 +377,26 @@ const KanbanGrid = ({
               );
             }
           })}
+          <div className="bg-[#f3f4fd22] flex flex-col  justify-center overflow-hidden rounded-xl px-4 py-1  border-2 border-dashed border-spacing-2 w-[300px]">
+            <div className="bg-[#f3f4fd22] hover:bg-[#9096cb20] cursor-pointer flex flex-col justify-center overflow-hidden rounded-xl px-4 p-2  w-[80%] mx-auto">
+              <input
+                type="text"
+                value={newColumnName}
+                onChange={(e) => setNewColumnName(e.target.value)}
+                placeholder="New Column Name"
+                className="text-center border-solid border-[1.5px] border-slate-300 rounded text-xs placeholder:text-xs px-[5px] py-[7px]"
+              />
+              <button
+                onClick={handleAddColumn}
+                className="text-center bg-kpurple-main text-white text-xs p-2 rounded-full mt-2"
+              >
+                + Add Column
+              </button>
+              {addColumnIsLoading && (
+                <SpinnerCircular color="#000" size={20} thickness={200} />
+              )}
+            </div>
+          </div>
         </div>
         <RenderToastMsg
           message={state.toastMsg}
