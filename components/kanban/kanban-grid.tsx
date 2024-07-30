@@ -388,7 +388,8 @@ const KanbanGrid = ({
               />
               <button
                 onClick={handleAddColumn}
-                className="text-center bg-kpurple-main text-white text-xs p-2 rounded-full mt-2"
+                disabled={newColumnName === ""}
+                className="text-center bg-kpurple-main text-white text-xs p-2 rounded-full mt-2 disabled:bg-kpurple-light disabled:cursor-not-allowed"
               >
                 + Add Column
               </button>
