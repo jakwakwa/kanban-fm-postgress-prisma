@@ -383,7 +383,7 @@ const KanbanGrid = ({
                 type="text"
                 value={newColumnName}
                 onChange={(e) => setNewColumnName(e.target.value)}
-                placeholder="new status column Name"
+                placeholder="new status status column name"
                 className="text-center border-solid border-[1.5px] border-slate-300 rounded text-xs placeholder:text-xs px-[5px] py-[7px]"
               />
               <button

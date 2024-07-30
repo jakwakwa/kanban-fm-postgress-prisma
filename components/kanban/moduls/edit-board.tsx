@@ -78,13 +78,13 @@ const EditBoard = ({
           >
             <div className="flex items-baseline justify-between">
               <Form.Label className="text-[15px] font-medium leading-[35px] text-slate-500">
-                Column Name
+                status column name
               </Form.Label>
               <Form.Message
                 className="text-[13px] text-white opacity-[0.8]"
                 match="valueMissing"
               >
-                Please enter column name
+                Please enter status column name
               </Form.Message>
             </div>
             <Form.Control asChild>
