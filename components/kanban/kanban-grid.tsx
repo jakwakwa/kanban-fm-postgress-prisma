@@ -140,7 +140,7 @@ const KanbanGrid = ({
       const allTasksFromBoard = getAllTasks([board]);
       // Set the current board in the state
       addCurrentBoard(board);
-      // Add columns of the board to the state
+      // new status columns of the board to the state
       addColumns(board.columns);
       // Add tasks to the state
       addTasks(allTasksFromBoard);
@@ -383,7 +383,7 @@ const KanbanGrid = ({
                 type="text"
                 value={newColumnName}
                 onChange={(e) => setNewColumnName(e.target.value)}
-                placeholder="New Column Name"
+                placeholder="new status column Name"
                 className="text-center border-solid border-[1.5px] border-slate-300 rounded text-xs placeholder:text-xs px-[5px] py-[7px]"
               />
               <button
@@ -391,7 +391,7 @@ const KanbanGrid = ({
                 disabled={newColumnName === ""}
                 className="text-center bg-kpurple-main text-white text-xs p-2 rounded-full mt-2 disabled:bg-kpurple-light disabled:cursor-not-allowed"
               >
-                + Add Column
+                + new status column
               </button>
               {addColumnIsLoading && (
                 <SpinnerCircular color="#000" size={20} thickness={200} />
