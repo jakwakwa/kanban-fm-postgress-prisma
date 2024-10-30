@@ -139,13 +139,16 @@ export default function SideNav({ boards, kanban }: Readonly<SideNavProps>) {
                           }
                         }}
                         key={board.id}
-                        className={`flex w-[90%] h-[48px] grow items-center justify-center gap-2 rounded-md  p-3 text-sm font-medium   md:flex-none md:justify-start md:p-0 md:px-0 transition-colors duration-75 ease-in-out ${
+                        className={`flex w-[90%] h-[48px] grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium md:flex-none md:justify-start md:p-0 md:px-0 transition-colors duration-75 ease-in-out ${
                           boardLoading && "cursor-not-allowed"
                         } rounded-r-full ${
-                          isActiveBoard
+                          isActiveBoard 
                             ? "bg-indigo-500 text-indigo-100 hover:bg-indigo-500 hover:text-indigo-100 cursor-not-allowed"
-                            : `${darkMode ? "text-[#828FA3] hover:bg-indigo-100 hover:text-indigo-700" : "text-default bg-white hover:bg-indigo-100 hover:text-indigo-700"}`
+                            : darkMode
+                              ? "text-[#828FA3] hover:bg-[#2B2C37] hover:text-white"
+                              : "text-[#828FA3] hover:bg-indigo-100 hover:text-indigo-700"
                         }`}
+                      
                       >
                         <ViewColumnsIcon className="w-6 ml-4" />
 

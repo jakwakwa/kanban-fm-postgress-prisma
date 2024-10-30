@@ -68,7 +68,7 @@ const EditBoard = ({
   };
 
   return (
-    <div className="absolute w-[520px] mx-auto mt-[10%] bg-white rounded-xl p-[32px] pb-[48px] h-auto shadow-lg left-[35%] z-30">
+    <div className={`absolute w-[520px] mx-auto mt-[10%] ${darkMode ? 'bg-[#2B2C37] text-white border-[#3E3F4E]' : 'bg-white'} rounded-xl p-[32px] pb-[48px] h-auto shadow-lg left-[35%] z-30`}>
       <div className="text-xl font-bold mb-4">Edit Board</div>
       <Form.Root className="w-full" onSubmit={handleSubmit}>
         <EditTitleInputField
@@ -84,7 +84,7 @@ const EditBoard = ({
             name={`column-${index}`}
           >
             <div className="flex items-baseline justify-between">
-              <Form.Label className="text-[15px] font-medium leading-[35px] text-slate-500">
+              <Form.Label className={`text-[15px] font-medium leading-[35px] ${darkMode ? 'text-slate-300' : 'text-slate-500'}`}>
                 Status column name
               </Form.Label>
               <Form.Message
@@ -96,7 +96,7 @@ const EditBoard = ({
             </div>
             <Form.Control asChild>
               <input
-                className="box-border w-full bg-slate-100 shadow-blackA6 inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_#9443f7] selection:color-white selection:bg-blackA6"
+                className={`box-border w-full ${darkMode ? 'bg-[#2B2C37] text-white border-[#3E3F4E]' : 'bg-slate-100 text-slate-600'} shadow-blackA6 inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_#9443f7] selection:color-white selection:bg-blackA6`}
                 required
                 type="text"
                 value={column.name}

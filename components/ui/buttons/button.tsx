@@ -18,7 +18,7 @@ const Button = ({
   const getButtonStyles = () => {
 
     return variant
-      ? `border ${ isDarkMode ? "bg-[#635FC7] text-white" : " bg-white" } border-none text-indigo-600 text-xs hover:bg-slate-100 transition-colors ease-in-out duration-75 px-2 py-1`
+      ? `border ${ isDarkMode ? "bg-[#635FC7] hover:bg-[#635FC7]/80 text-white" : " bg-white hover:bg-slate-100 text-indigo-600" } border-none text-xs hover:bg-slate-100 transition-colors ease-in-out duration-75 px-2 py-1`
       : "bg-kpurple-main hover:bg-slate-500 text-white px-5 py-3";
   };
 
