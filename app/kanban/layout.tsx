@@ -1,5 +1,7 @@
+
 import KanbanHeader from "../../components/ui/header";
 import SideNav from "../../components/kanban/sidenav";
+import MobileMessage from "@/components/kanban/mobile-message";
 import { getUserByClerkId } from "@/utils/auth";
 import { prisma } from "@/utils/db";
 
@@ -25,10 +27,17 @@ export default async function Layout({
   const boards = await getBoards();
 
   return (
-    <div className="kanban-bg flex h-screen flex-col md:flex-row md:overflow-hidden">
-      {/* //
-         @ts-ignore */}
-      <SideNav boards={boards} kanban={children} />
-    </div>
+    <>
+      {/* Mobile Message */}
+      <div className="md:hidden">
+        <MobileMessage />
+      </div>
+
+      {/* Desktop Kanban Board */}
+      <div className="hidden md:flex kanban-bg h-screen flex-col md:flex-row md:overflow-hidden">
+        {/* @ts-ignore */}
+        <SideNav boards={boards} kanban={children}  />
+      </div>
+    </>
   );
 }
