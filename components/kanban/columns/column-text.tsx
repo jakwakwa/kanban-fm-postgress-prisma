@@ -25,7 +25,7 @@ const ColumnText = ({
   }
   if (!alignRight) {
     return (
-      <div className="uppercase text-sm flex items-center gap-2 tracking-[2px] text-slate-700">
+      <div className="uppercase text-sm flex items-center gap-2 tracking-[2px] text-slate-700 dark:text-white">
         <div className={`rounded-xl w-[10px] h-[10px] ${bgColorClass}`}></div>
         {children}
       </div>

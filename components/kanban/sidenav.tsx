@@ -26,6 +26,7 @@ export default function SideNav({ boards, kanban }: Readonly<SideNavProps>) {
   const [hideSidenav, setHideSidenav] = useState(false);
   const addBoardId = useStore((state) => state.addBoardId);
   const setLoader = useStore((state) => state.setLoader);
+  const darkMode = useStore((state) => state.darkMode);
 
   async function handleBoardsStore(selectedBoardId: any) {
     addBoardId(selectedBoardId);
@@ -68,10 +69,10 @@ export default function SideNav({ boards, kanban }: Readonly<SideNavProps>) {
     <div className="w-screen flex flex-row">
       <div
         className="
-    w-[300px] z-1 flex h-full flex-col  py-0 md:px-0 bg-white border-r"
+    w-[300px] z-1 flex h-full flex-col  py-0 md:px-0 bg-white dark:bg-[#2B2C37] border-r border-kgray-border dark:border-[#3E3F4E]"
       >
         <Link
-          className="mb-2 flex h-28 items-start justify-start rounded-md bg-white p-4 md:pt-8 md:h-28"
+          className="mb-2 flex h-28 items-start justify-start rounded-md bg-white dark:bg-[#2B2C37] p-4 md:pt-8 md:h-28"
           href="/"
         >
           <div className="w-32 text-white md:w-40">
@@ -86,9 +87,10 @@ export default function SideNav({ boards, kanban }: Readonly<SideNavProps>) {
           <div className="pl-3 mt-4 pb-6">
             <Button
               isDisabled={false}
-              variant="secondary"
+              variant={"secondary"}
               onClick={() => setAddBoardModul(true)}
               isClickEvent={true}
+              isDarkMode={darkMode}
             >
               <div>+ Add Board</div>
             </Button>
@@ -143,7 +145,7 @@ export default function SideNav({ boards, kanban }: Readonly<SideNavProps>) {
                         } rounded-r-full ${
                           isActiveBoard
                             ? "bg-indigo-500 text-indigo-100 hover:bg-indigo-500 hover:text-indigo-100 cursor-not-allowed"
-                            : "bg-white hover:bg-indigo-100 hover:text-indigo-700"
+                            : "text-default dark:text-[#828FA3] bg-white dark:bg-[#2B2C37] hover:bg-indigo-100 hover:text-indigo-700"
                         }`}
                       >
                         <ViewColumnsIcon className="w-6 ml-4" />

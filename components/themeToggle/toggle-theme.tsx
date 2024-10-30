@@ -1,13 +1,16 @@
 "use client";
 import React, { useState } from "react";
-
+import  useStore  from "@/context/store";
 import Image from "next/image";
 
 const ThemeToggle = () => {
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
+  // const [isDarkTheme, setIsDarkTheme] = useState(false);
+  const isDarkTheme = useStore((state) => state.darkMode);
+  
 
+  
   const toggleTheme = () => {
-    setIsDarkTheme(!isDarkTheme);
+    useStore.getState().toggleTheme();
     document.documentElement.classList.toggle("dark");
   };
 
