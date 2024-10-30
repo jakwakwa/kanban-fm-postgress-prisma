@@ -279,6 +279,7 @@ const KanbanGrid = ({
               handleAddTask={handleAddTask}
               columnStatus={columns}
               boardId={boardId}
+              darkMode={darkMode}
             />
           </>
         )}

@@ -31,6 +31,7 @@ interface AddTaskProps {
   handleAddTask: any;
   columnStatus: any;
   boardId: string;
+  darkMode: boolean;
 }
 
 const AddTask = ({
@@ -39,6 +40,7 @@ const AddTask = ({
   handleAddTask,
   columnStatus,
   boardId,
+  darkMode,
 }: AddTaskProps) => {
   const [changed, setChanged] = useState(false);
 
@@ -55,7 +57,7 @@ const AddTask = ({
   );
 
   return (
-    <div className="absolute z-50 w-[480px] mx-auto mt-[6%] bg-white rounded-md p-[32px] pb-[48px] h-auto shadow-lg left-[35%]">
+     <div className={`absolute z-50 w-[480px] mx-auto mt-[6%] bg-white rounded-md p-[32px] pb-[48px] h-auto shadow-lg left-[35%] ${darkMode ? 'bg-[#2b2c37]' : ''}`}>
       <div className="text-xl font-bold mb-4">Add New Task</div>
       <Form.Root className="w-full">
         <Form.Field className="grid mb-[10px]" name="title">
@@ -126,6 +128,7 @@ const AddTask = ({
               disabled={state.isDisabled}
               changed={changed}
               setChanged={setChanged}
+              darkMode={darkMode}
             />
           </div>
           {newStatus === undefined ||

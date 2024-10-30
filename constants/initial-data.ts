@@ -32,5 +32,5 @@ export const INITIAL_STATE: StateT = {
     description: "",
     status: "",
   },
-  newSubtasks: [] as Subtask[],
+  newSubtasks: [] as Subtask[]
 };
