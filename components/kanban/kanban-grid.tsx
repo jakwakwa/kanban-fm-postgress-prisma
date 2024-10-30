@@ -336,6 +336,7 @@ const KanbanGrid = ({
               setOpenBoardOptions={setOpenBoardOptions}
               currentColumns={columns}
               tasks={tasksByBoard}
+              darkMode={darkMode}
             />
           </>
         )}

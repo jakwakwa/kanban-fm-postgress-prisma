@@ -16,6 +16,7 @@ interface EditBoardProps {
   setOpenBoardOptions: any;
   currentColumns: ColumnState[];
   tasks: TaskState[];
+  darkMode: boolean;
 }
 
 const EditBoard = ({
@@ -27,6 +28,7 @@ const EditBoard = ({
   setOpenBoardOptions,
   currentColumns,
   tasks,
+  darkMode,
 }: EditBoardProps) => {
   const [name, setName] = useState(currentBoard);
 
@@ -69,7 +71,12 @@ const EditBoard = ({
     <div className="absolute w-[520px] mx-auto mt-[10%] bg-white rounded-xl p-[32px] pb-[48px] h-auto shadow-lg left-[35%] z-30">
       <div className="text-xl font-bold mb-4">Edit Board</div>
       <Form.Root className="w-full" onSubmit={handleSubmit}>
-        <EditTitleInputField name={name} setName={setName} variant={"Board"} />
+        <EditTitleInputField
+          name={name}
+          setName={setName}
+          variant={"Board"}
+          darkMode={darkMode}
+        />
         {newColumns.map((column, index) => (
           <Form.Field
             className="grid mb-[10px]"
