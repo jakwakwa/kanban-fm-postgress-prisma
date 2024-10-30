@@ -11,6 +11,7 @@ import Button from "../ui/buttons/button";
 import { BoardState } from "@/types/data-types";
 import SideNavSignOutBtn from "./sidenav-signout-btn";
 import SideNavAddBtn from "./sidenav-add-btn";
+import ThemeToggle from "../themeToggle/toggle-theme";
 
 interface SideNavProps {
   boards: BoardState[];
@@ -201,7 +202,7 @@ export default function SideNav({ boards, kanban }: Readonly<SideNavProps>) {
                 <div className=" text-slate-400 text-sm">Hide Sidebar</div>
               </div>
             </button>
-
+            <ThemeToggle />
             <SideNavSignOutBtn />
           </div>
         </div>

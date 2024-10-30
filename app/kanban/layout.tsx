@@ -25,7 +25,7 @@ export default async function Layout({
   const boards = await getBoards();
 
   return (
-    <div className="flex h-screen flex-col md:flex-row md:overflow-hidden bg-[#F4F7FD]">
+    <div className="kanban-bg flex h-screen flex-col md:flex-row md:overflow-hidden">
       {/* //
          @ts-ignore */}
       <SideNav boards={boards} kanban={children} />

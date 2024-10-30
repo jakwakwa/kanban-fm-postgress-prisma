@@ -1,10 +1,13 @@
+import ThemeToggle from "@/components/themeToggle/toggle-theme";
 import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
+
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const { userId } = auth();
+
   let href = userId ? `/kanban/` : "/new-user";
 
   return (

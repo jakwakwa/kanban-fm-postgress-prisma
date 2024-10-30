@@ -47,6 +47,23 @@
     transform: translateX(100%);
   }
 }
+
+html {
+  .kanban-bg {
+
+      background: #F4F7FD;
+
+  }
+}
+
+html.dark {
+  body {
+    background: #17243f;
+  }
+  .kanban-bg {
+    background:#17243f;
+  }
+}
 body {
 
   letter-spacing: 0.1px;

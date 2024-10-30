@@ -22,9 +22,9 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html className={jakarta.variable} lang="en">
         <link rel="icon" href="/assets/favicon-32x32.png" />
-        <body className={jakarta.variable}>{children}</body>
+        <body>{children}</body>
       </html>
     </ClerkProvider>
   );
