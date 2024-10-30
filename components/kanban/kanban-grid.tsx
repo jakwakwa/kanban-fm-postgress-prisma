@@ -50,6 +50,7 @@ const KanbanGrid = ({
     columns,
     tasks: tasksStore,
     loading: loader,
+    darkMode,
   } = useStore((state) => ({
     addColumns: state.addColumns,
     addTasks: state.addTasks,
@@ -59,6 +60,7 @@ const KanbanGrid = ({
     columns: state.columns,
     tasks: state.tasks,
     loading: state.loading,
+    darkMode: state.darkMode,
   }));
 
   const slug = useSearchParams();
@@ -348,10 +350,10 @@ const KanbanGrid = ({
               return (
                 <div
                   key={col.id}
-                  className="bg-[#c8cdfa22] overflow-hidden rounded-xl px-4 py-1 border-2 w-[300px]"
+                  className={`${darkMode ? 'bg-[#141517] border-[#3E3F4E]' : 'bg-[#c8cdfa22]'} overflow-hidden rounded-xl px-4 py-1 border-2 w-[300px]`}
                 >
                   <div className="text-black my-4">
-                    <ColumnText color={col.name} alignRight={false}>
+                    <ColumnText color={col.name} alignRight={false} darkMode={darkMode}>
                       {col.name}
                     </ColumnText>
                   </div>

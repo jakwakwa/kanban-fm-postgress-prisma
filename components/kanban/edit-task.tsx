@@ -14,6 +14,7 @@ import { SUBTASK_STYLE } from "@/constants/theme";
 import { addUpdatedSubtaskUtil } from "@/utils/state-utils";
 import EditTitleInputField from "./moduls/edit-title-inputfield";
 import ValidationMsg from "./moduls/validation-msg";
+import useStore from "@/context/store";
 
 interface EditTaskProps {
   state: StateT;
@@ -40,8 +41,6 @@ interface EditTaskProps {
   setSubtaskAdded: Dispatch<SetStateAction<boolean>>;
   newSubTask: any;
 }
-const inputStyle =
-  "box-border w-full bg-slate-100 placeholder:text-xs placeholder:text-slate-400  placeholder:italic shadow-blackA6 inline-flex appearance-none items-center justify-center rounded-[4px] p-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_1.3px_#252525]  selection:color-white selection:bg-blackA6 hover:bg-[#e8ebf9]";
 
 const EditTask = ({
   state,
@@ -68,6 +67,13 @@ const EditTask = ({
   setSubtaskAdded,
   newSubTask,
 }: EditTaskProps) => {
+
+  const { darkMode } = useStore();
+  const inputStyle = darkMode ?
+`box-border w-full bg-[#2B2C37] text-white border-[#3E3F4E] placeholder:text-xs placeholder:text-slate-400  placeholder:italic shadow-blackA6 inline-flex appearance-none items-center justify-center rounded-[4px] p-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_1.3px_#252525]  selection:color-white selection:bg-blackA6 hover:bg-[#e8ebf9]`
+:
+`box-border w-full bg-slate-100 placeholder:text-xs placeholder:text-slate-400  placeholder:italic shadow-blackA6 inline-flex appearance-none items-center justify-center rounded-[4px] p-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_1.3px_#252525]  selection:color-white selection:bg-blackA6 hover:bg-[#e8ebf9]`;
+
   const [disableAddBtn, setDisableAddBtn] = useState(false);
   useEffect(() => {
     setSubtaskAdded(false);
@@ -123,20 +129,21 @@ const EditTask = ({
   const [changed, setChanged] = useState(false);
 
   return (
-    <div className="absolute w-[480px] mx-auto mt-[6%] z-40 bg-white rounded-md p-[32px] pb-[48px] h-auto shadow-lg left-[35%] z-30">
-      <div className="text-xl font-bold mb-4">Edit Task</div>
+    <div className={`absolute w-[480px] mx-auto mt-[6%] z-40 ${darkMode ? 'bg-[#2B2C37]' : 'bg-white'} rounded-md p-[32px] pb-[48px] h-auto shadow-lg left-[35%] z-30`}>
+      <div className={`text-xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-black'}`}>Edit Task</div>
       <Form.Root className="w-full">
         <EditTitleInputField
           name={updatedTask.title}
           setName={setUpdatedTask}
           variant={"Task"}
           fullObj={updatedTask}
+          darkMode={darkMode}
         />
         <Form.Field className="grid mb-[10px]" name="description">
           <div className="flex items-baseline justify-between">
             <FormLabel spacing={true}>Description:</FormLabel>
             <Form.Message
-              className="text-[13px] text-slate-600 opacity-[0.8]"
+              className={`text-[13px] ${darkMode ? 'text-[#828FA3]' : 'text-slate-600'} opacity-[0.8]`}
               match="valueMissing"
             >
               Please enter a description
@@ -144,7 +151,7 @@ const EditTask = ({
           </div>
           <Form.Control asChild>
             <textarea
-              className={`${inputStyle} h-20`}
+              className={`${inputStyle} h-20 ${darkMode ? 'border bg-[#2B2C37] text-white border-[#3E3F4E]' : 'border-slate-400'}`}
               value={updatedTask.description}
               placeholder="eg. It's best to take a break every 15mins..."
               onChange={(e) => {
@@ -180,7 +187,7 @@ const EditTask = ({
                         disableAddBtn === true
                           ? "shadow-[#9c6aff] shadow-[0_0_0_2px] cursor-default bg-[#d1baff4c]"
                           : "disabled:bg-slate-100 disabled:opacity-50 disabled:shadow-[0_0_0_1px_black] disabled:cursor-not-allowed disabled:hover:bg-slate-100 hover:shadow-blackA6"
-                      } `
+                      } ${darkMode ? 'bg-[#2B2C37] text-white' : ''}`
                     }
                     required
                     type="text"
@@ -232,7 +239,7 @@ const EditTask = ({
                 </div>
               </button>
               <button
-                className="text-sm text-slate-500"
+                className={`text-sm ${darkMode ? 'text-[#e5ebf4]' : 'text-slate-500'}`}
                 onClick={() => {
                   const updateReset = [...updatedSubTasks.subtasks];
                   updateReset.pop();
@@ -258,6 +265,7 @@ const EditTask = ({
               setNewColId={setNewColId}
               changed={changed}
               setChanged={setChanged}
+              darkMode={darkMode}
             />
           </div>
           <div className="flex h-8 flex-row gap-4 justify-start items-center align-middle">
@@ -289,7 +297,7 @@ const EditTask = ({
               </button>
             </Form.Submit>
             <button
-              className="text-sm text-slate-500 mt-5"
+              className={`text-sm ${darkMode ? 'text-[#828FA3]' : 'text-slate-500'} mt-5`}
               onClick={() =>
                 setState((prevState: any) => ({
                   ...prevState,

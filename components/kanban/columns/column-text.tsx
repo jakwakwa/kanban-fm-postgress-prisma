@@ -1,11 +1,13 @@
 const ColumnText = ({
   color,
   alignRight,
+  darkMode,
   children,
 }: {
   color: string;
   alignRight: boolean;
   children: React.ReactNode;
+  darkMode: boolean;
 }) => {
   let bgColorClass;
 
@@ -25,7 +27,7 @@ const ColumnText = ({
   }
   if (!alignRight) {
     return (
-      <div className="uppercase text-sm flex items-center gap-2 tracking-[2px] text-slate-700 dark:text-white">
+      <div className={`${darkMode ? 'text-white' : 'text-slate-700'} uppercase text-sm flex items-center gap-2 tracking-[2px]`}>
         <div className={`rounded-xl w-[10px] h-[10px] ${bgColorClass}`}></div>
         {children}
       </div>
@@ -33,7 +35,7 @@ const ColumnText = ({
   }
   if (alignRight) {
     return (
-      <div className="absolute w-full text-right uppercase text-xs flex items-center gap-2 justify-end tracking-[2px] text-slate-700">
+      <div className={`${darkMode ? 'text-white' : 'text-slate-700'} uppercase text-sm flex items-center gap-2 tracking-[2px]`}>
         <div className={`rounded-xl w-[10px] h-[10px] ${bgColorClass}`}></div>
         {children}
       </div>

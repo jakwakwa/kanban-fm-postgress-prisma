@@ -1,22 +1,11 @@
 import Image from "next/image";
+import useStore from "@/context/store";
 
 export default function Logo() {
+  const { darkMode } = useStore();
   return (
     <div className={`flex flex-row items-center leading-none`}>
-      <Image
-        src="/assets/logo-dark.svg"
-        width={1000}
-        height={760}
-        alt="Logo - Dark variant"
-        className="hidden dark:hidden md:block"
-      />
-      <Image
-        src="/assets/logo-light.svg"
-        width={1000}
-        height={760}
-        alt="Logo - Light variant"
-        className="hidden dark:md:block"
-      />
+        <Image src={darkMode ? "/assets/logo-light.svg" : "/assets/logo-dark.svg"} alt="Logo" width={1000} height={760} />
     </div>
   );
 }
