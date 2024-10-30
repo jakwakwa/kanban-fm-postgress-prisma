@@ -57,14 +57,14 @@ const AddTask = ({
   );
 
   return (
-     <div className={`absolute z-50 w-[480px] mx-auto mt-[6%] bg-white rounded-md p-[32px] pb-[48px] h-auto shadow-lg left-[35%] ${darkMode ? 'bg-[#2b2c37]' : ''}`}>
+    <div className={`absolute z-50 w-[480px] mx-auto mt-[6%] rounded-md p-[32px] pb-[48px] h-auto shadow-lg left-[35%] ${darkMode ? 'bg-[#2b2c37] text-white' : 'bg-white'}`}>
       <div className="text-xl font-bold mb-4">Add New Task</div>
       <Form.Root className="w-full">
         <Form.Field className="grid mb-[10px]" name="title">
           <div className="flex items-baseline justify-between">
             <FormLabel>Title</FormLabel>
             <Form.Message
-              className="text-[13px] text-white opacity-[0.8]"
+              className={`text-[13px] opacity-[0.8] ${darkMode ? 'text-white' : 'text-slate-600'}`}
               match="valueMissing"
             >
               Please enter task title
@@ -72,7 +72,11 @@ const AddTask = ({
           </div>
           <Form.Control asChild>
             <input
-              className="box-border w-full bg-slate-100 placeholder:text-xs placeholder:text-slate-400  placeholder:italic shadow-blackA6 inline-flex appearance-none items-center justify-center rounded-[4px] p-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_1.3px_#252525]  selection:color-white selection:bg-blackA6 hover:bg-[#e8ebf9]"
+              className={`box-border w-full placeholder:text-xs placeholder:italic shadow-blackA6 inline-flex appearance-none items-center justify-center rounded-[4px] p-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none selection:color-white selection:bg-blackA6 ${
+                darkMode 
+                  ? 'bg-[#2b2c37] text-white placeholder:text-gray-400 hover:shadow-[0_0_0_1px_white] focus:shadow-[0_0_0_1.3px_white] hover:bg-[#3e3f4a]' 
+                  : 'bg-slate-100 text-slate-600 placeholder:text-slate-400 hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_1.3px_#252525] hover:bg-[#e8ebf9]'
+              }`}
               required
               type="text"
               placeholder={`e.g. Collect the Laundry.`}
@@ -91,7 +95,7 @@ const AddTask = ({
           <div className="flex items-baseline justify-between">
             <FormLabel>Description</FormLabel>
             <Form.Message
-              className="text-[13px] text-slate-600 opacity-[0.8]"
+              className={`text-[13px] opacity-[0.8] ${darkMode ? 'text-white' : 'text-slate-600'}`}
               match="valueMissing"
             >
               Please enter a description
@@ -99,8 +103,12 @@ const AddTask = ({
           </div>
           <Form.Control asChild>
             <textarea
-              className="box-border w-full bg-slate-100 placeholder:text-xs placeholder:text-slate-400  placeholder:italic shadow-blackA6 inline-flex appearance-none items-center justify-center rounded-[4px] p-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_1.3px_#252525]  selection:color-white selection:bg-blackA6 h-20 hover:bg-[#e8ebf9]"
-              placeholder={`e.g. It’s always good to take a break. This 15 minute break will recharge the batteries a little.`}
+              className={`box-border w-full placeholder:text-xs placeholder:italic shadow-blackA6 inline-flex appearance-none items-center justify-center rounded-[4px] p-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none selection:color-white selection:bg-blackA6 h-20 ${
+                darkMode 
+                  ? 'bg-[#2b2c37] text-white placeholder:text-gray-400 hover:shadow-[0_0_0_1px_white] focus:shadow-[0_0_0_1.3px_white] hover:bg-[#3e3f4a]' 
+                  : 'bg-slate-100 text-slate-600 placeholder:text-slate-400 hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_1.3px_#252525] hover:bg-[#e8ebf9]'
+              }`}
+              placeholder={`e.g. It's always good to take a break. This 15 minute break will recharge the batteries a little.`}
               value={state.newTask.description}
               onChange={(e) => {
                 const newTaskDesc = e.target.value;
@@ -134,7 +142,11 @@ const AddTask = ({
           {newStatus === undefined ||
           !changed ||
           state.newTask?.title.length < 1 ? (
-            <div className="text-indigo-400 border-[#7b81f2] border-[1.2px] px-2 py-1 inline-block text-[8px] rounded w-[70%] mt-4 shadow-md shadow-slate-200 bg-[#ffffff]">
+            <div className={`border-[1.2px] px-2 py-1 inline-block text-[8px] rounded w-[70%] mt-4 shadow-md ${
+              darkMode 
+                ? 'text-indigo-300 border-indigo-400 bg-[#2b2c37] shadow-[#1a1a1a]'
+                : 'text-indigo-400 border-[#7b81f2] bg-[#ffffff] shadow-slate-200'
+            }`}>
               * Please add a title and status to enable save{" "}
             </div>
           ) : null}
@@ -153,7 +165,7 @@ const AddTask = ({
                 handleAddTask(e, state.newTask, newColId, newStatus)
               }
             >
-              <div className="text-white text-xs font-bold  ">
+              <div className="text-white text-xs font-bold">
                 <div className="flex flex-row gap-2 align-middle items-center">
                   {!state.loading ? "Save Changes" : "Saving"}
                   {state.loading && (
