@@ -1,9 +1,11 @@
+"use client";
+
 import { SignOutButton } from "@clerk/nextjs";
 import { PowerIcon } from "@heroicons/react/24/outline";
 import useStore from "@/context/store";
 
 export default function MobileMessage() {
-  const { darkMode } = useStore();
+  const darkMode = useStore((state) => state?.darkMode ?? false);
   
   return (
     <div className={`flex flex-col items-center justify-center min-h-screen p-6 ${darkMode ? 'bg-[#20212C] text-white' : 'bg-[#F4F7FD] text-slate-800'}`}>
