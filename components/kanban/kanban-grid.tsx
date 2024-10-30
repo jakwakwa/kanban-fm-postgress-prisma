@@ -50,6 +50,7 @@ const KanbanGrid = ({
     columns,
     tasks: tasksStore,
     loading: loader,
+    darkMode,
   } = useStore((state) => ({
     addColumns: state.addColumns,
     addTasks: state.addTasks,
@@ -59,6 +60,7 @@ const KanbanGrid = ({
     columns: state.columns,
     tasks: state.tasks,
     loading: state.loading,
+    darkMode: state.darkMode,
   }));
 
   const slug = useSearchParams();
@@ -76,6 +78,7 @@ const KanbanGrid = ({
   const [boardSaving, setBoardSaving] = useState(false);
   const [addColumnIsLoading, setAddColumnIsLoading] = useState(false);
   const [newColumnName, setNewColumnName] = useState("");
+  const [addingColumn, setAddingColumn] = useState(false);
 
   const handleAddColumn = async () => {
     try {
@@ -277,6 +280,7 @@ const KanbanGrid = ({
               handleAddTask={handleAddTask}
               columnStatus={columns}
               boardId={boardId}
+              darkMode={darkMode}
             />
           </>
         )}
@@ -295,17 +299,17 @@ const KanbanGrid = ({
           </>
         )}
         {openBoardOptions && (
-          <div className="bg-white rounded-lg shadow-lg absolute right-[32px] mt-[25px] p-4 border w-48 h-auto z-20">
+          <div className="bg-[#2B2C37] border-[#3E3F4E] rounded-lg shadow-lg absolute right-[32px] mt-[25px] p-4 border w-48 h-auto z-20">
             <div className="flex gap-3 flex-col text-left justify-start align-top items-start">
               <button
-                className="text-slate-400 hover:text-slate-600 text-xs font-medium font-['Plus Jakarta Sans'] leading-snug"
+                className="text-slate-300 hover:text-slate-100 text-xs font-medium font-['Plus Jakarta Sans'] leading-snug"
                 onClick={handleEditOptions}
               >
                 Edit Board
               </button>
 
               <button
-                className="text-red-500  hover:text-red-600 text-xs font-medium font-['Plus Jakarta Sans'] leading-snug "
+                className="text-red-400 hover:text-red-300 text-xs font-medium font-['Plus Jakarta Sans'] leading-snug"
                 onClick={(e) => handleDeleteBoard(e, boardId)}
                 disabled={isDeletingBoard}
               >
@@ -333,6 +337,7 @@ const KanbanGrid = ({
               setOpenBoardOptions={setOpenBoardOptions}
               currentColumns={columns}
               tasks={tasksByBoard}
+              darkMode={darkMode}
             />
           </>
         )}
@@ -348,10 +353,10 @@ const KanbanGrid = ({
               return (
                 <div
                   key={col.id}
-                  className="bg-[#c8cdfa22] overflow-hidden rounded-xl px-4 py-1 border-2 w-[300px]"
+                  className={`${darkMode ? 'bg-[#141517] border-[#3E3F4E]' : 'bg-[#c8cdfa22]'} overflow-hidden rounded-xl px-4 py-1 border-2 w-[300px]`}
                 >
                   <div className="text-black my-4">
-                    <ColumnText color={col.name} alignRight={false}>
+                    <ColumnText color={col.name} alignRight={false} darkMode={darkMode}>
                       {col.name}
                     </ColumnText>
                   </div>
@@ -377,22 +382,45 @@ const KanbanGrid = ({
               );
             }
           })}
-          <div className="bg-[#f3f4fd22] flex flex-col  justify-center overflow-hidden rounded-xl px-4 py-1  border-2 border-dashed border-spacing-2 w-[300px]">
-            <div className="bg-[#f3f4fd22] hover:bg-[#9096cb20] cursor-pointer flex flex-col justify-center overflow-hidden rounded-xl px-4 p-2  w-[80%] mx-auto">
-              <input
-                type="text"
-                value={newColumnName}
-                onChange={(e) => setNewColumnName(e.target.value)}
-                placeholder="New status column name"
-                className="text-center border-solid border-[1.5px] border-slate-300 rounded text-xs placeholder:text-xs px-[5px] py-[7px]"
-              />
-              <button
-                onClick={handleAddColumn}
-                disabled={newColumnName === ""}
-                className="text-center bg-kpurple-main text-white text-xs p-2 rounded-full mt-2 disabled:bg-kpurple-light disabled:cursor-not-allowed"
-              >
-                + new status column
-              </button>
+      
+      <div className={`${darkMode  ? 'bg-[#141517] border-slate-500 border-dashed' : 'bg-[#f3f4fd22]'} flex flex-col justify-center overflow-hidden rounded-xl ${addingColumn ? 'border-2 border-dashed border-slate-200' : 'border-none'} border-spacing-2 w-full`}>
+            <div className="flex flex-col justify-center overflow-hidden rounded-xl p-3  w-[100%] mx-auto">
+              
+            {addingColumn ? (
+          <div className="flex gap-[5px]">
+          <input
+            className={`${darkMode ? 'bg-[#2B2C37] placeholder:text-slate-400  text-white border-[#3E3F4E] shadow-slate-300 hover:shadow-slate-400' : 'bg-slate-100 shadow-[0_0_0_1px] hover:shadow-slate-200'} placeholder:text-xs border box-border w-full shadow-slate-300 inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none text-slate-600 outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_#9443f7] selection:color-white selection:bg-blackA6`}
+            type="text"
+            value={newColumnName}
+            onChange={(e) => setNewColumnName(e.target.value)}
+            placeholder="New column name"
+          />
+          <button 
+            onClick={handleAddColumn}
+            disabled={!newColumnName || addColumnIsLoading}
+            className="bg-kpurple-main hover:bg-kpurple-light disabled:bg-slate-400 text-white px-2 rounded-md"
+          >
+            
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </button>
+          <button
+            onClick={() => {
+              setAddingColumn(false);
+              setNewColumnName('');
+            }}
+            className={`${darkMode ? 'text-white' : 'text-slate-600'} px-2 hover:underline border-[2px] border-slate-600 rounded-md`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+              ) : (
+                <button 
+                  onClick={() => setAddingColumn(true)}
+                  className="text-center text-kpurple-main text-xs p-2 rounded-full mt-2 border border-kpurple-main"
+                >
+                  + new column
+                </button>
+              )}
               {addColumnIsLoading && (
                 <SpinnerCircular color="#000" size={20} thickness={200} />
               )}

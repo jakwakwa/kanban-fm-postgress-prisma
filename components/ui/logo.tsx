@@ -1,15 +1,12 @@
 import Image from "next/image";
+import useStore from "@/context/store";
 
 export default function Logo() {
+  const { darkMode } = useStore();
   return (
-    <div className={`flex flex-row items-center leading-none text-black`}>
-      <Image
-        src="/assets/logo-dark.svg"
-        width={1000}
-        height={760}
-        alt="Screenshots of the dashboard project showing desktop version"
-        className="hidden md:block"
-      />
+    <div className={`flex flex-row items-center leading-none`}>
+        <Image src={darkMode ? "/assets/logo-light.svg" : "/assets/logo-dark.svg"} alt="Logo" width={1000} height={760} />
     </div>
   );
 }
+

@@ -16,6 +16,7 @@ interface KanbanStore {
   boardId: string;
   isBoardAdding: boolean;
   loading: boolean;
+  darkMode: boolean;
   addBoards: (boards: BoardState[]) => void;
   addCurrentBoard: (board: BoardState) => void;
   addColumns: (columns: ColumnState[]) => void;
@@ -25,6 +26,8 @@ interface KanbanStore {
   setIsBoardAdding: (isBoardAdding: boolean) => void;
   setLoader: (loading: boolean) => void;
   reset: () => void;
+  setDarkMode: (darkMode: boolean) => void;
+  toggleTheme: () => void;
 }
 
 // Function to parse JSON data into Zustand store structure
@@ -38,6 +41,7 @@ const useStore = create<KanbanStore>()(
     subTasks: [],
     isBoardAdding: false,
     loading: false,
+    darkMode: false,
     addBoards: (boards) => {
       set((state) => ({
         ...state,
@@ -82,6 +86,12 @@ const useStore = create<KanbanStore>()(
         loading: loading,
       }));
     },
+    toggleTheme: () => {
+      set((state) => ({
+        ...state,
+        darkMode: !state.darkMode,
+      }));
+    },
     reset: () => {
       set({
         boards: [],
@@ -92,6 +102,12 @@ const useStore = create<KanbanStore>()(
         isBoardAdding: false,
         loading: false,
       });
+    },
+    setDarkMode: (darkMode) => {
+      set((state) => ({
+        ...state,
+        darkMode: darkMode,
+      }));
     },
   }))
 );

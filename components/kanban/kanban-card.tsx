@@ -1,4 +1,5 @@
 import { TaskState } from "@/types/data-types";
+import useStore from "@/context/store";
 
 interface KanbanCardProps {
   task: TaskState;
@@ -7,6 +8,7 @@ interface KanbanCardProps {
 }
 
 const KanbanCard = ({ task, setState, totalSubtasks }: KanbanCardProps) => {
+  const { darkMode } = useStore();
   function handleViewTask(name: string, id: string, description: string) {
     setState((prevState: any) => ({
       ...prevState,
@@ -23,15 +25,15 @@ const KanbanCard = ({ task, setState, totalSubtasks }: KanbanCardProps) => {
         onClick={() =>
           handleViewTask(task.title, task.id, task.description ?? "")
         }
-        className="bg-white hover:bg-slate-50 h-[auto] min-h-[140px] rounded-md shadow-md p-[16px] flex flex-col justify-between cursor-pointer capitalize"
+        className={`${darkMode ? 'bg-[#2B2C37] hover:bg-[#3E3F4E]' : 'bg-white hover:bg-slate-50'} h-[auto] min-h-[140px] rounded-md shadow-md p-[16px] flex flex-col justify-between cursor-pointer capitalize`}
       >
         <div>
-          <h2 className="text-2md text-kblack-main text-left">{task?.title}</h2>
-          <h3 className="text-slate-500 font-normal italic text-xs line-clamp-1 pr-2 mt-2 text-left">
+          <h2 className={`text-2md ${darkMode ? 'text-white' : 'text-kblack-main'} text-left`}>{task?.title}</h2>
+          <h3 className={`${darkMode ? 'text-[#828FA3]' : 'text-slate-500'} font-normal italic text-xs line-clamp-1 pr-2 mt-2 text-left`}>
             {task.description}
           </h3>
         </div>
-        <h4 className="text-slate-600 mt-[4px] text-right">
+        <h4 className={`${darkMode ? 'text-[#828FA3]' : 'text-slate-600'} mt-[4px] text-right`}>
           {totalSubtasks} subtasks
         </h4>
       </button>

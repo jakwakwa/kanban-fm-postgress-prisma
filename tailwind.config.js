@@ -47,5 +47,6 @@ export const theme = {
       swipeOut: "swipeOut 200ms ease-out",
     },
   },
+  darkMode: "selector", // add this line
 };
 export const plugins = [];

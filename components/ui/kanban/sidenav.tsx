@@ -22,7 +22,7 @@ export default function SideNav({ boards }: Readonly<{ boards: any[] }>) {
   }
 
   return (
-    <div className="fixed w-[300px] z-1 flex h-full flex-col px-3 py-0 md:px-0 bg-white border-r">
+    <div className="fixed w-[300px] z-1 flex h-full flex-col px-3 py-0 md:px-0 bg-white dark:bg-slate-800 border-r">
       <Link
         className="mb-2 flex h-20 items-start justify-start rounded-md bg-white p-4 md:pt-8 md:h-40"
         href="/"
@@ -32,7 +32,7 @@ export default function SideNav({ boards }: Readonly<{ boards: any[] }>) {
         </div>
       </Link>
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-0">
-        <div className="px-4 pb-2">All boardssss ({boards.length})</div>
+        <div className="px-4 pb-2">All boardsss ({boards.length})</div>
         <div className="text-black">
           <div className="flex flex-col w-full">
             {boards?.map((board: { name: any; id: any }, i: number) => (

@@ -1,5 +1,6 @@
 "use client";
 import * as Form from "@radix-ui/react-form";
+import useStore from "@/context/store";
 interface FormLabelProps {
   isLabel?: boolean;
   spacing?: boolean;
@@ -12,7 +13,8 @@ function FormLabel({
   alignRight,
   children,
 }: Readonly<FormLabelProps>) {
-  const defaultStyle = `text-slate-700/70 text-[10px] font-extrabold pl-0 mb-1.5 `;
+  const { darkMode } = useStore();
+  const defaultStyle = `${darkMode ? 'text-[#828FA3]' : 'text-slate-700/70'} text-[10px] font-extrabold pl-0 mb-1.5 `;
 
   function styleSelector() {
     if (spacing && !alignRight) {

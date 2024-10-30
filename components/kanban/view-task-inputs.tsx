@@ -3,6 +3,7 @@ import Subtask from "./subtask";
 import Image from "next/image";
 import FormLabel from "./form-label";
 import ColumnText from "./columns/column-text";
+import useStore from "@/context/store";
 
 interface ViewTaskInpProps {
   handleOptions: any;
@@ -20,7 +21,12 @@ const ViewTaskInputs = ({
   taskName,
   task,
   deleteTask,
+  
 }: ViewTaskInpProps) => {
+
+  const { darkMode } = useStore();
+
+
   if (!task) {
     return <div>no task available</div>;
   }
@@ -36,11 +42,11 @@ const ViewTaskInputs = ({
   };
 
   return (
-    <div className="absolute w-[480px] h-auto mx-auto mt-[10%] bg-white rounded-md p-[32px] pt-[28px] pb-[28px] shadow-lg left-[35%] z-20">
+    <div className={`${darkMode ? 'bg-[#2B2C37] border-[#3E3F4E]' : 'bg-white'} absolute w-[480px] h-auto mx-auto mt-[10%] rounded-md p-[32px] pt-[28px] pb-[28px] shadow-lg left-[35%] z-20`}>
       <div className="absolute right-[15px] flex flex-col items-end text-xs text-right top-[20px]">
         <button
           onClick={handleOptions}
-          className={`${optionsButtonClass} flex justify-center align-middle items-center w-7 h-7 hover:opacity-80 hover:bg-slate-100 hover:border-2 hover:border-slate-300 rounded-lg`}
+          className={`${darkMode ? 'bg-[#2B2C37] border-[#3E3F4E]' : 'bg-white'} flex justify-center align-middle items-center w-7 h-7 hover:opacity-80 hover:bg-slate-100 hover:border-2 hover:border-slate-300 rounded-lg`}
         >
           <Image
             src={"/assets/icon-vertical-ellipsis.svg"}
@@ -51,10 +57,10 @@ const ViewTaskInputs = ({
         </button>
       </div>
       {openOptions && (
-        <div className="bg-white rounded-lg shadow-lg absolute right-[15px] mt-[22px] p-4 border w-48 h-auto z-20">
+        <div className={`${darkMode ? 'bg-[#2B2C37] border-[#3E3F4E]' : 'bg-white'} rounded-lg shadow-lg absolute right-[15px] mt-[22px] p-4 border w-48 h-auto z-20`}>
           <div className="flex gap-3 flex-col text-left justify-start align-top items-start">
             <button
-              className="text-slate-400 hover:text-slate-600 text-xs font-medium font-['Plus Jakarta Sans'] leading-snug"
+              className={`${darkMode ? 'text-[#828FA3] hover:text-[#828FA3]' : 'text-slate-400 hover:text-slate-600'} text-xs font-medium font-['Plus Jakarta Sans'] leading-snug`}
               onClick={() => setEditMode(true)}
             >
               Edit Task
@@ -69,11 +75,11 @@ const ViewTaskInputs = ({
           </div>
         </div>
       )}
-      <div className="text-gray-950 font-bold pb-2 w-full max-w-[88%] leading-tight mb-2 text-[18px]">
+      <div className={`${darkMode ? 'text-white' : 'text-kblack-main'} font-bold pb-2 w-full max-w-[88%] leading-tight mb-2 text-[18px]`}>
         {taskName}
       </div>
 
-      <div className="mb-[34px] mt-[18px] px-4 pb-8 pt-3 rounded-md border w-99 text-kgray-text text-[13px] font-normal capitalize leading-normal tracking-tight shadow-sm">
+      <div className={`${darkMode ? 'text-[#828FA3] bg-[#2B2C37] border-[#3E3F4E]' : 'text-kgray-text bg-white'} mb-[34px] mt-[18px] px-4 pb-8 pt-3 rounded-md border w-99 text-[13px] font-normal capitalize leading-normal tracking-tight shadow-sm`}>
         <FormLabel isLabel={false} spacing={true}>
           Description:
         </FormLabel>
@@ -114,7 +120,7 @@ const ViewTaskInputs = ({
               Status
               <div>
                 <div className="mt-4 rounded-md w-[100px] justify-start text-slate-700 outline-none focus:shadow-[0_0_0_1.5px] focus:shadow-black text-[10px] flex items-center capitalize font-bold text-left">
-                  <ColumnText color={task?.status} alignRight={true}>
+                  <ColumnText color={task?.status} alignRight={true} darkMode={darkMode}>
                     {task?.status}
                   </ColumnText>
                 </div>
