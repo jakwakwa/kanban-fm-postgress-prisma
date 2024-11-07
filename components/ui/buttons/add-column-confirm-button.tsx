@@ -10,7 +10,7 @@ const AddColumnConfirmButton = (
 <button 
 onClick={handleAddColumn}
 disabled={disabled}
-className={`bg-kpurple-main hover:bg-kpurple-light disabled:bg-slate-400 text-white ${commonButtonClasses}`}
+className={`bg-kpurple-main w-10 h-9 hover:bg-kpurple-light disabled:bg-slate-400 text-white ${commonButtonClasses}`}
 >
 <CheckIcon />
 </button>
