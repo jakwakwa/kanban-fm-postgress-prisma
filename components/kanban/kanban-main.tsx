@@ -5,6 +5,7 @@ import AddBoard from "./add-board";
 import useStore from "@/context/store";
 
 const KanbanContainer = ({ boards }: { boards: any[] }) => {
+  const { darkMode } = useStore();
   const setIsBoardAdding = useStore((state) => state.setIsBoardAdding);
   const [addBoardModul, setAddBoardModul] = useState(false);
   function handleAddBoard() {
@@ -26,11 +27,11 @@ const KanbanContainer = ({ boards }: { boards: any[] }) => {
       )}
       <div className="w-full h-full flex flex-col items-center justify-center align-middle">
         {boards.length === 0 ? (
-          <div className="mb-4">
+          <div className={ darkMode ? "mb-4 text-white" : "mb-4"}>
             Add a board from the side panel to get started
           </div>
         ) : (
-          <div className="mb-4">
+          <div className={ darkMode ? "mb-4 text-white" : "mb-4"}>
             Select an existing board or add a new board from the side panel
           </div>
         )}
