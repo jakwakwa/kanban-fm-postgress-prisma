@@ -1,0 +1,113 @@
+:root {
+  --black: #000112;
+  --very-dark-grey-dark-bg: #20212c;
+  --dark-grey: #2b2c37;
+  --lines-dark: #3e3f4e;
+  --medium-grey: #828fa3;
+  --lines-light: #e4ebfa;
+  --light-grey-light-bg: #f4f7fd;
+  --white: #fff;
+  --main-purple: #635fc7;
+  --main-purple-hover: #a8a4ff;
+  --red: #ea5555;
+  --red-hover: #ff9898;
+}
+
+
+
+.storybook-button {
+
+  cursor: pointer;
+  border: 0;
+  /* width: 255px; */
+  /* height: 48px; */
+  color: var(--white);
+  background-color: var(--main-purple);
+  color: white;
+ 
+
+  font-family: PlusJakartaSans;
+  font-size: 15px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+
+}
+.storybook-button--secondary {
+  /* box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0px 1px inset; */
+  background-color: transparent;
+  color: var(--dark-grey);
+  width: 132px;
+  height: 19px;
+  font-family: PlusJakartaSans;
+  font-size: 15px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  color: var(--dark-grey);
+}
+
+
+
+.storybook-button--small {
+
+  font-size: 12px;
+
+
+  width: 255px;
+  height: 40px;
+  padding: 8px 69.5px 9px;
+  border-radius: 20px;
+  background-color: var(--main-purple);
+}
+
+
+.storybook-button--medium {
+  padding: 11px 20px;
+  padding: 8px 69.5px 9px;
+  border-radius: 20px;
+
+  font-size: 14px;
+}
+.storybook-button--large {
+  width: 255px;
+  height: 48px;
+  font-size: 16px;
+  padding: 15px 61.5px 14px;
+  border-radius: 24px;
+  background-color: var(--main-purple);
+}
+
+
+
+.Button-Primary--large {
+
+  font-family: PlusJakartaSans;
+  font-size: 15px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  color: var(--white);
+}
+
+
+.Button-Primary--small {
+
+font-family: PlusJakartaSans;
+font-size: 13px;
+font-weight: bold;
+font-stretch: normal;
+font-style: normal;
+letter-spacing: normal;
+text-align: center;
+color: var(--white);
+}

@@ -1,6 +1,9 @@
 {
   "name": "postgres-prisma",
-  "repository": "https://github.com/vercel/examples.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vercel/examples.git"
+  },
   "license": "MIT",
   "version": "0.0.0",
   "private": true,
@@ -8,7 +11,10 @@
     "dev": "prisma generate && next dev",
     "build": "prisma generate && prisma db push && prisma db seed && next build",
     "start": "next start",
-    "lint": "next lint && tsc --noEmit"
+    "lint": "next lint && tsc --noEmit",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "chromatic": "npx chromatic --project-token=chpt_7cf23694e3595df"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
@@ -45,5 +51,25 @@
     "ts-node": "^10.9.1",
     "typescript": "5.2.2",
     "zustand": "^4.5.2"
-  }
+  },
+  "packageManager": "yarn@4.5.1",
+  "devDependencies": {
+    "@chromatic-com/storybook": "^3.2.2",
+    "@storybook/addon-essentials": "^8.4.2",
+    "@storybook/addon-interactions": "^8.4.2",
+    "@storybook/addon-onboarding": "^8.4.2",
+    "@storybook/blocks": "^8.4.2",
+    "@storybook/nextjs": "^8.4.2",
+    "@storybook/react": "^8.4.2",
+    "@storybook/test": "^8.4.2",
+    "chromatic": "^11.18.1",
+    "eslint-plugin-storybook": "^0.11.0",
+    "prettier": "^3.3.3",
+    "storybook": "^8.4.2",
+    "storybook-zeplin": "^3.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/vercel/examples/issues"
+  },
+  "homepage": "https://github.com/vercel/examples#readme"
 }
