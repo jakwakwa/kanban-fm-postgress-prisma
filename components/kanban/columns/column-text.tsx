@@ -27,17 +27,21 @@ const ColumnText = ({
   }
   if (!alignRight) {
     return (
+      <div className="text-black my-4">
       <div className={`${darkMode ? 'text-white' : 'text-slate-700'} uppercase text-sm flex items-center gap-2 tracking-[2px]`}>
         <div className={`rounded-xl w-[10px] h-[10px] ${bgColorClass}`}></div>
         {children}
+      </div>
       </div>
     );
   }
   if (alignRight) {
     return (
+      <div className="text-black my-4"> 
       <div className={`${darkMode ? 'text-white' : 'text-slate-700'} uppercase text-sm flex items-center gap-2 tracking-[2px]`}>
         <div className={`rounded-xl w-[10px] h-[10px] ${bgColorClass}`}></div>
         {children}
+        </div>
       </div>
     );
   }
