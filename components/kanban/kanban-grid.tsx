@@ -25,6 +25,9 @@ import {
 import { INITIAL_STATE } from "@/constants/initial-data";
 import { commonClasses, addColumnContainerClasses } from "./kanban-grid-styles";
 import AddColumnForm from "../ui/forms/add-column-form";
+import BoardOptionsMenu from "../ui/board-options-menu";
+import AddTaskButton from "../ui/buttons/add-task-button";
+import BoardOptionsButton from "../ui/buttons/board-options-button";
 
 interface KanbanGridProps {
   subTasks?: Subtask[];
@@ -178,50 +181,29 @@ const KanbanGrid = ({
       {/* Group related UI sections */}
       <div className="fixed-controls">
         {/* Add Task Button */}
-        <div className="fixed right-12 top-4 w-[200px] flex justify-end z-20">
-          <button
-            className={`${
-              state.isDisabled
-                ? "bg-kpurple-light cursor-not-allowed"
-                : "bg-kpurple-main hover:bg-slate-500"
-            } px-5 py-3 rounded-3xl text-md text-white text-sm font-semibold`}
-            onClick={() =>
-              setState(prev => ({
-                ...prev,
-                newTask: {
-                  id: "",
-                  columnId: "",
-                  title: "",
-                  description: "",
-                  status: ""
-                },
-                addTaskMode: true
-              }))
-            }
-          >
-            + Add New Task
-          </button>
-        </div>
+        <AddTaskButton
+          isDisabled={state.isDisabled}
+          onClick={() =>
+            setState(prev => ({
+              ...prev,
+              newTask: {
+                id: "",
+                columnId: "",
+                title: "",
+                description: "",
+                status: ""
+              },
+              addTaskMode: true
+            }))
+          }
+        />
 
         {/* Options Menu */}
-        <div className="absolute right-[10px] flex flex-col items-end text-xs text-right top-6 z-20">
-          <button
-            onClick={boardHandlers.handleOptions}
-            className="flex justify-center align-middle items-center w-6 h-6 hover:border hover:border-slate-300 rounded-lg"
-          >
-            <Image
-              src="/assets/icon-vertical-ellipsis.svg"
-              width={4}
-              height={4}
-              alt="Options Menu"
-            />
-          </button>
-        </div>
+        <BoardOptionsButton onClick={boardHandlers.handleOptions} />
       </div>
 
       {/* Group all modals together */}
       <div className="modals">
-        {/* Task Modals */}
         {state.addTaskMode && (
           <>
             <OverlayButton setState={setState} />
@@ -253,24 +235,11 @@ const KanbanGrid = ({
 
         {/* Board Options Modal */}
         {openBoardOptions && (
-          <div className="bg-[#2B2C37] border-[#3E3F4E] rounded-lg shadow-lg absolute right-[32px] mt-[25px] p-4 border w-48 h-auto z-20">
-            <div className="flex gap-3 flex-col text-left justify-start align-top items-start">
-              <button
-                className="text-slate-300 hover:text-slate-100 text-xs font-medium font-['Plus Jakarta Sans'] leading-snug"
-                onClick={boardHandlers.handleEditOptions}
-              >
-                Edit Board
-              </button>
-
-              <button
-                className="text-red-400 hover:text-red-300 text-xs font-medium font-['Plus Jakarta Sans'] leading-snug"
-                onClick={(e) => boardHandlers.handleDeleteBoard(e, boardId)}
-                disabled={isDeletingBoard}
-              >
-                {isDeletingBoard ? "Deleting Board..." : "Delete Board"}
-              </button>
-            </div>
-          </div>
+          <BoardOptionsMenu
+            onEdit={boardHandlers.handleEditOptions}
+            onDelete={(e) => boardHandlers.handleDeleteBoard(e, boardId)}
+            isDeletingBoard={isDeletingBoard}
+          />
         )}
 
         {/* Loading States */}
