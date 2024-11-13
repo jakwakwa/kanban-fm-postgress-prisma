@@ -2,7 +2,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
-import { SpinnerCircular } from "spinners-react";
 import ViewTask from "./view-task";
 import AddTask from "./add-task";
 import ColumnText from "./columns/column-text";
@@ -28,7 +27,9 @@ import { CheckIcon } from "@heroicons/react/24/outline";
 import AddColumnButton from "../ui/buttons/add-column-button";
 import CancelButton from "../ui/buttons/cancel-button";
 import AddColumnConfirmButton from "../ui/buttons/add-column-confirm-button";
-import { commonOverflowClasses, commonFlexClasses, commonButtonClasses, commonBorderClasses, inputTextClasses, darkModeInputTextClasses } from "./kanban-grid-styles";
+import { commonClasses, addColumnContainerClasses } from "./kanban-grid-styles";
+import AcceptButton from "../ui/buttons/accept-button";
+import AddColumnForm from "../ui/forms/add-column-form";
 
 interface KanbanGridProps {
   subTasks?: Subtask[];
@@ -94,23 +95,23 @@ const KanbanGrid = ({
         body: JSON.stringify({ name: newColumnName, boardId })
       });
 
+      // Artificial delay
       await new Promise(resolve => setTimeout(resolve, 2000));
 
       if (response.ok) {
         const data = await response.json();
-        const newColumn = {
-          id: data.data.id,
-          boardId,
-          name: newColumnName,
-          tasks: []
-        };
-
         setState(prev => ({
           ...prev,
-          columns: [...prev.columns, newColumn],
-          columnOrder: [...prev.columnOrder, newColumn.id]
+          columns: [
+            ...prev.columns,
+            {
+              id: data.data.id,
+              boardId,
+              name: newColumnName,
+              tasks: []
+            }
+          ]
         }));
-        
         setNewColumnName("");
         setAddingColumn(false);
         router.refresh();
@@ -332,7 +333,7 @@ const KanbanGrid = ({
                 key={col.id}
                 className={`${
                   darkMode ? 'bg-[#141517] border-[#3E3F4E]' : 'bg-[#c8cdfa22]'
-                } ${commonOverflowClasses} px-4 py-1 border-2 w-[300px]`}
+                } ${commonClasses.overflow} px-4 py-1 border-2 w-[300px]`}
               >
                 <div className="text-black my-4">
                   <ColumnText color={col.name} alignRight={false} darkMode={darkMode}>
@@ -360,51 +361,23 @@ const KanbanGrid = ({
 
         {/* Add Column Section */}
         <div 
-          className={`${
-            darkMode ? 'bg-[#141517] border-slate-500 border-dashed' : 'bg-[#f3f4fd22]'
-          } ${commonFlexClasses} ${commonOverflowClasses} ${
-            addingColumn ? commonBorderClasses + ' border-slate-200' : 'border-none'
-          } border-spacing-2 w-full`}
+          className={`
+            ${darkMode ? addColumnContainerClasses.dark : addColumnContainerClasses.light}
+            ${addingColumn ? addColumnContainerClasses.active : addColumnContainerClasses.default}
+            ${commonClasses.flex}
+            ${commonClasses.overflow}
+            w-full border-spacing-3 rounded-lg
+          `}
         >
-          <div className={`${commonFlexClasses} ${commonOverflowClasses} p-3 w-[100%] mx-auto`}>
-            {addingColumn ? (
-              <div className="flex gap-[5px]">
-                <input
-                  className={`${
-                    darkMode 
-                      ? darkModeInputTextClasses 
-                      : 'bg-slate-100 shadow-[0_0_0_1px] hover:shadow-slate-200'
-                 
-                  } ${inputTextClasses}`}
-                  type="text"
-                  value={newColumnName}
-                  onChange={(e) => setNewColumnName(e.target.value)}
-                  placeholder="New column name"
-                />
-                <button 
-                  onClick={handleAddColumn}
-                  disabled={!newColumnName || addColumnIsLoading}
-                  className={`bg-kpurple-main w-10 h-9 hover:bg-kpurple-light disabled:bg-slate-400 text-white ${commonButtonClasses}`}
-                >
-                  {addColumnIsLoading ? (
-                    <SpinnerCircular color="#fff" size={20} thickness={200} />
-                  ) : (
-                    <CheckIcon />
-                  )}
-                </button>
-                <CancelButton 
-                  darkMode={darkMode}
-                  commonButtonClasses={commonButtonClasses}
-                  onCancel={() => {
-                    setAddingColumn(false);
-                    setNewColumnName('');
-                  }}
-                />
-              </div>
-            ) : (
-              <AddColumnButton setAddingColumn={setAddingColumn} />
-            )}
-          </div>
+          <AddColumnForm
+            darkMode={darkMode}
+            addingColumn={addingColumn}
+            newColumnName={newColumnName}
+            setNewColumnName={setNewColumnName}
+            handleAddColumn={handleAddColumn}
+            addColumnIsLoading={addColumnIsLoading}
+            setAddingColumn={setAddingColumn}
+          />
         </div>
       </div>
 
