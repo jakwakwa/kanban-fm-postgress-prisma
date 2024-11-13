@@ -52,7 +52,9 @@ const useStore = create<KanbanStore>()(
     addColumns: (columns) => {
       set((state) => ({
         ...state,
-        columns: [...columns],
+        columns: state.columns.length === 0 
+          ? [...columns] 
+          : [...state.columns, ...columns.filter(col => !state.columns.some(existingCol => existingCol.id === col.id))],
       }));
     },
     addTasks: (tasks) => {

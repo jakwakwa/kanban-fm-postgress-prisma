@@ -94,21 +94,25 @@ const KanbanGrid = ({
         body: JSON.stringify({ name: newColumnName, boardId })
       });
 
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
       if (response.ok) {
         const data = await response.json();
+        const newColumn = {
+          id: data.data.id,
+          boardId,
+          name: newColumnName,
+          tasks: []
+        };
+
         setState(prev => ({
           ...prev,
-          columns: [
-            ...prev.columns,
-            {
-              id: data.data.id,
-              boardId,
-              name: newColumnName,
-              tasks: []
-            }
-          ]
+          columns: [...prev.columns, newColumn],
+          columnOrder: [...prev.columnOrder, newColumn.id]
         }));
+        
         setNewColumnName("");
+        setAddingColumn(false);
         router.refresh();
       }
     } catch (error) {
@@ -377,11 +381,17 @@ const KanbanGrid = ({
                   onChange={(e) => setNewColumnName(e.target.value)}
                   placeholder="New column name"
                 />
-                <AddColumnConfirmButton 
-                  handleAddColumn={handleAddColumn}
+                <button 
+                  onClick={handleAddColumn}
                   disabled={!newColumnName || addColumnIsLoading}
-                  commonButtonClasses={commonButtonClasses}
-                />
+                  className={`bg-kpurple-main w-10 h-9 hover:bg-kpurple-light disabled:bg-slate-400 text-white ${commonButtonClasses}`}
+                >
+                  {addColumnIsLoading ? (
+                    <SpinnerCircular color="#fff" size={20} thickness={200} />
+                  ) : (
+                    <CheckIcon />
+                  )}
+                </button>
                 <CancelButton 
                   darkMode={darkMode}
                   commonButtonClasses={commonButtonClasses}
@@ -393,9 +403,6 @@ const KanbanGrid = ({
               </div>
             ) : (
               <AddColumnButton setAddingColumn={setAddingColumn} />
-            )}
-            {addColumnIsLoading && (
-              <SpinnerCircular color="#000" size={20} thickness={200} />
             )}
           </div>
         </div>
@@ -412,4 +419,3 @@ const KanbanGrid = ({
 };
 
 export default KanbanGrid;
-
