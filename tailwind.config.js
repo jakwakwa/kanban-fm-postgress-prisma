@@ -50,3 +50,4 @@ export const theme = {
   darkMode: "selector", // add this line
 };
 export const plugins = [];
+
