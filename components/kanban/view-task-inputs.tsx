@@ -60,7 +60,7 @@ const ViewTaskInputs = ({
         <div className={`${darkMode ? 'bg-[#2B2C37] border-[#3E3F4E]' : 'bg-white'} rounded-lg shadow-lg absolute right-[15px] mt-[22px] p-4 border w-48 h-auto z-20`}>
           <div className="flex gap-3 flex-col text-left justify-start align-top items-start">
             <button
-              className={`${darkMode ? 'text-[#828FA3] hover:text-[#828FA3]' : 'text-slate-400 hover:text-slate-600'} text-xs font-medium font-['Plus Jakarta Sans'] leading-snug`}
+              className={`${darkMode ? 'text-[#828FA3] hover:text-[#828FA3]' : 'text-slate-400 hover:text-slate-600'} text-xs font-medium font-['Plus Jakarta Sans'] leading-snug hover:opacity-80`}
               onClick={() => setEditMode(true)}
             >
               Edit Task
@@ -119,7 +119,7 @@ const ViewTaskInputs = ({
             <FormLabel isLabel={false} spacing={false} alignRight={true}>
               Status
               <div>
-                <div className="mt-4 rounded-md w-[100px] justify-start text-slate-700 outline-none focus:shadow-[0_0_0_1.5px] focus:shadow-black text-[10px] flex items-center capitalize font-bold text-left">
+                <div className="mt-4 rounded-md w-[100px] justify-start text-slate-700 outline-none focus:shadow-[0_0_0_1.5px] focus:shadow-black text-[10px] flex justify-end items-center capitalize font-bold text-right">
                   <ColumnText color={task?.status} alignRight={true} darkMode={darkMode}>
                     {task?.status}
                   </ColumnText>

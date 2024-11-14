@@ -14,6 +14,7 @@ import { SUBTASK_STYLE } from "@/constants/theme";
 import { addUpdatedSubtaskUtil } from "@/utils/state-utils";
 import EditTitleInputField from "./moduls/edit-title-inputfield";
 import ValidationMsg from "./moduls/validation-msg";
+import { commonClasses } from "./kanban-grid-styles";
 import useStore from "@/context/store";
 
 interface EditTaskProps {
@@ -69,10 +70,6 @@ const EditTask = ({
 }: EditTaskProps) => {
 
   const { darkMode } = useStore();
-  const inputStyle = darkMode ?
-`box-border w-full bg-[#2B2C37] text-white border-[#3E3F4E] placeholder:text-xs placeholder:text-slate-400  placeholder:italic shadow-blackA6 inline-flex appearance-none items-center justify-center rounded-[4px] p-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_1.3px_#252525]  selection:color-white selection:bg-blackA6 hover:bg-[#e8ebf9]`
-:
-`box-border w-full bg-slate-100 placeholder:text-xs placeholder:text-slate-400  placeholder:italic shadow-blackA6 inline-flex appearance-none items-center justify-center rounded-[4px] p-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_1.3px_#252525]  selection:color-white selection:bg-blackA6 hover:bg-[#e8ebf9]`;
 
   const [disableAddBtn, setDisableAddBtn] = useState(false);
   useEffect(() => {
@@ -151,7 +148,7 @@ const EditTask = ({
           </div>
           <Form.Control asChild>
             <textarea
-              className={`${inputStyle} h-20 ${darkMode ? 'border bg-[#2B2C37] text-white border-[#3E3F4E]' : 'border-slate-400'}`}
+              className={`${darkMode ? commonClasses.input.dark : commonClasses.input.base} h-20`}
               value={updatedTask.description}
               placeholder="eg. It's best to take a break every 15mins..."
               onChange={(e) => {

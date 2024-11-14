@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import * as Select from "@radix-ui/react-select";
 import ColumnText from "@/components/kanban/columns/column-text";
+import { commonClasses } from "@/components/kanban/kanban-grid-styles";
 interface ParsedJson {
   name: string;
   id: string;
@@ -71,7 +72,7 @@ const StatusDropdown = ({
             onValueChange={setUpdatedStatus}
           >
             <Select.Trigger asChild data-state={toggled}>
-              <button className={`${darkMode ? 'bg-[#2B2C37] text-white border-[#3E3F4E]' : 'bg-[#f1f5f9] border-slate-400 '} rounded-md w-full h-10 justify-start text-black outline-none hover:bg-[#e8ebf9] focus:shadow-[0_0_0_1px_#252525] text-left px-[16px] border text-xs capitalize relative`}>
+              <button className={`${darkMode ? commonClasses.dropdown.dark   : commonClasses.dropdown.base } hover:bg-[#5c5e771c]  rounded-md w-full h-10 justify-start text-black outline-none focus:shadow-[0_0_0_1px_#252525] text-left px-[16px] border text-xs capitalize relative`}>
                 <span>
                   <Select.Value>{selectStatus}</Select.Value>
                 </span>
@@ -83,14 +84,14 @@ const StatusDropdown = ({
               </button>
             </Select.Trigger>
             <Select.Content asChild>
-              <div className={`${darkMode ? 'bg-[#2B2C37] border border-[#3E3F4E]' : 'bg-white'} rounded-md p-[16px] text-sm shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),_0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)] will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade capitalize`}>
+              <div className={`${darkMode ? 'bg-[#3d3f4f] text-white' : 'bg-[#f1f5f9] hover:bg-[#f1f5f9] text-black'} rounded-md p-[16px] text-sm will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade capitalize`}>
                 <Select.Viewport>
                   {columnStatus.map((item, i) => {
                     return (
                       <Select.Item
                         key={item.id}
                         value={JSON.stringify(item)}
-                        className={`${darkMode ? 'text-white hover:bg-[#3E3F4E]' : 'text-default hover:bg-violet5'} p-2 capitalize`}
+                        className={`${darkMode ? 'text-white hover:bg-[#3b3592]'  : 'text-default hover:bg-[#5d3fc01c]'} text-xs p-2 capitalize`}
                       >
                         <Select.ItemText> {item.name} </Select.ItemText>
                       </Select.Item>

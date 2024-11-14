@@ -3,6 +3,7 @@
 import { TaskPayload } from "@/types/data-types";
 import * as Form from "@radix-ui/react-form";
 import { Dispatch, SetStateAction } from "react";
+import { commonClasses } from "../kanban-grid-styles";
 
 interface EditInputFieldProps {
   name: string;
@@ -34,7 +35,7 @@ function EditTitleInputField({
       </div>
       <Form.Control asChild>
         <input
-          className={`${darkMode ? 'bg-[#2B2C37] text-white border-[#3E3F4E]' : 'bg-slate-100 border-slate-400'} border box-border w-full shadow-blackA6 inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none text-slate-600 shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_#9443f7] selection:color-white selection:bg-blackA6`}
+          className={`${darkMode ? commonClasses.input.dark : commonClasses.input.base}`}
           required
           type="text"
           value={name}

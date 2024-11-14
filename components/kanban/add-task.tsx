@@ -5,6 +5,7 @@ import * as Form from "@radix-ui/react-form";
 import { Subtask } from "@/types/data-types";
 import { SpinnerCircularSplit } from "spinners-react";
 import FormLabel from "./form-label";
+import { commonClasses } from "./kanban-grid-styles";
 
 interface StateT {
   isDisabled: boolean;
@@ -72,11 +73,7 @@ const AddTask = ({
           </div>
           <Form.Control asChild>
             <input
-              className={`box-border w-full placeholder:text-xs placeholder:italic shadow-blackA6 inline-flex appearance-none items-center justify-center rounded-[4px] p-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none selection:color-white selection:bg-blackA6 ${
-                darkMode 
-                  ? 'bg-[#2b2c37] text-white placeholder:text-gray-400 hover:shadow-[0_0_0_1px_white] focus:shadow-[0_0_0_1.3px_white] hover:bg-[#3e3f4a]' 
-                  : 'bg-slate-100 text-slate-600 placeholder:text-slate-400 hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_1.3px_#252525] hover:bg-[#e8ebf9]'
-              }`}
+              className={darkMode ? commonClasses.input.dark : commonClasses.input.base}
               required
               type="text"
               placeholder={`e.g. Collect the Laundry.`}
@@ -103,11 +100,7 @@ const AddTask = ({
           </div>
           <Form.Control asChild>
             <textarea
-              className={`box-border w-full placeholder:text-xs placeholder:italic shadow-blackA6 inline-flex appearance-none items-center justify-center rounded-[4px] p-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none selection:color-white selection:bg-blackA6 h-20 ${
-                darkMode 
-                  ? 'bg-[#2b2c37] text-white placeholder:text-gray-400 hover:shadow-[0_0_0_1px_white] focus:shadow-[0_0_0_1.3px_white] hover:bg-[#3e3f4a]' 
-                  : 'bg-slate-100 text-slate-600 placeholder:text-slate-400 hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_1.3px_#252525] hover:bg-[#e8ebf9]'
-              }`}
+              className={darkMode ? commonClasses.input.dark : commonClasses.input.base}
               placeholder={`e.g. It's always good to take a break. This 15 minute break will recharge the batteries a little.`}
               value={state.newTask.description}
               onChange={(e) => {
@@ -152,7 +145,7 @@ const AddTask = ({
           ) : null}
           <Form.Submit asChild>
             <button
-              className="mt-6 flex justify-center text-center w-full h-10 bg-indigo-500 hover:bg-indigo-700 rounded-2xl align-middle items-center cursor-pointer disabled:cursor-not-allowed disabled:bg-slate-300"
+              className="mt-6 flex justify-center text-center w-full h-10 bg-indigo-500 hover:bg-indigo-700 rounded-2xl align-middle items-center cursor-pointer disabled:cursor-not-allowed disabled:bg-slate-600 disabled:text-slate-400" 
               style={{
                 transition: "200ms ease-in",
               }}
@@ -165,8 +158,12 @@ const AddTask = ({
                 handleAddTask(e, state.newTask, newColId, newStatus)
               }
             >
-              <div className="text-white text-xs font-bold">
-                <div className="flex flex-row gap-2 align-middle items-center">
+              <div className={`${
+                newStatus === undefined ||
+                !changed ||
+                state.newTask?.title.length < 1 ? 'text-slate-400' : 'text-white'
+              } text-xs font-bold disabled:text-slate-300`}>
+                <div className="flex flex-row gap-2 align-middle items-center ">
                   {!state.loading ? "Save Changes" : "Saving"}
                   {state.loading && (
                     <SpinnerCircularSplit
