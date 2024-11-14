@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import Image from "next/image";
 import ViewTask from "./view-task";
 import AddTask from "./add-task";
 import ColumnText from "./columns/column-text";

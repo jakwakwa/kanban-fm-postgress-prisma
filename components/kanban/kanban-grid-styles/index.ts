@@ -1,4 +1,3 @@
-// Common Tailwind Classes
 const commonOverflowClasses = "overflow-hidden rounded-xl";
 const commonFlexClasses = "flex flex-col justify-center";
 const commonButtonClasses = "px-2 rounded-md";
